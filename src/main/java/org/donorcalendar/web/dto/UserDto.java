@@ -1,8 +1,7 @@
 package org.donorcalendar.web.dto;
 
-/**
- * Created by Táizel on 04/10/2015.
- */
+import org.donorcalendar.domain.BloodType;
+
 public class UserDto {
 
     private long id;
@@ -10,6 +9,7 @@ public class UserDto {
     private String name;
     private String email;
     private String lastDonation;
+    private BloodType bloodType;
 
     public long getId() {
         return id;
@@ -41,5 +41,13 @@ public class UserDto {
 
     public void setLastDonation(String lastDonation) {
         this.lastDonation = lastDonation;
+    }
+
+    public BloodType getBloodType() {
+        return bloodType;
+    }
+
+    public void setBloodType(BloodType bloodType) {
+        this.bloodType = bloodType;
     }
 }

@@ -24,7 +24,12 @@ public class UserController {
 
     @RequestMapping(value = "/user",method=RequestMethod.POST)
     public UserDto saveUser(@RequestBody UserDto userDto) {
-        userService.saveUser(userDto);
+        try{
+            userService.saveUser(userDto);
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+
         System.out.println("saved");
         System.out.println(userDto);
         return userDto;
