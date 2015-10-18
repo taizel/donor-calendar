@@ -1,12 +1,15 @@
 package org.donorcalendar.web;
 
 import org.donorcalendar.service.UserService;
+import org.donorcalendar.validation.ClientErrorInformation;
+import org.donorcalendar.validation.ValidationException;
 import org.donorcalendar.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class UserController {
@@ -22,17 +25,17 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "/user",method=RequestMethod.POST)
-    public UserDto saveUser(@RequestBody UserDto userDto) {
-        try{
-            userService.saveUser(userDto);
-        }catch (Exception e){
-            throw new RuntimeException(e.getMessage());
-        }
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public UserDto saveUser(@RequestBody UserDto userDto) throws ValidationException {
+        userService.saveUser(userDto);
 
-        System.out.println("saved");
-        System.out.println(userDto);
+        System.out.println("saved: " + userDto);
         return userDto;
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ClientErrorInformation> handleValidationError(HttpServletRequest req, ValidationException e) {
+        ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }

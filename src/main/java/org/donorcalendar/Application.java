@@ -30,15 +30,20 @@ public class Application implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         // save a couple of customers
         User frodo = new User();
-        User bilbo = new User();
+
         frodo.setName("Frodo");
         frodo.setEmail("frodo@middlehearth.com");
         frodo.setBloodType(BloodType.AB_NEGATIVE);
-        frodo.setLastDonation(LocalDate.now().minusDays(31));
+        frodo.setLastDonation(LocalDate.now().minusDays(7));
+        frodo.setIntervalOfDaysBetweenReminders(7);
+        userRepository.save(frodo);
+
+        User bilbo = new User();
         bilbo.setName("Bilbo");
         bilbo.setEmail("bilbo@middlehearth.com");
         bilbo.setBloodType(BloodType.A_NEGATIVE);
-        userRepository.save(frodo);
+        bilbo.setLastDonation(LocalDate.now().minusDays(8));
+        bilbo.setIntervalOfDaysBetweenReminders(7);
         userRepository.save(bilbo);
 
         // fetch all users
