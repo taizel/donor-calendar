@@ -17,7 +17,8 @@ public class User {
     private String email;
     private LocalDate lastDonation;
     private BloodType bloodType;
-    private int intervalOfDaysBetweenReminders;
+    private int daysBetweenReminders;
+    private LocalDate nextReminder;
 
     public String getName() {
         return name;
@@ -39,12 +40,12 @@ public class User {
         return lastDonation;
     }
 
-    public int getIntervalOfDaysBetweenReminders() {
-        return intervalOfDaysBetweenReminders;
+    public int getDaysBetweenReminders() {
+        return daysBetweenReminders;
     }
 
-    public void setIntervalOfDaysBetweenReminders(int intervalOfDaysBetweenReminders) {
-        this.intervalOfDaysBetweenReminders = intervalOfDaysBetweenReminders;
+    public void setDaysBetweenReminders(int daysBetweenReminders) {
+        this.daysBetweenReminders = daysBetweenReminders;
     }
 
     public void setLastDonation(LocalDate lastDonation) {
@@ -59,6 +60,14 @@ public class User {
         this.bloodType = bloodType;
     }
 
+    public LocalDate getNextReminder() {
+        return nextReminder;
+    }
+
+    public void setNextReminder(LocalDate nextReminder) {
+        this.nextReminder = nextReminder;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -67,7 +76,8 @@ public class User {
                 ", email='" + email + '\'' +
                 ", lastDonation=" + lastDonation +
                 ", bloodType=" + bloodType +
-                ", intervalOfDaysBetweenReminders=" + intervalOfDaysBetweenReminders +
+                ", daysBetweenReminders=" + daysBetweenReminders +
+                ", nextReminder=" + nextReminder +
                 '}';
     }
 }

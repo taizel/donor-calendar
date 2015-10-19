@@ -35,15 +35,17 @@ public class Application implements CommandLineRunner {
         frodo.setEmail("frodo@middlehearth.com");
         frodo.setBloodType(BloodType.AB_NEGATIVE);
         frodo.setLastDonation(LocalDate.now().minusDays(7));
-        frodo.setIntervalOfDaysBetweenReminders(7);
+        frodo.setDaysBetweenReminders(7);
+        frodo.setNextReminder(LocalDate.now());
         userRepository.save(frodo);
 
         User bilbo = new User();
         bilbo.setName("Bilbo");
         bilbo.setEmail("bilbo@middlehearth.com");
         bilbo.setBloodType(BloodType.A_NEGATIVE);
-        bilbo.setLastDonation(LocalDate.now().minusDays(8));
-        bilbo.setIntervalOfDaysBetweenReminders(7);
+        bilbo.setLastDonation(LocalDate.now().minusDays(14));
+        bilbo.setDaysBetweenReminders(14);
+        frodo.setNextReminder(LocalDate.now());
         userRepository.save(bilbo);
 
         // fetch all users

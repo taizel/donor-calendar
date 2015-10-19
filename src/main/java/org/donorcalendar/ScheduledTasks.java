@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-
 @Component
 public class ScheduledTasks {
 
@@ -22,13 +19,10 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 10000)
     public void sendEmailToRememerDonors() {
 
-        for (User user : userRepository.findAll()) {
-            if (user.getLastDonation() != null && user.getIntervalOfDaysBetweenReminders() > 0) {
-                Long daysBetween = ChronoUnit.DAYS.between(user.getLastDonation(), LocalDate.now());
-                if (daysBetween > 0 && daysBetween % user.getIntervalOfDaysBetweenReminders() == 0) {
-                    log.info("Sent reminder for user: " + user.getName());
-                }
-            }
+        for (User user : userRepository.findUsersToRemind()) {
+            log.info("Sent reminder for user: " + user.getName());
+            user.setNextReminder(user.getNextReminder().plusDays(user.getDaysBetweenReminders()));
+            userRepository.save(user);
         }
     }
 }
