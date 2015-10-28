@@ -37,6 +37,7 @@ public class Application implements CommandLineRunner {
         frodo.setLastDonation(LocalDate.now().minusDays(7));
         frodo.setDaysBetweenReminders(7);
         frodo.setNextReminder(LocalDate.now());
+        frodo.setPassword("$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a"); //pass1
         userRepository.save(frodo);
 
         User bilbo = new User();
@@ -45,7 +46,8 @@ public class Application implements CommandLineRunner {
         bilbo.setBloodType(BloodType.A_NEGATIVE);
         bilbo.setLastDonation(LocalDate.now().minusDays(14));
         bilbo.setDaysBetweenReminders(14);
-        frodo.setNextReminder(LocalDate.now());
+        bilbo.setNextReminder(LocalDate.now());
+        bilbo.setPassword("$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe");//pass2
         userRepository.save(bilbo);
 
         // fetch all users
