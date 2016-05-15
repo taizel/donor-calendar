@@ -1,8 +1,9 @@
 package org.donorcalendar.security;
 
 import org.donorcalendar.domain.User;
-import org.donorcalendar.domain.UserRepository;
+import org.donorcalendar.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -23,9 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("User " + email + " not found");
         } else {
             User user = userList.get(0);
-            UserDetailsImpl userDetails = new UserDetailsImpl();
-            userDetails.setPassword(user.getPassword());
-            userDetails.setEmail(user.getEmail());
+            UserDetailsImpl userDetails = new UserDetailsImpl(user, true, true, true, true, AuthorityUtils.createAuthorityList("ROLE_USER"));
             return userDetails;
         }
     }

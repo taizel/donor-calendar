@@ -2,7 +2,7 @@ package org.donorcalendar;
 
 import org.donorcalendar.domain.BloodType;
 import org.donorcalendar.domain.User;
-import org.donorcalendar.domain.UserRepository;
+import org.donorcalendar.persistence.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +15,12 @@ import java.time.LocalDate;
 
 @SpringBootApplication
 @EnableScheduling
-public class Application implements CommandLineRunner {
+class Application implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

@@ -1,9 +1,9 @@
 package org.donorcalendar.validation;
 
 public class ClientErrorInformation {
-    String errorMessage;
-    String requestUrl;
-    String requestHttpMethod;
+    private String errorMessage;
+    private String requestUrl;
+    private String requestHttpMethod;
 
     public ClientErrorInformation(String errorMessage, String requestUrl, String requestHttpMethod) {
         this.errorMessage = errorMessage;

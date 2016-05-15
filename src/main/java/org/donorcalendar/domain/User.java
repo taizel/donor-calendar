@@ -83,6 +83,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", lastDonation=" + lastDonation +
                 ", bloodType=" + bloodType +
                 ", daysBetweenReminders=" + daysBetweenReminders +

@@ -1,5 +1,6 @@
-package org.donorcalendar.domain;
+package org.donorcalendar.persistence;
 
+import org.donorcalendar.domain.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
