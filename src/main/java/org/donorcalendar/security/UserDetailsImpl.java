@@ -24,7 +24,7 @@ public class UserDetailsImpl extends org.springframework.security.core.userdetai
         return user;
     }
 
-//    The commented ones doesn't need to be implemented because userdetails.User already contains an implementation it.
+//    The commented ones doesn't need to be implemented because {org.springframework.security.core.userdetails.User} already implements it.
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        return AuthorityUtils.createAuthorityList("ROLE_USER");

@@ -7,6 +7,7 @@ import org.donorcalendar.util.TypeConverter;
 import org.donorcalendar.validation.ClientErrorInformation;
 import org.donorcalendar.validation.ValidationException;
 import org.donorcalendar.web.dto.UserDto;
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private Mapper mapper;
 
     public UserService getUserService() {
         return userService;
@@ -31,12 +34,31 @@ public class UserController {
         this.userService = userService;
     }
 
+    public Mapper getMapper() {
+        return mapper;
+    }
+
+    public void setMapper(Mapper mapper) {
+        this.mapper = mapper;
+    }
+
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public UserDto saveUser(@RequestBody UserDto userDto) throws ValidationException {
         userService.saveUser(userDtoToUser(userDto));
 
         System.out.println("saved: " + userDto);
         return userDto;
+    }
+
+    @RequestMapping(value = "/user", method = RequestMethod.PUT)
+    public UserDto updateUser(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserDto userDto) throws ValidationException {
+
+        User destinationUser = userDetails.getUser();
+        User sourceUser = userDtoToUser(userDto);
+        mergeUsers(sourceUser , destinationUser);
+
+        userService.saveUser(destinationUser);
+        return userToUserDto(destinationUser);
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -48,6 +70,15 @@ public class UserController {
     public ResponseEntity<ClientErrorInformation> handleValidationError(HttpServletRequest req, ValidationException e) {
         ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    private void mergeUsers(User sourceUser, User destinationUser){
+        String currentPassword = destinationUser.getPassword();
+        String newPassword = sourceUser.getPassword();
+        mapper.map(sourceUser, destinationUser);
+        if(newPassword == null || newPassword.isEmpty()){
+            destinationUser.setPassword(currentPassword);
+        }
     }
 
     private User userDtoToUser(UserDto userDto) throws ValidationException {

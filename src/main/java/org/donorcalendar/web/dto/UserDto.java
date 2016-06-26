@@ -1,7 +1,9 @@
 package org.donorcalendar.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.donorcalendar.domain.BloodType;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDto {
 
     private long id;
