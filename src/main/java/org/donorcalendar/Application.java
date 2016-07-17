@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 @SpringBootApplication
 @EnableScheduling
-class Application implements CommandLineRunner {
+public class Application implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
