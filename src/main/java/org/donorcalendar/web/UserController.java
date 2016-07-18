@@ -44,7 +44,9 @@ public class UserController {
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public UserDto saveUser(@RequestBody UserDto userDto) throws ValidationException {
-        userService.saveUser(userDtoToUser(userDto));
+        User user = userDtoToUserWithoutPassword(userDto);
+        user.setPassword(userDto.getPassword());
+        userService.saveNewUser(user);
 
         System.out.println("saved: " + userDto);
         return userDto;
@@ -54,10 +56,10 @@ public class UserController {
     public UserDto updateUser(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserDto userDto) throws ValidationException {
 
         User destinationUser = userDetails.getUser();
-        User sourceUser = userDtoToUser(userDto);
+        User sourceUser = userDtoToUserWithoutPassword(userDto);
         mergeUsers(sourceUser , destinationUser);
 
-        userService.saveUser(destinationUser);
+        userService.updateExistingUser(destinationUser);
         return userToUserDto(destinationUser);
     }
 
@@ -81,16 +83,18 @@ public class UserController {
         }
     }
 
-    private User userDtoToUser(UserDto userDto) throws ValidationException {
+    private User userDtoToUserWithoutPassword(UserDto userDto) throws ValidationException {
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
         user.setBloodType(userDto.getBloodType());
-        try {
-            LocalDate lastDonation = TypeConverter.stringToLocalDate(userDto.getLastDonation());
-            user.setLastDonation(lastDonation);
-        } catch (DateTimeParseException e) {
-            throw new ValidationException("Invalid date format for lastDonation field.");
+        if(userDto.getLastDonation() != null){
+            try {
+                LocalDate lastDonation = TypeConverter.stringToLocalDate(userDto.getLastDonation());
+                user.setLastDonation(lastDonation);
+            } catch (DateTimeParseException e) {
+                throw new ValidationException("Invalid date format for lastDonation field.");
+            }
         }
         return user;
     }
@@ -100,7 +104,9 @@ public class UserController {
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
         userDto.setBloodType(user.getBloodType());
-        userDto.setLastDonation(user.getLastDonation().toString());
+        if(user.getLastDonation() != null) {
+            userDto.setLastDonation(user.getLastDonation().toString());
+        }
         return userDto;
     }
 }

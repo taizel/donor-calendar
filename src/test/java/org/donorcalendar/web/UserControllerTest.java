@@ -6,6 +6,7 @@ import org.donorcalendar.Application;
 import org.donorcalendar.domain.BloodType;
 import org.donorcalendar.domain.User;
 import org.donorcalendar.persistence.UserRepository;
+import org.donorcalendar.web.dto.UserDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 
 import static io.restassured.RestAssured.basic;
 import static io.restassured.RestAssured.expect;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 
@@ -32,8 +34,10 @@ public class UserControllerTest {
 
     @Autowired
     private UserRepository repository;
+
     @Value("${local.server.port}")
     private int port;
+
     private User john;
     private User bilbo;
 
@@ -62,17 +66,95 @@ public class UserControllerTest {
         repository.save(Arrays.asList(john, bilbo));
 
         RestAssured.port = port;
-        RestAssured.authentication = basic("john@middlehearth.com", "pass1");
+        RestAssured.authentication = basic(bilbo.getEmail(), "pass2");
     }
 
     @Test
-    public void canFetchJohn() {
+    public void canGetUserJohnTest() {
+        given().
+                auth().basic(john.getEmail(), "pass1").
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
                 get("/user").
         then().
                 assertThat().
-                body("name", equalTo(john.getName()));
+                body("name", equalTo(john.getName())).
+                body("email", equalTo(john.getEmail()));
+    }
+
+    @Test
+    public void canGetUserBilboTest() {
+        given().
+            auth().basic(bilbo.getEmail(), "pass2").
+        expect().
+            statusCode(HttpStatus.SC_OK).
+        when().
+            get("/user").
+        then().
+            assertThat().
+                body("name", equalTo(bilbo.getName())).
+                body("email", equalTo(bilbo.getEmail()));
+    }
+
+    @Test
+    public void canUpdateUserTest(){
+        UserDto userDto = userToUserDto(bilbo);
+        userDto.setName("Bilbo Update");
+        given().
+                contentType("application/json").
+                body(userDto).
+        expect().
+                statusCode(HttpStatus.SC_OK).
+                when().
+                put("/user");
+
+        expect().
+                statusCode(HttpStatus.SC_OK).
+                when().
+                get("/user").
+                then().
+                assertThat().
+                body("name", equalTo(userDto.getName()));
+    }
+
+    @Test
+    public void canCreateNewUserTest(){
+        UserDto userDto = new UserDto();
+        userDto.setName("New");
+        userDto.setEmail("new@newuser.com");
+        userDto.setPassword("new");
+//        userDto.setLastDonation("2016-01-15");
+        userDto.setBloodType(BloodType.A_POSITIVE);
+
+        given().
+                contentType("application/json").
+                body(userDto).
+        expect().
+                statusCode(HttpStatus.SC_OK).
+        when().
+                post("/user");
+
+        given().
+                auth().basic(userDto.getEmail(), userDto.getPassword()).
+        expect().
+                statusCode(HttpStatus.SC_OK).
+        when().
+                get("/user").
+                then().
+                assertThat().
+                body("name", equalTo(userDto.getName())).
+                body("email", equalTo(userDto.getEmail())).
+                body("bloodType", equalTo(userDto.getBloodType().toString()));
+    }
+
+
+    private UserDto userToUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setEmail(user.getEmail());
+        userDto.setName(user.getName());
+        userDto.setBloodType(user.getBloodType());
+        userDto.setLastDonation(user.getLastDonation().toString());
+        return userDto;
     }
 }
