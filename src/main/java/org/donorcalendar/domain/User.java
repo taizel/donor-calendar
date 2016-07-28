@@ -1,101 +1,39 @@
 package org.donorcalendar.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.time.LocalDate;
-
-@Entity
 public class User {
+    private UserProfile userProfile;
+    private UserSecurityDetails userSecurity;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    private String name;
-    private String email;
-    private String password;
-    private LocalDate lastDonation;
-    private BloodType bloodType;
-    private int daysBetweenReminders;
-    private LocalDate nextReminder;
-
-    public Long getId() {
-        return id;
+    public User(UserProfile userProfile, UserSecurityDetails userSecurity) {
+        this.userProfile = userProfile;
+        this.userSecurity = userSecurity;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
 
-    public String getName() {
-        return name;
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
     }
 
-    public String getEmail() {
-        return email;
+    public UserSecurityDetails getUserSecurity() {
+        return userSecurity;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public LocalDate getLastDonation() {
-        return lastDonation;
-    }
-
-    public int getDaysBetweenReminders() {
-        return daysBetweenReminders;
-    }
-
-    public void setDaysBetweenReminders(int daysBetweenReminders) {
-        this.daysBetweenReminders = daysBetweenReminders;
-    }
-
-    public void setLastDonation(LocalDate lastDonation) {
-        this.lastDonation = lastDonation;
-    }
-
-    public BloodType getBloodType() {
-        return bloodType;
-    }
-
-    public void setBloodType(BloodType bloodType) {
-        this.bloodType = bloodType;
-    }
-
-    public LocalDate getNextReminder() {
-        return nextReminder;
-    }
-
-    public void setNextReminder(LocalDate nextReminder) {
-        this.nextReminder = nextReminder;
+    public void setUserSecurity(UserSecurityDetails userSecurity) {
+        this.userSecurity = userSecurity;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", lastDonation=" + lastDonation +
-                ", bloodType=" + bloodType +
-                ", daysBetweenReminders=" + daysBetweenReminders +
-                ", nextReminder=" + nextReminder +
+                "userProfile=" + userProfile +
+                ", userSecurity=" + userSecurity +
                 '}';
     }
 }

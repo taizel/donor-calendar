@@ -4,9 +4,12 @@ import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.donorcalendar.Application;
 import org.donorcalendar.domain.BloodType;
-import org.donorcalendar.domain.User;
+import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserRepository;
-import org.donorcalendar.web.dto.UserDto;
+import org.donorcalendar.persistence.UserSecurityDetailsEntity;
+import org.donorcalendar.persistence.UserSecurityDetailsRepository;
+import org.donorcalendar.web.dto.NewUserDto;
+import org.donorcalendar.web.dto.UpdateUserDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +21,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 import static io.restassured.RestAssured.basic;
 import static io.restassured.RestAssured.expect;
@@ -35,35 +37,49 @@ public class UserControllerTest {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private UserSecurityDetailsRepository userSecurityDetailsRepository;
+
     @Value("${local.server.port}")
     private int port;
 
-    private User john;
-    private User bilbo;
+    private UserProfileEntity john;
+    private UserProfileEntity bilbo;
 
     @Before
     public void setUp() {
-        john = new User();
+        john = new UserProfileEntity();
         john.setName("John");
         john.setEmail("john@middlehearth.com");
         john.setBloodType(BloodType.AB_NEGATIVE);
         john.setLastDonation(LocalDate.now().minusDays(7));
         john.setDaysBetweenReminders(7);
         john.setNextReminder(LocalDate.now());
-        john.setPassword("$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a"); //pass1
 
 
-        bilbo = new User();
+        bilbo = new UserProfileEntity();
         bilbo.setName("Bilbo");
         bilbo.setEmail("bilbo@middlehearth.com");
         bilbo.setBloodType(BloodType.A_NEGATIVE);
         bilbo.setLastDonation(LocalDate.now().minusDays(14));
         bilbo.setDaysBetweenReminders(14);
         bilbo.setNextReminder(LocalDate.now());
-        bilbo.setPassword("$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe");//pass2
 
         repository.deleteAll();
-        repository.save(Arrays.asList(john, bilbo));
+        john = repository.save(john);
+        bilbo = repository.save(bilbo);
+
+        UserSecurityDetailsEntity userSecurityDetailsEntityJohn = new UserSecurityDetailsEntity();
+        userSecurityDetailsEntityJohn.setUserId(john.getUserId());
+        userSecurityDetailsEntityJohn.setPassword("$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a"); //pass1
+
+        UserSecurityDetailsEntity userSecurityDetailsEntityBilbo = new UserSecurityDetailsEntity();
+        userSecurityDetailsEntityBilbo.setUserId(bilbo.getUserId());
+        userSecurityDetailsEntityBilbo.setPassword("$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe"); //pass2
+
+
+        userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
+        userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
 
         RestAssured.port = port;
         RestAssured.authentication = basic(bilbo.getEmail(), "pass2");
@@ -99,11 +115,11 @@ public class UserControllerTest {
 
     @Test
     public void canUpdateUserTest(){
-        UserDto userDto = userToUserDto(bilbo);
-        userDto.setName("Bilbo Update");
+        UpdateUserDto updateUserDto = userToUserDto(bilbo);
+        updateUserDto.setName("Bilbo Update");
         given().
                 contentType("application/json").
-                body(userDto).
+                body(updateUserDto).
         expect().
                 statusCode(HttpStatus.SC_OK).
                 when().
@@ -115,46 +131,46 @@ public class UserControllerTest {
                 get("/user").
                 then().
                 assertThat().
-                body("name", equalTo(userDto.getName()));
+                body("name", equalTo(updateUserDto.getName()));
     }
 
     @Test
     public void canCreateNewUserTest(){
-        UserDto userDto = new UserDto();
-        userDto.setName("New");
-        userDto.setEmail("new@newuser.com");
-        userDto.setPassword("new");
-//        userDto.setLastDonation("2016-01-15");
-        userDto.setBloodType(BloodType.A_POSITIVE);
+        NewUserDto newUserDto = new NewUserDto();
+        newUserDto.setName("New");
+        newUserDto.setEmail("new@newuser.com");
+        newUserDto.setPassword("new");
+//        updateUserDto.setLastDonation("2016-01-15");
+        newUserDto.setBloodType(BloodType.A_POSITIVE);
 
         given().
                 contentType("application/json").
-                body(userDto).
+                body(newUserDto).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
                 post("/user");
 
         given().
-                auth().basic(userDto.getEmail(), userDto.getPassword()).
+                auth().basic(newUserDto.getEmail(), newUserDto.getPassword()).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
                 get("/user").
                 then().
                 assertThat().
-                body("name", equalTo(userDto.getName())).
-                body("email", equalTo(userDto.getEmail())).
-                body("bloodType", equalTo(userDto.getBloodType().toString()));
+                body("name", equalTo(newUserDto.getName())).
+                body("email", equalTo(newUserDto.getEmail())).
+                body("bloodType", equalTo(newUserDto.getBloodType().toString()));
     }
 
 
-    private UserDto userToUserDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setEmail(user.getEmail());
-        userDto.setName(user.getName());
-        userDto.setBloodType(user.getBloodType());
-        userDto.setLastDonation(user.getLastDonation().toString());
-        return userDto;
+    private UpdateUserDto userToUserDto(UserProfileEntity user) {
+        UpdateUserDto updateUserDto = new UpdateUserDto();
+        updateUserDto.setEmail(user.getEmail());
+        updateUserDto.setName(user.getName());
+        updateUserDto.setBloodType(user.getBloodType());
+        updateUserDto.setLastDonation(user.getLastDonation().toString());
+        return updateUserDto;
     }
 }

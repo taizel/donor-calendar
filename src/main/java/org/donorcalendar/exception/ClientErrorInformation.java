@@ -1,4 +1,4 @@
-package org.donorcalendar.validation;
+package org.donorcalendar.exception;
 
 public class ClientErrorInformation {
     private String errorMessage;

@@ -1,6 +1,6 @@
 package org.donorcalendar;
 
-import org.donorcalendar.domain.User;
+import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +13,17 @@ public class ScheduledTasks {
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
+    private final UserRepository userRepository;
+
     @Autowired
-    UserRepository userRepository;
+    public ScheduledTasks(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Scheduled(fixedRate = 10000)
-    public void sendEmailToRememerDonors() {
+    public void sendEmailToRememberDonors() {
 
-        for (User user : userRepository.findUsersToRemind()) {
+        for (UserProfileEntity user : userRepository.findUsersToRemind()) {
             log.info("Sent reminder for user: " + user.getName());
             user.setNextReminder(user.getNextReminder().plusDays(user.getDaysBetweenReminders()));
             userRepository.save(user);

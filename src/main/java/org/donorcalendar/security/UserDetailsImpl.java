@@ -1,30 +1,33 @@
 package org.donorcalendar.security;
 
-import org.donorcalendar.domain.User;
+import org.donorcalendar.domain.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-public class UserDetailsImpl extends org.springframework.security.core.userdetails.User implements UserDetails {
+public class UserDetailsImpl extends org.springframework.security.core.userdetails.User implements org.springframework.security.core.userdetails.UserDetails {
 
-    private User user;
+    private final UserProfile userProfile;
 
-    public UserDetailsImpl(User user, Collection<? extends GrantedAuthority> authorities) {
-        super(user.getName(), user.getPassword(), authorities);
-        this.user = user;
+    private final String password;
+
+    public UserDetailsImpl(UserProfile userProfile, String password, Collection<? extends GrantedAuthority> authorities) {
+        super(userProfile.getName(), password, authorities);
+        this.userProfile = userProfile;
+        this.password = password;
     }
 
-    public UserDetailsImpl(User user, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-        super(user.getName(), user.getPassword(), enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
-        this.user = user;
+    public UserDetailsImpl(UserProfile userProfile, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+        super(userProfile.getName(), password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+        this.userProfile = userProfile;
+        this.password = password;
     }
 
-    public User getUser() {
-        return user;
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 
-//    The commented ones doesn't need to be implemented because {org.springframework.security.core.userdetails.User} already implements it.
+//    The commented ones doesn't need to be implemented because {org.springframework.security.core.userdetails.UserProfile} already implements it.
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
 //        return AuthorityUtils.createAuthorityList("ROLE_USER");
@@ -32,12 +35,12 @@ public class UserDetailsImpl extends org.springframework.security.core.userdetai
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return userProfile.getEmail();
     }
 
 //    @Override
