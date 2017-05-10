@@ -9,6 +9,7 @@ import org.donorcalendar.security.UserDetailsImpl;
 import org.donorcalendar.service.UserService;
 import org.donorcalendar.util.TypeConverter;
 import org.donorcalendar.web.dto.NewUserDto;
+import org.donorcalendar.web.dto.UpdateUserPasswordDto;
 import org.donorcalendar.web.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,15 @@ public class UserController {
 
         userService.updateExistingUser(userProfileToUpdate);
         return userToUserDto(userProfileToUpdate);
+    }
+
+    @RequestMapping(value = "/update-password", method = RequestMethod.PUT)
+    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException {
+
+        UserProfile userProfile = userDetails.getUserProfile();
+        userService.updateUserPassword(userProfile.getUserId(), updateUserPasswordDtoDto.getNewPassword());
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @RequestMapping(method = RequestMethod.GET)

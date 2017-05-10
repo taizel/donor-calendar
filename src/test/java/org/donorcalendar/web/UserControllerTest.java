@@ -10,6 +10,7 @@ import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.donorcalendar.web.dto.NewUserDto;
 import org.donorcalendar.web.dto.UpdateUserDto;
+import org.donorcalendar.web.dto.UpdateUserPasswordDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +23,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.time.LocalDate;
 
-import static io.restassured.RestAssured.basic;
-import static io.restassured.RestAssured.expect;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -45,6 +44,10 @@ public class UserControllerTest {
 
     private UserProfileEntity john;
     private UserProfileEntity bilbo;
+    private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
+    private static final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
+    private static final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
+    private static final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
 
     @Before
     public void setUp() {
@@ -71,24 +74,25 @@ public class UserControllerTest {
 
         UserSecurityDetailsEntity userSecurityDetailsEntityJohn = new UserSecurityDetailsEntity();
         userSecurityDetailsEntityJohn.setUserId(john.getUserId());
-        userSecurityDetailsEntityJohn.setPassword("$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a"); //pass1
+        userSecurityDetailsEntityJohn.setPassword(JOHN_ENCRYPTED_PASSWORD);
 
         UserSecurityDetailsEntity userSecurityDetailsEntityBilbo = new UserSecurityDetailsEntity();
         userSecurityDetailsEntityBilbo.setUserId(bilbo.getUserId());
-        userSecurityDetailsEntityBilbo.setPassword("$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe"); //pass2
+        userSecurityDetailsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
 
 
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
 
         RestAssured.port = port;
-        RestAssured.authentication = basic(bilbo.getEmail(), "pass2");
+        //TODO should not be necessary after investigation on how to keep session after login
+//        RestAssured.authentication = basic(bilbo.getEmail(), "pass2");
     }
 
     @Test
     public void canGetUserJohnTest() {
         given().
-                auth().basic(john.getEmail(), "pass1").
+                auth().basic(john.getEmail(), JOHN_UNENCRYPTED_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
@@ -102,7 +106,7 @@ public class UserControllerTest {
     @Test
     public void canGetUserBilboTest() {
         given().
-            auth().basic(bilbo.getEmail(), "pass2").
+            auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
             statusCode(HttpStatus.SC_OK).
         when().
@@ -120,18 +124,44 @@ public class UserControllerTest {
         given().
                 contentType("application/json").
                 body(updateUserDto).
+                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
                 when().
                 put("/user");
 
+        given().
+                //TODO why it's necessary to log in again?
+                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
-                when().
+        when().
                 get("/user").
-                then().
-                assertThat().
+        then().
+            assertThat().
                 body("name", equalTo(updateUserDto.getName()));
+    }
+
+    @Test
+    public void canUpdateUserPasswordTest(){
+        UpdateUserPasswordDto userPasswordDto = new UpdateUserPasswordDto();
+        String newPassword = "passwordUpdate";
+        userPasswordDto.setNewPassword(newPassword);
+        given().
+            contentType("application/json").
+            body(userPasswordDto).
+            auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
+        expect().
+            statusCode(HttpStatus.SC_NO_CONTENT).
+        when().
+            put("/user/update-password");
+
+        given().
+            auth().basic(bilbo.getEmail(), newPassword).
+        expect().
+            statusCode(HttpStatus.SC_OK).
+        when().
+            get("/user");
     }
 
     @Test
@@ -140,6 +170,7 @@ public class UserControllerTest {
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");
         newUserDto.setPassword("new");
+        //TODO how to make this work properly?
 //        updateUserDto.setLastDonation("2016-01-15");
         newUserDto.setBloodType(BloodType.A_POSITIVE);
 
