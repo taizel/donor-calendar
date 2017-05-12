@@ -2,7 +2,6 @@ package org.donorcalendar.web;
 
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
-import org.donorcalendar.Application;
 import org.donorcalendar.domain.BloodType;
 import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserRepository;
@@ -15,11 +14,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 
@@ -27,27 +24,25 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class})
-@WebAppConfiguration
-@IntegrationTest("server.port:0")
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTest {
 
-    @Autowired
-    private UserRepository repository;
-
-    @Autowired
-    private UserSecurityDetailsRepository userSecurityDetailsRepository;
-
-    @Value("${local.server.port}")
-    private int port;
-
-    private UserProfileEntity john;
-    private UserProfileEntity bilbo;
     private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
     private static final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
     private static final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
     private static final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
+
+    @Autowired
+    private UserRepository repository;
+    @Autowired
+    private UserSecurityDetailsRepository userSecurityDetailsRepository;
+
+    @LocalServerPort
+    private int port;
+
+    private UserProfileEntity john;
+    private UserProfileEntity bilbo;
 
     @Before
     public void setUp() {
@@ -79,7 +74,6 @@ public class UserControllerTest {
         UserSecurityDetailsEntity userSecurityDetailsEntityBilbo = new UserSecurityDetailsEntity();
         userSecurityDetailsEntityBilbo.setUserId(bilbo.getUserId());
         userSecurityDetailsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
-
 
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
@@ -118,7 +112,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void canUpdateUserTest(){
+    public void canUpdateUserTest() {
         UpdateUserDto updateUserDto = userToUserDto(bilbo);
         updateUserDto.setName("Bilbo Update");
         given().
@@ -143,7 +137,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void canUpdateUserPasswordTest(){
+    public void canUpdateUserPasswordTest() {
         UpdateUserPasswordDto userPasswordDto = new UpdateUserPasswordDto();
         String newPassword = "passwordUpdate";
         userPasswordDto.setNewPassword(newPassword);
@@ -165,7 +159,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void canCreateNewUserTest(){
+    public void canCreateNewUserTest() {
         NewUserDto newUserDto = new NewUserDto();
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");
