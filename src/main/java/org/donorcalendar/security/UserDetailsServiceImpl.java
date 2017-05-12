@@ -1,11 +1,12 @@
 package org.donorcalendar.security;
 
 import org.donorcalendar.domain.UserProfile;
-import org.donorcalendar.persistence.UserRepository;
+import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -13,15 +14,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
+
+    private final UserSecurityDetailsRepository userSecurityDetailsRepository;
 
     @Autowired
-    UserSecurityDetailsRepository userSecurityDetailsRepository;
+    public UserDetailsServiceImpl(UserProfileRepository userProfileRepository, UserSecurityDetailsRepository userSecurityDetailsRepository) {
+        this.userProfileRepository = userProfileRepository;
+        this.userSecurityDetailsRepository = userSecurityDetailsRepository;
+    }
 
     @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserProfile user = userRepository.findByEmail(email).getUserDetails();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserProfile user = userProfileRepository.findByEmail(email).getUserDetails();
         if (user == null) {
             throw new UsernameNotFoundException("UserProfile " + email + " not found");
         } else {

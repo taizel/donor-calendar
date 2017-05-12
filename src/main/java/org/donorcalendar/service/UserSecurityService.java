@@ -20,6 +20,7 @@ class UserSecurityService {
         passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    //TODO work on semantics and naming for classes on service package
     public void saveNewUserSecurityDetails(User user) {
         UserSecurityDetailsEntity userSecurityDetailsEntity = new UserSecurityDetailsEntity();
         userSecurityDetailsEntity.setUserId(user.getUserProfile().getUserId());

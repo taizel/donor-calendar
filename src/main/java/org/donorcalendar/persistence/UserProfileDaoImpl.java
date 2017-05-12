@@ -8,46 +8,43 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional
-public class UserDaoImpl implements UserDao {
+public class UserProfileDaoImpl implements UserProfileDao {
 
 
-    private final UserRepository userRepository;
-
-    private final UserSecurityDetailsRepository userSecurityDetailsRepository;
+    private final UserProfileRepository userProfileRepository;
 
     @Autowired
-    public UserDaoImpl(UserRepository userRepository, UserSecurityDetailsRepository userSecurityDetailsRepository) {
-        this.userRepository = userRepository;
-        this.userSecurityDetailsRepository = userSecurityDetailsRepository;
+    public UserProfileDaoImpl(UserProfileRepository userProfileRepository) {
+        this.userProfileRepository = userProfileRepository;
     }
 
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
-        UserProfileEntity userProfileEntity = userRepository.save(convertUserToUserEntity(userProfile));
+        UserProfileEntity userProfileEntity = userProfileRepository.save(convertUserToUserEntity(userProfile));
         return userProfileEntity.getUserDetails();
     }
 
     @Override
     public UserProfile findOne(Long id) {
-        UserProfileEntity userProfileEntity = userRepository.findOne(id);
+        UserProfileEntity userProfileEntity = userProfileRepository.findOne(id);
         return userProfileEntity.getUserDetails();
     }
 
     @Override
     public UserProfile findByEmail(@Param("email") String email) {
-        UserProfileEntity userProfileEntity = userRepository.findByEmail(email);
+        UserProfileEntity userProfileEntity = userProfileRepository.findByEmail(email);
         return userProfileEntity.getUserDetails();
     }
 
     @Override
     public boolean exists(Long userId) {
-        return userRepository.exists(userId);
+        return userProfileRepository.exists(userId);
     }
 
     @Override
     public void updateUser(UserProfile userProfile){
         UserProfileEntity userProfileEntity = convertUserToUserEntity(userProfile);
-        userRepository.save(userProfileEntity);
+        userProfileRepository.save(userProfileEntity);
     }
 
 

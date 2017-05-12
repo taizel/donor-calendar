@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.donorcalendar.domain.BloodType;
 import org.donorcalendar.persistence.UserProfileEntity;
-import org.donorcalendar.persistence.UserRepository;
+import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.donorcalendar.web.dto.NewUserDto;
@@ -34,7 +34,7 @@ public class UserControllerTest {
     private static final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
 
     @Autowired
-    private UserRepository repository;
+    private UserProfileRepository userProfileRepository;
     @Autowired
     private UserSecurityDetailsRepository userSecurityDetailsRepository;
 
@@ -63,9 +63,9 @@ public class UserControllerTest {
         bilbo.setDaysBetweenReminders(14);
         bilbo.setNextReminder(LocalDate.now());
 
-        repository.deleteAll();
-        john = repository.save(john);
-        bilbo = repository.save(bilbo);
+        userProfileRepository.deleteAll();
+        john = userProfileRepository.save(john);
+        bilbo = userProfileRepository.save(bilbo);
 
         UserSecurityDetailsEntity userSecurityDetailsEntityJohn = new UserSecurityDetailsEntity();
         userSecurityDetailsEntityJohn.setUserId(john.getUserId());
