@@ -4,6 +4,7 @@ package org.donorcalendar.persistence;
 import org.donorcalendar.domain.BloodType;
 import org.donorcalendar.domain.UserProfile;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +12,6 @@ import javax.persistence.Id;
 import java.time.LocalDate;
 
 @Entity
-//@NamedQuery(name = "updateUser", query = "UPDATE UserEntity SET name = :name, email = :email WHERE userId = :userId")
 public class UserProfileEntity {
 
     @Id
@@ -19,6 +19,7 @@ public class UserProfileEntity {
     private Long userId;
 
     private String name;
+    @Column(unique=true)
     private String email;
     private LocalDate lastDonation;
     private BloodType bloodType;

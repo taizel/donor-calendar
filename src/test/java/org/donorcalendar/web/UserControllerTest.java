@@ -164,8 +164,7 @@ public class UserControllerTest {
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");
         newUserDto.setPassword("new");
-        //TODO how to make this work properly?
-//        updateUserDto.setLastDonation("2016-01-15");
+        newUserDto.setLastDonation(LocalDate.of(2016, 1, 15));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
 
         given().
@@ -195,7 +194,7 @@ public class UserControllerTest {
         updateUserDto.setEmail(user.getEmail());
         updateUserDto.setName(user.getName());
         updateUserDto.setBloodType(user.getBloodType());
-        updateUserDto.setLastDonation(user.getLastDonation().toString());
+        updateUserDto.setLastDonation(user.getLastDonation());
         return updateUserDto;
     }
 }

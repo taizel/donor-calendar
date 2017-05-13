@@ -7,7 +7,6 @@ import org.donorcalendar.exception.ClientErrorInformation;
 import org.donorcalendar.exception.ValidationException;
 import org.donorcalendar.security.UserDetailsImpl;
 import org.donorcalendar.service.UserService;
-import org.donorcalendar.util.TypeConverter;
 import org.donorcalendar.web.dto.NewUserDto;
 import org.donorcalendar.web.dto.UpdateUserPasswordDto;
 import org.donorcalendar.web.dto.UserDto;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -37,7 +34,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public UserDto saveUser(@RequestBody NewUserDto newUserDto) throws ValidationException {
+    public UserDto createNewUser(@RequestBody NewUserDto newUserDto) throws ValidationException {
         User user = newUserDtoToUser(newUserDto);
         UserDto userDto = userToUserDto(userService.saveNewUser(user));
         return userDto;
@@ -86,12 +83,7 @@ public class UserController {
         userProfile.setName(userDto.getName());
         userProfile.setBloodType(userDto.getBloodType());
         if (userDto.getLastDonation() != null) {
-            try {
-                LocalDate lastDonation = TypeConverter.stringToLocalDate(userDto.getLastDonation());
-                userProfile.setLastDonation(lastDonation);
-            } catch (DateTimeParseException e) {
-                throw new ValidationException("Invalid date format for lastDonation field.");
-            }
+            userProfile.setLastDonation(userDto.getLastDonation());
         }
         return userProfile;
     }
@@ -101,9 +93,7 @@ public class UserController {
         updateUserDto.setEmail(userProfile.getEmail());
         updateUserDto.setName(userProfile.getName());
         updateUserDto.setBloodType(userProfile.getBloodType());
-        if (userProfile.getLastDonation() != null) {
-            updateUserDto.setLastDonation(userProfile.getLastDonation().toString());
-        }
+        updateUserDto.setLastDonation(userProfile.getLastDonation());
         return updateUserDto;
     }
 }
