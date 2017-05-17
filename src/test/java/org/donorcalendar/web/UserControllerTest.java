@@ -10,6 +10,7 @@ import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.donorcalendar.web.dto.NewUserDto;
 import org.donorcalendar.web.dto.UpdateUserDto;
 import org.donorcalendar.web.dto.UpdateUserPasswordDto;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 
+import static io.restassured.RestAssured.basic;
+import static io.restassured.RestAssured.expect;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -79,8 +82,11 @@ public class UserControllerTest {
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
 
         RestAssured.port = port;
-        //TODO should not be necessary after investigation on how to keep session after login
-//        RestAssured.authentication = basic(bilbo.getEmail(), "pass2");
+    }
+
+    @After
+    public void cleanUp() {
+        RestAssured.reset();
     }
 
     @Test
@@ -113,20 +119,18 @@ public class UserControllerTest {
 
     @Test
     public void canUpdateUserTest() {
-        UpdateUserDto updateUserDto = userToUserDto(bilbo);
+        UpdateUserDto updateUserDto = userEntityToUserDto(bilbo);
         updateUserDto.setName("Bilbo Update");
+        RestAssured.authentication = basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD);
+
         given().
                 contentType("application/json").
                 body(updateUserDto).
-                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
                 when().
                 put("/user");
 
-        given().
-                //TODO why it's necessary to log in again?
-                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
@@ -164,7 +168,7 @@ public class UserControllerTest {
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");
         newUserDto.setPassword("new");
-        newUserDto.setLastDonation(LocalDate.of(2016, 1, 15));
+        newUserDto.setLastDonation(LocalDate.now().minusMonths(2));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
 
         given().
@@ -188,8 +192,33 @@ public class UserControllerTest {
                 body("bloodType", equalTo(newUserDto.getBloodType().toString()));
     }
 
+    @Test
+    public void validateEmailAlreadyTakenForNewUserTest() {
+        NewUserDto newUserDto = new NewUserDto();
+        newUserDto.setName("New");
+        newUserDto.setEmail("new@newuser.com");
+        newUserDto.setPassword("new");
+        newUserDto.setLastDonation(LocalDate.now().minusDays(2));
+        newUserDto.setBloodType(BloodType.A_POSITIVE);
 
-    private UpdateUserDto userToUserDto(UserProfileEntity user) {
+        given().
+                contentType("application/json").
+                body(newUserDto).
+                expect().
+                statusCode(HttpStatus.SC_OK).
+                when().
+                post("/user");
+
+        given().
+                contentType("application/json").
+                body(newUserDto).
+                expect().
+                statusCode(HttpStatus.SC_BAD_REQUEST).
+                when().
+                post("/user");
+    }
+
+    private UpdateUserDto userEntityToUserDto(UserProfileEntity user) {
         UpdateUserDto updateUserDto = new UpdateUserDto();
         updateUserDto.setEmail(user.getEmail());
         updateUserDto.setName(user.getName());
