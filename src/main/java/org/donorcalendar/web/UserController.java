@@ -3,7 +3,6 @@ package org.donorcalendar.web;
 import org.donorcalendar.domain.User;
 import org.donorcalendar.domain.UserProfile;
 import org.donorcalendar.domain.UserSecurityDetails;
-import org.donorcalendar.exception.ClientErrorInformation;
 import org.donorcalendar.exception.ValidationException;
 import org.donorcalendar.security.UserDetailsImpl;
 import org.donorcalendar.service.UserService;
@@ -14,13 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -65,30 +61,22 @@ public class UserController {
         return userToUserDto(userDetails.getUserProfile());
     }
 
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ClientErrorInformation> handleValidationError(HttpServletRequest req, ValidationException e) {
-        ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    private User newUserDtoToUser(NewUserDto newUserDto) throws ValidationException {
+    private User newUserDtoToUser(NewUserDto newUserDto) {
         UserProfile userProfile = userDtoToUser(newUserDto);
         UserSecurityDetails userSecurityDetails = new UserSecurityDetails(newUserDto.getPassword());
         return new User(userProfile, userSecurityDetails);
     }
 
-    private UserProfile userDtoToUser(UserDto userDto) throws ValidationException {
+    private UserProfile userDtoToUser(UserDto userDto) {
         UserProfile userProfile = new UserProfile();
         userProfile.setEmail(userDto.getEmail());
         userProfile.setName(userDto.getName());
         userProfile.setBloodType(userDto.getBloodType());
-        if (userDto.getLastDonation() != null) {
-            userProfile.setLastDonation(userDto.getLastDonation());
-        }
+        userProfile.setLastDonation(userDto.getLastDonation());
         return userProfile;
     }
 
-    private UserDto userToUserDto(UserProfile userProfile) throws ValidationException {
+    private UserDto userToUserDto(UserProfile userProfile) {
         UserDto updateUserDto = new UserDto();
         updateUserDto.setEmail(userProfile.getEmail());
         updateUserDto.setName(userProfile.getName());
