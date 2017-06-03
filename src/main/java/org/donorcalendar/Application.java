@@ -1,6 +1,7 @@
 package org.donorcalendar;
 
 import org.donorcalendar.domain.BloodType;
+import org.donorcalendar.domain.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
@@ -23,7 +24,7 @@ public class Application implements CommandLineRunner {
 
     private final UserProfileRepository userProfileRepository;
 
-    private UserSecurityDetailsRepository userSecurityDetailsRepository;
+    private final UserSecurityDetailsRepository userSecurityDetailsRepository;
 
     @Autowired
     public Application(UserProfileRepository userProfileRepository, UserSecurityDetailsRepository userSecurityDetailsRepository) {
@@ -37,6 +38,10 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
+        insertTestData();
+    }
+
+    private void insertTestData() {
         // save a couple of users
         UserProfileEntity user1 = new UserProfileEntity();
 
@@ -46,6 +51,7 @@ public class Application implements CommandLineRunner {
         user1.setLastDonation(LocalDate.now().minusDays(7));
         user1.setDaysBetweenReminders(7);
         user1.setNextReminder(LocalDate.now());
+        user1.setUserStatus(UserStatus.DONOR);
         user1 = userProfileRepository.save(user1);
 
         UserSecurityDetailsEntity securityDetailsUser1 = new UserSecurityDetailsEntity();
@@ -60,6 +66,7 @@ public class Application implements CommandLineRunner {
         user2.setLastDonation(LocalDate.now().minusDays(14));
         user2.setDaysBetweenReminders(14);
         user2.setNextReminder(LocalDate.now());
+        user2.setUserStatus(UserStatus.DONOR);
         userProfileRepository.save(user2);
 
         UserSecurityDetailsEntity securityDetailsUser2 = new UserSecurityDetailsEntity();

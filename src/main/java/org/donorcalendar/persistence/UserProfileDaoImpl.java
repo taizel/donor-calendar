@@ -57,6 +57,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
         userProfileEntity.setDaysBetweenReminders(userProfile.getDaysBetweenReminders());
         userProfileEntity.setLastDonation(userProfile.getLastDonation());
         userProfileEntity.setNextReminder(userProfile.getNextReminder());
+        userProfileEntity.setUserStatus(userProfile.getUserStatus());
         return userProfileEntity;
     }
 }

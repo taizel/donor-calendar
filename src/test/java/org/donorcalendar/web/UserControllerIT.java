@@ -3,6 +3,7 @@ package org.donorcalendar.web;
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.donorcalendar.domain.BloodType;
+import org.donorcalendar.domain.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static io.restassured.RestAssured.basic;
 import static io.restassured.RestAssured.expect;
@@ -29,12 +31,14 @@ import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerTest {
+public class UserControllerIT {
 
-    private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
-    private static final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
-    private static final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
-    private static final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
+    private final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
+    private final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
+    private final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
+    private final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
+
+    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Autowired
     private UserProfileRepository userProfileRepository;
@@ -56,6 +60,7 @@ public class UserControllerTest {
         john.setLastDonation(LocalDate.now().minusDays(7));
         john.setDaysBetweenReminders(7);
         john.setNextReminder(LocalDate.now());
+        john.setUserStatus(UserStatus.DONOR);
 
 
         bilbo = new UserProfileEntity();
@@ -65,6 +70,7 @@ public class UserControllerTest {
         bilbo.setLastDonation(LocalDate.now().minusDays(14));
         bilbo.setDaysBetweenReminders(14);
         bilbo.setNextReminder(LocalDate.now());
+        bilbo.setUserStatus(UserStatus.DONOR);
 
         userProfileRepository.deleteAll();
         john = userProfileRepository.save(john);
@@ -78,6 +84,7 @@ public class UserControllerTest {
         userSecurityDetailsEntityBilbo.setUserId(bilbo.getUserId());
         userSecurityDetailsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
 
+        userSecurityDetailsRepository.deleteAll();
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
 
@@ -100,7 +107,12 @@ public class UserControllerTest {
         then().
                 assertThat().
                 body("name", equalTo(john.getName())).
-                body("email", equalTo(john.getEmail()));
+                body("email", equalTo(john.getEmail())).
+                body("blood-type", equalTo(john.getBloodType().toString())).
+                body("last-donation", equalTo(john.getLastDonation().format(DATE_FORMATTER))).
+                body("days-between-reminders", equalTo(john.getDaysBetweenReminders())).
+                body("next-reminder", equalTo(john.getNextReminder().format(DATE_FORMATTER))).
+                body("user-status", equalTo(john.getUserStatus().toString()));
     }
 
     @Test
@@ -170,6 +182,7 @@ public class UserControllerTest {
         newUserDto.setPassword("new");
         newUserDto.setLastDonation(LocalDate.now().minusMonths(2));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
+        newUserDto.setUserStatus(UserStatus.getStatusByNumberOfDaysSinceLastDonation(60));
 
         given().
                 contentType("application/json").
@@ -189,7 +202,7 @@ public class UserControllerTest {
                 assertThat().
                 body("name", equalTo(newUserDto.getName())).
                 body("email", equalTo(newUserDto.getEmail())).
-                body("bloodType", equalTo(newUserDto.getBloodType().toString()));
+                body("blood-type", equalTo(newUserDto.getBloodType().toString()));
     }
 
     @Test
@@ -224,6 +237,7 @@ public class UserControllerTest {
         updateUserDto.setName(user.getName());
         updateUserDto.setBloodType(user.getBloodType());
         updateUserDto.setLastDonation(user.getLastDonation());
+        updateUserDto.setUserStatus(user.getUserStatus());
         return updateUserDto;
     }
 }

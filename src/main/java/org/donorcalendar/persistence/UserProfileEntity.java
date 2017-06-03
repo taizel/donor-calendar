@@ -3,12 +3,14 @@ package org.donorcalendar.persistence;
 
 import org.donorcalendar.domain.BloodType;
 import org.donorcalendar.domain.UserProfile;
+import org.donorcalendar.domain.UserStatus;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
@@ -25,6 +27,8 @@ public class UserProfileEntity {
     private BloodType bloodType;
     private int daysBetweenReminders;
     private LocalDate nextReminder;
+    @NotNull
+    private UserStatus userStatus;
 
     public Long getUserId() {
         return userId;
@@ -82,6 +86,14 @@ public class UserProfileEntity {
         this.nextReminder = nextReminder;
     }
 
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
+    }
+
     public UserProfile getUserDetails(){
         UserProfile userProfile = new UserProfile();
         userProfile.setUserId(this.getUserId());
@@ -91,6 +103,7 @@ public class UserProfileEntity {
         userProfile.setDaysBetweenReminders(this.getDaysBetweenReminders());
         userProfile.setLastDonation(this.getLastDonation());
         userProfile.setNextReminder(this.getNextReminder());
+        userProfile.setUserStatus(userStatus);
         return userProfile;
     }
 }

@@ -12,6 +12,7 @@ public class UserProfile {
     private BloodType bloodType;
     private int daysBetweenReminders;
     private LocalDate nextReminder;
+    private UserStatus userStatus;
 
     public Long getUserId() {
         return userId;
@@ -69,6 +70,14 @@ public class UserProfile {
         this.nextReminder = nextReminder;
     }
 
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
+    }
+
     @Override
     public String toString() {
         return "UserProfile{" +
@@ -79,6 +88,7 @@ public class UserProfile {
                 ", bloodType=" + bloodType +
                 ", daysBetweenReminders=" + daysBetweenReminders +
                 ", nextReminder=" + nextReminder +
+                ", userStatus=" + userStatus +
                 '}';
     }
 }

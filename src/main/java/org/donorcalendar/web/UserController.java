@@ -77,11 +77,14 @@ public class UserController {
     }
 
     private UserDto userToUserDto(UserProfile userProfile) {
-        UserDto updateUserDto = new UserDto();
-        updateUserDto.setEmail(userProfile.getEmail());
-        updateUserDto.setName(userProfile.getName());
-        updateUserDto.setBloodType(userProfile.getBloodType());
-        updateUserDto.setLastDonation(userProfile.getLastDonation());
-        return updateUserDto;
+        UserDto userDto = new UserDto();
+        userDto.setEmail(userProfile.getEmail());
+        userDto.setName(userProfile.getName());
+        userDto.setBloodType(userProfile.getBloodType());
+        userDto.setLastDonation(userProfile.getLastDonation());
+        userDto.setUserStatus(userProfile.getUserStatus());
+        userDto.setDaysBetweenReminders(userProfile.getDaysBetweenReminders());
+        userDto.setNextReminder(userProfile.getNextReminder());
+        return userDto;
     }
 }
