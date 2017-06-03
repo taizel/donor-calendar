@@ -15,20 +15,19 @@ class UserSecurityService {
     private final UserSecurityDetailsRepository userSecurityDetailsRepository;
 
     @Autowired
-    public UserSecurityService(UserSecurityDetailsRepository userSecurityDetailsRepository) {
+    UserSecurityService(UserSecurityDetailsRepository userSecurityDetailsRepository) {
         this.userSecurityDetailsRepository = userSecurityDetailsRepository;
         passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    //TODO work on semantics and naming for classes on service package
-    public void saveNewUserSecurityDetails(User user) {
+    void saveNewUserSecurityDetails(User user) {
         UserSecurityDetailsEntity userSecurityDetailsEntity = new UserSecurityDetailsEntity();
         userSecurityDetailsEntity.setUserId(user.getUserProfile().getUserId());
         userSecurityDetailsEntity.setPassword(passwordEncoder.encode(user.getUserSecurity().getPassword()));
         userSecurityDetailsRepository.save(userSecurityDetailsEntity);
     }
 
-    public void updateUserPassword(Long userId, String newPassword) {
+    void updateUserPassword(Long userId, String newPassword) {
         UserSecurityDetailsEntity userSecurityDetailsEntity = userSecurityDetailsRepository.findByUserId(userId);
         userSecurityDetailsEntity.setPassword(passwordEncoder.encode(newPassword));
         userSecurityDetailsRepository.save(userSecurityDetailsEntity);
