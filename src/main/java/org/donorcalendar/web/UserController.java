@@ -3,8 +3,9 @@ package org.donorcalendar.web;
 import org.donorcalendar.domain.User;
 import org.donorcalendar.domain.UserProfile;
 import org.donorcalendar.domain.UserSecurityDetails;
+import org.donorcalendar.exception.NotFoundException;
 import org.donorcalendar.exception.ValidationException;
-import org.donorcalendar.security.UserDetailsImpl;
+import org.donorcalendar.security.UserAuthenticationDetails;
 import org.donorcalendar.service.UserService;
 import org.donorcalendar.web.dto.NewUserDto;
 import org.donorcalendar.web.dto.UpdateUserPasswordDto;
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public UserDto updateUser(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UserDto userDto) throws ValidationException {
+    public UserDto updateUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UserDto userDto) throws ValidationException, NotFoundException {
 
         Long userId = userDetails.getUserProfile().getUserId();
         UserProfile userProfileToUpdate = userDtoToUser(userDto);
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/update-password", method = RequestMethod.PUT)
-    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException {
+    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException {
 
         UserProfile userProfile = userDetails.getUserProfile();
         userService.updateUserPassword(userProfile.getUserId(), updateUserPasswordDtoDto.getNewPassword());
@@ -57,7 +58,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public UserDto getLoggedUser(@AuthenticationPrincipal UserDetailsImpl userDetails) throws ValidationException {
+    public UserDto getLoggedUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails) throws ValidationException {
         return userToUserDto(userDetails.getUserProfile());
     }
 

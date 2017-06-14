@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.donorcalendar.exception.ClientErrorInformation;
 import org.donorcalendar.exception.ForbiddenAccessException;
+import org.donorcalendar.exception.NotFoundException;
 import org.donorcalendar.exception.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,12 @@ public class ControllerAdvice {
     public ResponseEntity<ClientErrorInformation> handleForbiddenAccessError(HttpServletRequest req, ForbiddenAccessException e) {
         ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ClientErrorInformation> handleNotFoundError(HttpServletRequest req, NotFoundException e) {
+        ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Throwable.class)

@@ -2,7 +2,7 @@ package org.donorcalendar.web;
 
 import org.donorcalendar.domain.UserStatus;
 import org.donorcalendar.exception.ForbiddenAccessException;
-import org.donorcalendar.security.UserDetailsImpl;
+import org.donorcalendar.security.UserAuthenticationDetails;
 import org.donorcalendar.service.UserService;
 import org.donorcalendar.web.dto.ShoppingFacilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class DonorZoneController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ShoppingFacilities getShoppingFacilities(@AuthenticationPrincipal UserDetailsImpl userDetails) throws ForbiddenAccessException {
+    public ShoppingFacilities getShoppingFacilities(@AuthenticationPrincipal UserAuthenticationDetails userDetails) throws ForbiddenAccessException {
         //TODO Should this logic be into a service? An exception could be throw or return a list of errors.
         if(!userDetails.getUserProfile().getUserStatus().equals(UserStatus.NEED_TO_DONATE)){
             ShoppingFacilities facilitiesList = new ShoppingFacilities();
