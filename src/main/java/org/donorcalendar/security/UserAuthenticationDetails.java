@@ -1,6 +1,6 @@
 package org.donorcalendar.security;
 
-import org.donorcalendar.domain.UserProfile;
+import org.donorcalendar.model.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;

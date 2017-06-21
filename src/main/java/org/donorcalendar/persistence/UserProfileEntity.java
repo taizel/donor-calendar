@@ -1,9 +1,9 @@
 package org.donorcalendar.persistence;
 
 
-import org.donorcalendar.domain.BloodType;
-import org.donorcalendar.domain.UserProfile;
-import org.donorcalendar.domain.UserStatus;
+import org.donorcalendar.model.BloodType;
+import org.donorcalendar.model.UserProfile;
+import org.donorcalendar.model.UserStatus;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

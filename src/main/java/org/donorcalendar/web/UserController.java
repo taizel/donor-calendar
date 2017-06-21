@@ -1,8 +1,8 @@
 package org.donorcalendar.web;
 
-import org.donorcalendar.domain.User;
-import org.donorcalendar.domain.UserProfile;
-import org.donorcalendar.domain.UserSecurityDetails;
+import org.donorcalendar.model.User;
+import org.donorcalendar.model.UserProfile;
+import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.exception.NotFoundException;
 import org.donorcalendar.exception.ValidationException;
 import org.donorcalendar.security.UserAuthenticationDetails;

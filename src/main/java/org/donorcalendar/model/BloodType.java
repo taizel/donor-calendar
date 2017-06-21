@@ -1,4 +1,4 @@
-package org.donorcalendar.domain;
+package org.donorcalendar.model;
 
 public enum BloodType {
     A_POSITIVE("A+"), A_NEGATIVE("A-"), B_POSITIVE("B+"), B_NEGATIVE("B-"),

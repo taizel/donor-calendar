@@ -1,6 +1,6 @@
 package org.donorcalendar.web;
 
-import org.donorcalendar.domain.UserStatus;
+import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.exception.ForbiddenAccessException;
 import org.donorcalendar.security.UserAuthenticationDetails;
 import org.donorcalendar.service.UserService;

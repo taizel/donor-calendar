@@ -1,4 +1,4 @@
-package org.donorcalendar.domain;
+package org.donorcalendar.model;
 
 import java.time.LocalDate;
 

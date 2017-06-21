@@ -1,6 +1,6 @@
 package org.donorcalendar.service;
 
-import org.donorcalendar.domain.User;
+import org.donorcalendar.model.User;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;

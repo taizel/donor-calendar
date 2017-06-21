@@ -1,6 +1,6 @@
 package org.donorcalendar.persistence;
 
-import org.donorcalendar.domain.UserProfile;
+import org.donorcalendar.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;

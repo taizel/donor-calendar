@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import org.donorcalendar.domain.BloodType;
-import org.donorcalendar.domain.UserStatus;
+import org.donorcalendar.model.BloodType;
+import org.donorcalendar.model.UserStatus;
 
 import java.time.LocalDate;
 

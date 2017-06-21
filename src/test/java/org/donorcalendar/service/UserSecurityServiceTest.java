@@ -1,8 +1,8 @@
 package org.donorcalendar.service;
 
-import org.donorcalendar.domain.User;
-import org.donorcalendar.domain.UserProfile;
-import org.donorcalendar.domain.UserSecurityDetails;
+import org.donorcalendar.model.User;
+import org.donorcalendar.model.UserProfile;
+import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.junit.Assert;

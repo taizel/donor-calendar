@@ -1,7 +1,7 @@
 package org.donorcalendar;
 
-import org.donorcalendar.domain.BloodType;
-import org.donorcalendar.domain.UserStatus;
+import org.donorcalendar.model.BloodType;
+import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;

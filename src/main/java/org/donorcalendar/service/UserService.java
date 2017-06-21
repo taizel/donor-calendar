@@ -1,8 +1,8 @@
 package org.donorcalendar.service;
 
-import org.donorcalendar.domain.User;
-import org.donorcalendar.domain.UserProfile;
-import org.donorcalendar.domain.UserStatus;
+import org.donorcalendar.model.User;
+import org.donorcalendar.model.UserProfile;
+import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.exception.NotFoundException;
 import org.donorcalendar.exception.ValidationException;
 import org.donorcalendar.persistence.UserProfileDao;

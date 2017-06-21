@@ -1,6 +1,6 @@
 package org.donorcalendar.security;
 
-import org.donorcalendar.domain.UserProfile;
+import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
