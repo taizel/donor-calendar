@@ -15,7 +15,7 @@ import java.time.temporal.ChronoUnit;
 @Component
 public class ScheduledTasks {
 
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final UserProfileRepository userProfileRepository;
 
@@ -38,7 +38,7 @@ public class ScheduledTasks {
         for (UserProfileEntity user : userProfileRepository.findAll()) {
             UserStatus currentStatus = user.getUserStatus();
             long daysSinceLastDonation = ChronoUnit.DAYS.between(user.getLastDonation(), LocalDate.now());
-            UserStatus newStatus = UserStatus.getStatusByNumberOfDaysSinceLastDonation(daysSinceLastDonation);
+            UserStatus newStatus = UserStatus.fromNumberOfElapsedDaysSinceLastDonation(daysSinceLastDonation);
             if (currentStatus != newStatus) {
                 log.info("User status changed: " + user.getName());
                 user.setUserStatus(newStatus);

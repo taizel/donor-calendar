@@ -4,8 +4,8 @@ import org.donorcalendar.domain.User;
 import org.donorcalendar.domain.UserProfile;
 import org.donorcalendar.domain.UserStatus;
 import org.donorcalendar.exception.NotFoundException;
-import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.exception.ValidationException;
+import org.donorcalendar.persistence.UserProfileDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,6 @@ import java.time.temporal.ChronoUnit;
 public class UserService {
 
     private final UserProfileDao userProfileDao;
-
     private final UserSecurityService userSecurityService;
 
     @Autowired
@@ -47,7 +46,7 @@ public class UserService {
                 throw new ValidationException("Last donation date can't be in the future.");
             } else {
                 long daysSinceLastDonation = ChronoUnit.DAYS.between(lastDonation, LocalDate.now());
-                userProfile.setUserStatus(UserStatus.getStatusByNumberOfDaysSinceLastDonation(daysSinceLastDonation));
+                userProfile.setUserStatus(UserStatus.fromNumberOfElapsedDaysSinceLastDonation(daysSinceLastDonation));
             }
         }
     }
@@ -57,7 +56,7 @@ public class UserService {
             populateUserStatus(userProfile);
             userProfileDao.updateUser(userProfile);
         } else {
-            throw new NotFoundException("User with id "+ userProfile.getUserId() + " could not be found.");
+            throw new NotFoundException("User with id " + userProfile.getUserId() + " could not be found.");
         }
     }
 

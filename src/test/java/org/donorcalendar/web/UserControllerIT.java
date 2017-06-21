@@ -182,7 +182,7 @@ public class UserControllerIT {
         newUserDto.setPassword("new");
         newUserDto.setLastDonation(LocalDate.now().minusMonths(2));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
-        newUserDto.setUserStatus(UserStatus.getStatusByNumberOfDaysSinceLastDonation(60));
+        newUserDto.setUserStatus(UserStatus.fromNumberOfElapsedDaysSinceLastDonation(60));
 
         given().
                 contentType("application/json").
