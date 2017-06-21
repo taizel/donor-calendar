@@ -16,7 +16,7 @@ import org.mockito.Mockito;
 
 import java.time.LocalDate;
 
-public class UserServiceTests {
+public class UserServiceTest {
 
     private final String UNENCRYPTED_TEST_PASSWORD = "pass1";
 
