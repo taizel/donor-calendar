@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserProfileRepository userProfileRepository;
-
     private final UserSecurityDetailsRepository userSecurityDetailsRepository;
 
     @Autowired
@@ -29,10 +28,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         UserProfile user = userProfileRepository.findByEmail(email).getUserDetails();
         if (user == null) {
             throw new UsernameNotFoundException("UserProfile " + email + " not found");
-        } else {
-            UserSecurityDetailsEntity userSecurityDetails = userSecurityDetailsRepository.findByUserId(user.getUserId());
-            UserAuthenticationDetails userDetails = new UserAuthenticationDetails(user, userSecurityDetails.getPassword());
-            return userDetails;
         }
+        UserSecurityDetailsEntity userSecurityDetails = userSecurityDetailsRepository.findByUserId(user.getUserId());
+        UserAuthenticationDetails userDetails = new UserAuthenticationDetails(user, userSecurityDetails.getPassword());
+        return userDetails;
     }
 }
