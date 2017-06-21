@@ -2,10 +2,10 @@ package org.donorcalendar.web;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.donorcalendar.exception.ClientErrorInformation;
-import org.donorcalendar.exception.ForbiddenAccessException;
-import org.donorcalendar.exception.NotFoundException;
-import org.donorcalendar.exception.ValidationException;
+import org.donorcalendar.web.dto.ClientErrorInformationDto;
+import org.donorcalendar.model.ForbiddenAccessException;
+import org.donorcalendar.model.NotFoundException;
+import org.donorcalendar.model.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,26 +18,26 @@ public class ControllerAdvice {
     private Log logger = LogFactory.getLog(this.getClass());
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ClientErrorInformation> handleValidationError(HttpServletRequest req, ValidationException e) {
-        ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
+    public ResponseEntity<ClientErrorInformationDto> handleValidationError(HttpServletRequest req, ValidationException e) {
+        ClientErrorInformationDto error = new ClientErrorInformationDto(e.getMessage(), req.getRequestURI(), req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ForbiddenAccessException.class)
-    public ResponseEntity<ClientErrorInformation> handleForbiddenAccessError(HttpServletRequest req, ForbiddenAccessException e) {
-        ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
+    public ResponseEntity<ClientErrorInformationDto> handleForbiddenAccessError(HttpServletRequest req, ForbiddenAccessException e) {
+        ClientErrorInformationDto error = new ClientErrorInformationDto(e.getMessage(), req.getRequestURI(), req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ClientErrorInformation> handleNotFoundError(HttpServletRequest req, NotFoundException e) {
-        ClientErrorInformation error = new ClientErrorInformation(e.getMessage(), req.getRequestURI(), req.getMethod());
+    public ResponseEntity<ClientErrorInformationDto> handleNotFoundError(HttpServletRequest req, NotFoundException e) {
+        ClientErrorInformationDto error = new ClientErrorInformationDto(e.getMessage(), req.getRequestURI(), req.getMethod());
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Throwable.class)
-    public ResponseEntity<ClientErrorInformation> handleInternalServerError(HttpServletRequest req, Throwable t) {
-        ClientErrorInformation error = new ClientErrorInformation("Unexpected internal error.", req.getRequestURI(), req.getMethod());
+    public ResponseEntity<ClientErrorInformationDto> handleInternalServerError(HttpServletRequest req, Throwable t) {
+        ClientErrorInformationDto error = new ClientErrorInformationDto("Unexpected internal error.", req.getRequestURI(), req.getMethod());
         logger.error("Unexpected internal error, Throwable.getMessage is: " + t.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

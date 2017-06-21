@@ -1,11 +1,11 @@
-package org.donorcalendar.exception;
+package org.donorcalendar.web.dto;
 
-public class ClientErrorInformation {
+public class ClientErrorInformationDto {
     private String errorMessage;
     private String requestUrl;
     private String requestHttpMethod;
 
-    public ClientErrorInformation(String errorMessage, String requestUrl, String requestHttpMethod) {
+    public ClientErrorInformationDto(String errorMessage, String requestUrl, String requestHttpMethod) {
         this.errorMessage = errorMessage;
         this.requestUrl = requestUrl;
         this.requestHttpMethod = requestHttpMethod;

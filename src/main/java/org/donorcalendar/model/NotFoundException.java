@@ -1,5 +1,4 @@
-package org.donorcalendar.exception;
-
+package org.donorcalendar.model;
 
 public class NotFoundException extends Exception {
     public NotFoundException(String message) {

@@ -1,7 +1,7 @@
 package org.donorcalendar.web;
 
 import org.donorcalendar.model.UserStatus;
-import org.donorcalendar.exception.ForbiddenAccessException;
+import org.donorcalendar.model.ForbiddenAccessException;
 import org.donorcalendar.security.UserAuthenticationDetails;
 import org.donorcalendar.service.UserService;
 import org.donorcalendar.web.dto.ShoppingFacilities;
