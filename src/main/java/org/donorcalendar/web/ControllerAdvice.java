@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
 public class ControllerAdvice {
-    private Log logger = LogFactory.getLog(this.getClass());
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ClientErrorInformationDto> handleValidationError(HttpServletRequest req, ValidationException e) {
@@ -38,7 +38,7 @@ public class ControllerAdvice {
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ClientErrorInformationDto> handleInternalServerError(HttpServletRequest req, Throwable t) {
         ClientErrorInformationDto error = new ClientErrorInformationDto("Unexpected internal error.", req.getRequestURI(), req.getMethod());
-        logger.error("Unexpected internal error, Throwable.getMessage is: " + t.getMessage());
+        logger.error("Unexpected internal error, Throwable message is: " + t.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
