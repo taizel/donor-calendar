@@ -45,6 +45,7 @@ public class DonorZoneControllerIT {
     @Before
     public void setUp() {
         john = new UserProfileEntity();
+        john.setUserId(System.currentTimeMillis() - 1);
         john.setName("John");
         john.setEmail("john@middlehearth.com");
         john.setBloodType(BloodType.AB_NEGATIVE);
@@ -55,6 +56,7 @@ public class DonorZoneControllerIT {
 
 
         bilbo = new UserProfileEntity();
+        bilbo.setUserId(System.currentTimeMillis());
         bilbo.setName("Bilbo");
         bilbo.setEmail("bilbo@middlehearth.com");
         bilbo.setBloodType(BloodType.A_NEGATIVE);

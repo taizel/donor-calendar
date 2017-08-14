@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserProfileDaoImpl implements UserProfileDao {
 
-
     private final UserProfileRepository userProfileRepository;
 
     @Autowired
@@ -20,8 +19,15 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
+        if(needsToGenerateId(userProfile.getUserId())) {
+            userProfile.setUserId(System.currentTimeMillis());
+        }
         UserProfileEntity userProfileEntity = userProfileRepository.save(convertUserToUserEntity(userProfile));
         return userProfileEntity.getUserDetails();
+    }
+
+    private boolean needsToGenerateId(Long userId) {
+        return !(userId != null && userId > 0);
     }
 
     @Override

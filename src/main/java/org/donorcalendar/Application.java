@@ -44,7 +44,7 @@ public class Application implements CommandLineRunner {
     private void insertTestData() {
         // save a couple of users
         UserProfileEntity user1 = new UserProfileEntity();
-
+        user1.setUserId(System.currentTimeMillis() - 1);
         user1.setName("Frodo");
         user1.setEmail("frodo@middlehearth.com");
         user1.setBloodType(BloodType.AB_NEGATIVE);
@@ -60,6 +60,7 @@ public class Application implements CommandLineRunner {
         userSecurityDetailsRepository.save(securityDetailsUser1);
 
         UserProfileEntity user2 = new UserProfileEntity();
+        user2.setUserId(System.currentTimeMillis());
         user2.setName("Bilbo");
         user2.setEmail("bilbo@middlehearth.com");
         user2.setBloodType(BloodType.A_NEGATIVE);
