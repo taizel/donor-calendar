@@ -30,7 +30,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("UserProfile " + email + " not found");
         }
         UserSecurityDetailsEntity userSecurityDetails = userSecurityDetailsRepository.findByUserId(user.getUserId());
-        UserAuthenticationDetails userDetails = new UserAuthenticationDetails(user, userSecurityDetails.getPassword());
-        return userDetails;
+        return new UserAuthenticationDetails(user, userSecurityDetails.getPassword());
     }
 }

@@ -61,7 +61,6 @@ public class UserSecurityServiceTest {
     private User createUserForTest() {
         UserProfile userProfile = new UserProfile();
         userProfile.setUserId(System.currentTimeMillis());
-        User user = new User(userProfile, new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD));
-        return user;
+        return new User(userProfile, new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD));
     }
 }

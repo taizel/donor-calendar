@@ -33,8 +33,7 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     public UserDto createNewUser(@RequestBody NewUserDto newUserDto) throws ValidationException {
         User user = newUserDtoToUser(newUserDto);
-        UserDto userDto = userToUserDto(userService.saveNewUser(user));
-        return userDto;
+        return userToUserDto(userService.saveNewUser(user));
     }
 
     @RequestMapping(method = RequestMethod.PUT)
