@@ -5,6 +5,7 @@ import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
+import org.donorcalendar.util.IdGenerator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class UserSecurityServiceTest {
     @Test
     public void updateUserPassword_ValidDetails_Success() {
         String newPassword = "updatedPassword";
-        Long userId = System.currentTimeMillis();
+        Long userId = IdGenerator.generateNewId();
         UserSecurityDetailsEntity userSecurityDetails = new UserSecurityDetailsEntity();
         userSecurityDetails.setUserId(userId);
 
@@ -60,7 +61,7 @@ public class UserSecurityServiceTest {
 
     private User createUserForTest() {
         UserProfile userProfile = new UserProfile();
-        userProfile.setUserId(System.currentTimeMillis());
+        userProfile.setUserId(IdGenerator.generateNewId());
         return new User(userProfile, new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD));
     }
 }

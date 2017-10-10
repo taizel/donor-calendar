@@ -3,6 +3,7 @@ package org.donorcalendar.persistence;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
+import org.donorcalendar.util.IdGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +40,7 @@ public class UserProfileDaoIT {
     @Rollback
     public void saveNewUserWithProvidedId() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
-        userToPersist.setUserId(System.currentTimeMillis());
+        userToPersist.setUserId(IdGenerator.generateNewId());
 
         UserProfile persistedUser = userProfileDao.saveNewUser(userToPersist);
 
@@ -80,7 +81,7 @@ public class UserProfileDaoIT {
     @Rollback
     public void exists() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
-        userToPersist.setUserId(System.currentTimeMillis());
+        userToPersist.setUserId(IdGenerator.generateNewId());
 
         boolean beforeSave = userProfileDao.exists(userToPersist.getUserId());
 

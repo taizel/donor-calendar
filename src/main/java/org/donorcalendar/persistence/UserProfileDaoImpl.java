@@ -1,6 +1,7 @@
 package org.donorcalendar.persistence;
 
 import org.donorcalendar.model.UserProfile;
+import org.donorcalendar.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
         if(needsToGenerateId(userProfile.getUserId())) {
-            userProfile.setUserId(System.currentTimeMillis());
+            userProfile.setUserId(IdGenerator.generateNewId());
         }
         UserProfileEntity userProfileEntity = userProfileRepository.save(convertUserToUserEntity(userProfile));
         return userProfileEntity.getUserDetails();

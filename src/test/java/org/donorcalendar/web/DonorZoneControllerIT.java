@@ -8,6 +8,7 @@ import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
+import org.donorcalendar.util.IdGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,7 @@ public class DonorZoneControllerIT {
     @Before
     public void setUp() {
         john = new UserProfileEntity();
-        john.setUserId(System.currentTimeMillis() - 1);
+        john.setUserId(IdGenerator.generateNewId());
         john.setName("John");
         john.setEmail("john@middlehearth.com");
         john.setBloodType(BloodType.AB_NEGATIVE);
@@ -56,7 +57,7 @@ public class DonorZoneControllerIT {
 
 
         bilbo = new UserProfileEntity();
-        bilbo.setUserId(System.currentTimeMillis());
+        bilbo.setUserId(IdGenerator.generateNewId());
         bilbo.setName("Bilbo");
         bilbo.setEmail("bilbo@middlehearth.com");
         bilbo.setBloodType(BloodType.A_NEGATIVE);

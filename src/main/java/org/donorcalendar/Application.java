@@ -6,6 +6,7 @@ import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
+import org.donorcalendar.util.IdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class Application implements CommandLineRunner {
     private void insertTestData() {
         // save a couple of users
         UserProfileEntity user1 = new UserProfileEntity();
-        user1.setUserId(System.currentTimeMillis() - 1);
+        user1.setUserId(IdGenerator.generateNewId());
         user1.setName("Frodo");
         user1.setEmail("frodo@middlehearth.com");
         user1.setBloodType(BloodType.AB_NEGATIVE);
@@ -60,7 +61,7 @@ public class Application implements CommandLineRunner {
         userSecurityDetailsRepository.save(securityDetailsUser1);
 
         UserProfileEntity user2 = new UserProfileEntity();
-        user2.setUserId(System.currentTimeMillis());
+        user2.setUserId(IdGenerator.generateNewId());
         user2.setName("Bilbo");
         user2.setEmail("bilbo@middlehearth.com");
         user2.setBloodType(BloodType.A_NEGATIVE);
