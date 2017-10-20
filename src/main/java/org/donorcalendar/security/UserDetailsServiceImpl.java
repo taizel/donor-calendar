@@ -24,10 +24,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        //TODO check if this is called on every call to the end points (performance concern)
         UserProfile user = userProfileRepository.findByEmail(email).getUserDetails();
         if (user == null) {
-            throw new UsernameNotFoundException("UserProfile " + email + " not found");
+            throw new UsernameNotFoundException("No user registered with the email '" + email + "'");
         }
         UserSecurityDetailsEntity userSecurityDetails = userSecurityDetailsRepository.findByUserId(user.getUserId());
         return new UserAuthenticationDetails(user, userSecurityDetails.getPassword());
