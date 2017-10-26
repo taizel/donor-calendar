@@ -1,7 +1,10 @@
 package org.donorcalendar.web;
 
 import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
 import org.apache.http.HttpStatus;
+import org.donorcalendar.MvcConfig;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
@@ -90,7 +93,11 @@ public class UserControllerIT {
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
 
+        //TODO use abstract class for rest IT
         RestAssured.port = port;
+        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
+                (classType, charset) -> MvcConfig.getObjectMapper()
+        ));
     }
 
     @After
@@ -219,17 +226,17 @@ public class UserControllerIT {
         given().
                 contentType("application/json").
                 body(newUserDto).
-                expect().
+        expect().
                 statusCode(HttpStatus.SC_OK).
-                when().
+        when().
                 post("/user");
 
         given().
                 contentType("application/json").
                 body(newUserDto).
-                expect().
+        expect().
                 statusCode(HttpStatus.SC_BAD_REQUEST).
-                when().
+        when().
                 post("/user");
     }
 

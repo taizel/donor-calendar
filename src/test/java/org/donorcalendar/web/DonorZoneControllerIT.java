@@ -1,7 +1,10 @@
 package org.donorcalendar.web;
 
 import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
 import org.apache.http.HttpStatus;
+import org.donorcalendar.MvcConfig;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
@@ -82,7 +85,11 @@ public class DonorZoneControllerIT {
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
 
+        //TODO use abstract class for rest IT
         RestAssured.port = port;
+        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
+            (classType, charset) -> MvcConfig.getObjectMapper()
+        ));
     }
 
     @Test
@@ -95,7 +102,7 @@ public class DonorZoneControllerIT {
             get("/donor-zone").
         then().
             assertThat().
-            body("shoppingFacilities", hasItems("Cool Restaurant", "Nice Burger Place", "Amazing Bakery"));
+            body("shopping-facilities", hasItems("Cool Restaurant", "Nice Burger Place", "Amazing Bakery"));
     }
 
     @Test
@@ -108,7 +115,7 @@ public class DonorZoneControllerIT {
                 get("/donor-zone").
         then().
                 assertThat().
-                body("errorMessage", equalTo("You need to be in the status \"Donor\"or \"Potential Donor\" to access this resource."));
+                body("error-message", equalTo("You need to be in the status \"Donor\"or \"Potential Donor\" to access this resource."));
     }
 
 }

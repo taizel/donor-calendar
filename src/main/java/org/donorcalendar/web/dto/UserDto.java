@@ -1,24 +1,16 @@
 package org.donorcalendar.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 
 import java.time.LocalDate;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(PropertyNamingStrategy.KebabCaseStrategy.class) //TODO why is this necessary and how to set it globally?
 public class UserDto {
     private String name;
     private String email;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate lastDonation;
     private BloodType bloodType;
     private int daysBetweenReminders;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate nextReminder;
     private UserStatus userStatus;
 

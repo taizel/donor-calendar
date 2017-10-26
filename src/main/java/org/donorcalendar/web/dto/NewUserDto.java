@@ -1,8 +1,5 @@
 package org.donorcalendar.web.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class NewUserDto extends UserDto {
 
     private String password;
