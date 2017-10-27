@@ -1,0 +1,8 @@
+language: java
+sudo: false # Use container based builds. They are faster and we do not need sudo.
+
+jdk:
+  - oraclejdk9
+
+script:
+  - mvn verify -B
