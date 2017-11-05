@@ -1,10 +1,8 @@
 package org.donorcalendar.web;
 
 import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.config.RestAssuredConfig;
 import org.apache.http.HttpStatus;
-import org.donorcalendar.MvcConfig;
+import org.donorcalendar.RestAssuredTestTemplate;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
@@ -16,26 +14,22 @@ import org.donorcalendar.web.dto.NewUserDto;
 import org.donorcalendar.web.dto.UpdateUserDto;
 import org.donorcalendar.web.dto.UpdateUserPasswordDto;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static io.restassured.RestAssured.basic;
-import static io.restassured.RestAssured.expect;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerIT {
+public class UserControllerIT extends RestAssuredTestTemplate {
 
     private final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
     private final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
@@ -49,14 +43,11 @@ public class UserControllerIT {
     @Autowired
     private UserSecurityDetailsRepository userSecurityDetailsRepository;
 
-    @LocalServerPort
-    private int port;
-
     private UserProfileEntity john;
     private UserProfileEntity bilbo;
 
-    @Before
-    public void setUp() {
+    @Override
+    public void businessSetUp() {
         john = new UserProfileEntity();
         john.setUserId(IdGenerator.generateNewId());
         john.setName("John");
@@ -92,12 +83,6 @@ public class UserControllerIT {
         userSecurityDetailsRepository.deleteAll();
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
-
-        //TODO use abstract class for rest IT
-        RestAssured.port = port;
-        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
-                (classType, charset) -> MvcConfig.getObjectMapper()
-        ));
     }
 
     @After

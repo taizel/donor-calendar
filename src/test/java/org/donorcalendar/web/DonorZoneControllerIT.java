@@ -1,10 +1,7 @@
 package org.donorcalendar.web;
 
-import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import io.restassured.config.RestAssuredConfig;
 import org.apache.http.HttpStatus;
-import org.donorcalendar.MvcConfig;
+import org.donorcalendar.RestAssuredTestTemplate;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
@@ -12,11 +9,9 @@ import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.donorcalendar.util.IdGenerator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,7 +23,7 @@ import static org.hamcrest.Matchers.hasItems;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class DonorZoneControllerIT {
+public class DonorZoneControllerIT extends RestAssuredTestTemplate {
 
     private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
     private static final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
@@ -40,14 +35,11 @@ public class DonorZoneControllerIT {
     @Autowired
     private UserSecurityDetailsRepository userSecurityDetailsRepository;
 
-    @LocalServerPort
-    private int port;
-
     private UserProfileEntity john;
     private UserProfileEntity bilbo;
 
-    @Before
-    public void setUp() {
+    @Override
+    public void businessSetUp() {
         john = new UserProfileEntity();
         john.setUserId(IdGenerator.generateNewId());
         john.setName("John");
@@ -84,12 +76,6 @@ public class DonorZoneControllerIT {
         userSecurityDetailsRepository.deleteAll();
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
-
-        //TODO use abstract class for rest IT
-        RestAssured.port = port;
-        RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
-            (classType, charset) -> MvcConfig.getObjectMapper()
-        ));
     }
 
     @Test
