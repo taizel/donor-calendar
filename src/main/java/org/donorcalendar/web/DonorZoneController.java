@@ -17,17 +17,9 @@ import java.util.Arrays;
 @RequestMapping(value = "/donor-zone")
 public class DonorZoneController {
 
-    private final UserService userService;
-
-    @Autowired
-    public DonorZoneController(UserService userService) {
-        this.userService = userService;
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     public ShoppingFacilities getShoppingFacilities(@AuthenticationPrincipal UserAuthenticationDetails userDetails) throws ForbiddenAccessException {
-        //TODO Should this logic be into a service? An exception could be throw or return a list of errors.
-        if(!userDetails.getUserProfile().getUserStatus().equals(UserStatus.NEED_TO_DONATE)){
+        if (!userDetails.getUserProfile().getUserStatus().equals(UserStatus.NEED_TO_DONATE)) {
             ShoppingFacilities facilitiesList = new ShoppingFacilities();
             facilitiesList.setShoppingFacilities(Arrays.asList("Cool Restaurant", "Nice Burger Place", "Amazing Bakery"));
             return facilitiesList;
