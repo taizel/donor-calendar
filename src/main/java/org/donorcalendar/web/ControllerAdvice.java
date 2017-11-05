@@ -38,7 +38,7 @@ public class ControllerAdvice {
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ClientErrorInformationDto> handleInternalServerError(HttpServletRequest req, Throwable t) {
         ClientErrorInformationDto error = new ClientErrorInformationDto("Unexpected internal error.", req.getRequestURI(), req.getMethod());
-        logger.error("Unexpected internal error, Throwable message is: " + t.getMessage());
+        logger.error("Unexpected internal error.", t);
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
