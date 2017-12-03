@@ -1,11 +1,9 @@
 package org.donorcalendar.web;
 
-import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.model.ForbiddenAccessException;
+import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.security.UserAuthenticationDetails;
-import org.donorcalendar.service.UserService;
 import org.donorcalendar.web.dto.ShoppingFacilities;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

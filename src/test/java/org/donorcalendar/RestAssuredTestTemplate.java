@@ -25,6 +25,6 @@ public abstract class RestAssuredTestTemplate {
         ));
     }
 
-    public abstract void businessSetUp();
+    protected abstract void businessSetUp();
 
 }

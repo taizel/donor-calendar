@@ -60,8 +60,12 @@ public class UserService {
         }
     }
 
-    public void updateUserPassword(Long userId, String unencryptedPassword) {
-        userSecurityService.updateUserPassword(userId, unencryptedPassword);
+    public void updateUserPassword(Long userId, String unencryptedPassword) throws ValidationException {
+        if (unencryptedPassword != null && !unencryptedPassword.isEmpty()) {
+            userSecurityService.updateUserPassword(userId, unencryptedPassword);
+        } else {
+            throw new ValidationException("New password cannot be empty.");
+        }
     }
 
     private boolean isUserEmailAvailable(String userEmail) {

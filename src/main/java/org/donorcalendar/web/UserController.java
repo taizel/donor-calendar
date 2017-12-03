@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public UserDto getLoggedUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails) throws ValidationException {
+    public UserDto getLoggedUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails) {
         return userToUserDto(userDetails.getUserProfile());
     }
 

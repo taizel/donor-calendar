@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalDate;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
@@ -45,9 +43,6 @@ public class DonorZoneControllerIT extends RestAssuredTestTemplate {
         john.setName("John");
         john.setEmail("john@middlehearth.com");
         john.setBloodType(BloodType.AB_NEGATIVE);
-        john.setLastDonation(LocalDate.now().minusDays(7));
-        john.setDaysBetweenReminders(7);
-        john.setNextReminder(LocalDate.now());
         john.setUserStatus(UserStatus.DONOR);
 
 
@@ -56,9 +51,6 @@ public class DonorZoneControllerIT extends RestAssuredTestTemplate {
         bilbo.setName("Bilbo");
         bilbo.setEmail("bilbo@middlehearth.com");
         bilbo.setBloodType(BloodType.A_NEGATIVE);
-        bilbo.setLastDonation(LocalDate.now().minusDays(120));
-        bilbo.setDaysBetweenReminders(14);
-        bilbo.setNextReminder(LocalDate.now());
         bilbo.setUserStatus(UserStatus.NEED_TO_DONATE);
 
         userProfileRepository.deleteAll();

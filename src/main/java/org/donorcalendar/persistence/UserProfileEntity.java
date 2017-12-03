@@ -21,6 +21,7 @@ public class UserProfileEntity {
     @Column(unique=true)
     private String email;
     private LocalDate lastDonation;
+    @NotNull
     private BloodType bloodType;
     private int daysBetweenReminders;
     private LocalDate nextReminder;
