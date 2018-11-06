@@ -1,5 +1,9 @@
 language: java
-sudo: false # Use container based builds. They are faster and we do not need sudo.
+
+sudo: required
+
+services:
+  - docker
 
 jdk:
   - oraclejdk9
