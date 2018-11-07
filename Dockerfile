@@ -1,3 +1,6 @@
-FROM java:openjdk-9
+FROM openjdk:8
 
-ADD target/donor-calendar*.jar /donor-calendar.jar
+ARG JAR_FILE
+ADD target/${JAR_FILE} /donor-calendar.jar
+
+ENTRYPOINT ["java", "-jar", "/donor-calendar.jar"]
