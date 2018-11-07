@@ -9,4 +9,4 @@ jdk:
   - oraclejdk9
 
 script:
-  - mvn verify -B
+  - mvn clean verify -B
