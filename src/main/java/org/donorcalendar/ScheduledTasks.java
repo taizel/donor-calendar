@@ -36,8 +36,12 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 15000)
     public void updateUsersStatus() {
         for (UserProfileEntity user : userProfileRepository.findAll()) {
+            LocalDate lastDonation = user.getLastDonation();
+            if (lastDonation == null) {
+                continue;
+            }
             UserStatus currentStatus = user.getUserStatus();
-            long daysSinceLastDonation = ChronoUnit.DAYS.between(user.getLastDonation(), LocalDate.now());
+            long daysSinceLastDonation = ChronoUnit.DAYS.between(lastDonation, LocalDate.now());
             UserStatus newStatus = UserStatus.fromNumberOfElapsedDaysSinceLastDonation(daysSinceLastDonation);
             if (currentStatus != newStatus) {
                 log.info("User status changed: " + user.getName());
