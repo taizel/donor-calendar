@@ -81,11 +81,21 @@
                 <version>${dockerfile-maven.version}</version>
                 <executions>
                     <execution>
-                        <id>default</id>
+                        <id>project-version-tag</id>
                         <goals>
                             <goal>build</goal>
                             <goal>push</goal>
                         </goals>
+                    </execution>
+                    <!-- tag any image as latest but do not push -->
+                    <execution>
+                        <id>latest-tag</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <tag>latest</tag>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
