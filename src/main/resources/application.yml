@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db-donor-calendar:5432/donor
+    username: donor
+    password: donor-password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update

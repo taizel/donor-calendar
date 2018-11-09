@@ -1,0 +1,25 @@
+version: "2.1"
+
+services:
+  db-donor-calendar:
+    container_name: db-donor-calendar
+    image: postgres:11
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: donor
+      POSTGRES_PASSWORD: donor-password
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "donor"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  donor-calendar:
+    container_name: donor-calendar
+    image: donor-calendar:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      db-donor-calendar:
+        condition: service_healthy
