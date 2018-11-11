@@ -2,9 +2,11 @@ package org.donorcalendar.persistence;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "user_security")
 public class UserSecurityDetailsEntity {
 
     @Id
