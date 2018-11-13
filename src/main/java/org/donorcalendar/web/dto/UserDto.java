@@ -10,7 +10,7 @@ public class UserDto {
     private String email;
     private LocalDate lastDonation;
     private BloodType bloodType;
-    private int daysBetweenReminders;
+    private Integer daysBetweenReminders;
     private LocalDate nextReminder;
     private UserStatus userStatus;
 
@@ -46,11 +46,11 @@ public class UserDto {
         this.bloodType = bloodType;
     }
 
-    public int getDaysBetweenReminders() {
+    public Integer getDaysBetweenReminders() {
         return daysBetweenReminders;
     }
 
-    public void setDaysBetweenReminders(int daysBetweenReminders) {
+    public void setDaysBetweenReminders(Integer daysBetweenReminders) {
         this.daysBetweenReminders = daysBetweenReminders;
     }
 

@@ -19,13 +19,15 @@ public class UserProfileEntity {
     @Id
     private Long userId;
 
+	@NotNull
     private String name;
+    @NotNull
     @Column(unique=true)
     private String email;
     private LocalDate lastDonation;
     @NotNull
     private BloodType bloodType;
-    private int daysBetweenReminders;
+    private Integer daysBetweenReminders;
     private LocalDate nextReminder;
     @NotNull
     private UserStatus userStatus;
@@ -70,11 +72,11 @@ public class UserProfileEntity {
         this.bloodType = bloodType;
     }
 
-    public int getDaysBetweenReminders() {
+    public Integer getDaysBetweenReminders() {
         return daysBetweenReminders;
     }
 
-    public void setDaysBetweenReminders(int daysBetweenReminders) {
+    public void setDaysBetweenReminders(Integer daysBetweenReminders) {
         this.daysBetweenReminders = daysBetweenReminders;
     }
 

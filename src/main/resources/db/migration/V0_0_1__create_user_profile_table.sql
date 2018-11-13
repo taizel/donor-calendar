@@ -5,11 +5,11 @@ create table user_profile
     primary key,
   blood_type             integer not null,
   days_between_reminders integer not null,
-  email                  varchar(255)
+  email                  varchar(255) not null
     constraint uk_user_profile
     unique,
   last_donation          date,
-  name                   varchar(255),
+  name                   varchar(255) not null,
   next_reminder          date,
   user_status            integer not null
 );
