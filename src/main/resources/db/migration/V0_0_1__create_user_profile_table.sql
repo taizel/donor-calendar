@@ -4,7 +4,7 @@ create table user_profile
     constraint user_profile_pkey
     primary key,
   blood_type             integer not null,
-  days_between_reminders integer not null,
+  days_between_reminders integer,
   email                  varchar(255) not null
     constraint uk_user_profile
     unique,
