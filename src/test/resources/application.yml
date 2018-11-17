@@ -1,10 +1,12 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: sa
-    password:
+    url: jdbc:tc:postgresql:11://somehostname:someport/donor
+#    When using the JDBC URL feature of Testcontainers (jdbc:tc:) hostname, port, username and password are ignored
+#    username: donor
+#    password: donor-password
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
 

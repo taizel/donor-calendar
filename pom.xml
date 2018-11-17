@@ -19,9 +19,10 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <rest.assured.version>3.0.0</rest.assured.version>
         <postgres.jdbc.version>42.2.5</postgres.jdbc.version>
         <flyway.version>5.2.1</flyway.version>
+        <testcontainers.postgresql.version>1.10.1</testcontainers.postgresql.version>
+        <rest-assured.version>3.0.0</rest-assured.version>
         <dockerfile-maven.version>1.4.8</dockerfile-maven.version>
     </properties>
 
@@ -70,14 +71,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.postgresql.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${rest.assured.version}</version>
+            <version>${rest-assured.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
