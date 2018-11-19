@@ -8,3 +8,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
+    # Used to avoid a wall of text log caused by a missing feature test
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true

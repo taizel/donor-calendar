@@ -158,7 +158,7 @@ public class UserServiceTest {
             UserProfile userProfileForTest = createUserProfileForTest();
             userProfileForTest.setLastDonation(LocalDate.now());
 
-            Mockito.when(userProfileDao.exists(userProfileForTest.getUserId())).thenReturn(false);
+            Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(false);
 
             target.updateExistingUser(userProfileForTest);
             Assert.fail();
@@ -175,7 +175,7 @@ public class UserServiceTest {
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
         userProfileForTest.setUserStatus(null);
 
-        Mockito.when(userProfileDao.exists(userProfileForTest.getUserId())).thenReturn(true);
+        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
         target.updateExistingUser(userProfileForTest);
 
@@ -189,7 +189,7 @@ public class UserServiceTest {
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
         userProfileForTest.setUserStatus(null);
 
-        Mockito.when(userProfileDao.exists(userProfileForTest.getUserId())).thenReturn(true);
+        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
         target.updateExistingUser(userProfileForTest);
 
@@ -203,7 +203,7 @@ public class UserServiceTest {
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
         userProfileForTest.setUserStatus(null);
 
-        Mockito.when(userProfileDao.exists(userProfileForTest.getUserId())).thenReturn(true);
+        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
         target.updateExistingUser(userProfileForTest);
 
@@ -217,7 +217,7 @@ public class UserServiceTest {
         userProfileForTest.setLastDonation(null);
         userProfileForTest.setUserStatus(null);
 
-        Mockito.when(userProfileDao.exists(userProfileForTest.getUserId())).thenReturn(true);
+        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
         target.updateExistingUser(userProfileForTest);
 
@@ -230,7 +230,7 @@ public class UserServiceTest {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().plusDays(1));
 
-        Mockito.when(userProfileDao.exists(userProfileForTest.getUserId())).thenReturn(true);
+        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
         try {
             target.updateExistingUser(userProfileForTest);

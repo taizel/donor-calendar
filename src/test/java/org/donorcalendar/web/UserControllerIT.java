@@ -102,11 +102,11 @@ public class UserControllerIT extends RestAssuredTestTemplate {
                 assertThat().
                 body("name", equalTo(john.getName())).
                 body("email", equalTo(john.getEmail())).
-                body("blood-type", equalTo(john.getBloodType().toString())).
-                body("last-donation", equalTo(john.getLastDonation().format(DATE_FORMATTER))).
-                body("days-between-reminders", equalTo(john.getDaysBetweenReminders())).
-                body("next-reminder", equalTo(john.getNextReminder().format(DATE_FORMATTER))).
-                body("user-status", equalTo(john.getUserStatus().toString()));
+                body("bloodType", equalTo(john.getBloodType().toString())).
+                body("lastDonation", equalTo(john.getLastDonation().format(DATE_FORMATTER))).
+                body("daysBetweenReminders", equalTo(john.getDaysBetweenReminders())).
+                body("nextReminder", equalTo(john.getNextReminder().format(DATE_FORMATTER))).
+                body("userStatus", equalTo(john.getUserStatus().toString()));
     }
 
     @Test
@@ -191,12 +191,12 @@ public class UserControllerIT extends RestAssuredTestTemplate {
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
-                get("/user").
+                get("/user").peek().
                 then().
                 assertThat().
                 body("name", equalTo(newUserDto.getName())).
                 body("email", equalTo(newUserDto.getEmail())).
-                body("blood-type", equalTo(newUserDto.getBloodType().toString()));
+                body("bloodType", equalTo(newUserDto.getBloodType().toString()));
     }
 
     @Test

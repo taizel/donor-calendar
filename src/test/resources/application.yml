@@ -5,10 +5,15 @@ spring:
 #    username: donor
 #    password: donor-password
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  flyway:
+    enabled: false
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-
-flyway:
-  enabled: false
+    # Used to avoid a wall of text log caused by a missing feature test
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true

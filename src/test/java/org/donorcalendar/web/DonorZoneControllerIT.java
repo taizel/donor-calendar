@@ -80,7 +80,7 @@ public class DonorZoneControllerIT extends RestAssuredTestTemplate {
             get("/donor-zone").
         then().
             assertThat().
-            body("shopping-facilities", hasItems("Cool Restaurant", "Nice Burger Place", "Amazing Bakery"));
+            body("shoppingFacilities", hasItems("Cool Restaurant", "Nice Burger Place", "Amazing Bakery"));
     }
 
     @Test
@@ -90,10 +90,10 @@ public class DonorZoneControllerIT extends RestAssuredTestTemplate {
         expect().
                 statusCode(HttpStatus.SC_FORBIDDEN).
         when().
-                get("/donor-zone").
+                get("/donor-zone").peek().
         then().
                 assertThat().
-                body("error-message", equalTo("You need to be in the status \"Donor\"or \"Potential Donor\" to access this resource."));
+                body("errorMessage", equalTo("You need to be in the status \"Donor\"or \"Potential Donor\" to access this resource."));
     }
 
 }

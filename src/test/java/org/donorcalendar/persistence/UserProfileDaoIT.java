@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -51,15 +52,17 @@ public class UserProfileDaoIT {
     @Test
     @Transactional
     @Rollback
-    public void findOneById() {
+    public void findById() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
 
         Long persistedId = userProfileDao.saveNewUser(userToPersist).getUserId();
 
-        UserProfile persistedUser = userProfileDao.findOne(persistedId);
+        Optional<UserProfile> persistedUser = userProfileDao.findById(persistedId);
 
-        Assert.assertEquals(persistedId, persistedUser.getUserId());
-        assertUserProfilesFields(userToPersist, persistedUser);
+        Assert.assertTrue(persistedUser.isPresent());
+        UserProfile userProfile = persistedUser.get();
+        Assert.assertEquals(persistedId, userProfile.getUserId());
+        assertUserProfilesFields(userToPersist, userProfile);
     }
 
     @Test
@@ -83,14 +86,14 @@ public class UserProfileDaoIT {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         userToPersist.setUserId(IdGenerator.generateNewId());
 
-        boolean beforeSave = userProfileDao.exists(userToPersist.getUserId());
+        boolean beforeSave = userProfileDao.existsById(userToPersist.getUserId());
 
         userProfileDao.saveNewUser(userToPersist);
 
-        boolean afterSave = userProfileDao.exists(userToPersist.getUserId());
+        boolean afterSave = userProfileDao.existsById(userToPersist.getUserId());
 
-        Assert.assertEquals(false, beforeSave);
-        Assert.assertEquals(true, afterSave);
+        Assert.assertFalse(beforeSave);
+        Assert.assertTrue(afterSave);
     }
 
 

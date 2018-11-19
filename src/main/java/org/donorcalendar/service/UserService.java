@@ -28,7 +28,7 @@ public class UserService {
         UserProfile userProfile = user.getUserProfile();
         if (isUserEmailAvailable(userProfile.getEmail())) {
             populateUserStatus(userProfile);
-            userProfile = userProfileDao.saveNewUser(user.getUserProfile());
+            userProfile = userProfileDao.saveNewUser(userProfile);
             user.setUserProfile(userProfile);
             userSecurityService.saveNewUserSecurityDetails(user);
             return userProfile;
@@ -52,7 +52,7 @@ public class UserService {
     }
 
     public void updateExistingUser(UserProfile userProfile) throws ValidationException, NotFoundException {
-        if (userProfileDao.exists(userProfile.getUserId())) {
+        if (userProfileDao.existsById(userProfile.getUserId())) {
             populateUserStatus(userProfile);
             userProfileDao.updateUser(userProfile);
         } else {

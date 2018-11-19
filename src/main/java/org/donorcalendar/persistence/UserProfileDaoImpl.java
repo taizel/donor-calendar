@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Component
 @Transactional
 public class UserProfileDaoImpl implements UserProfileDao {
@@ -32,9 +34,9 @@ public class UserProfileDaoImpl implements UserProfileDao {
     }
 
     @Override
-    public UserProfile findOne(Long id) {
-        UserProfileEntity userProfileEntity = userProfileRepository.findOne(id);
-        return userProfileEntity.getUserDetails();
+    public Optional<UserProfile> findById(Long id) {
+        Optional<UserProfileEntity> userProfileEntity = userProfileRepository.findById(id);
+        return userProfileEntity.map(UserProfileEntity::getUserDetails);
     }
 
     @Override
@@ -44,8 +46,8 @@ public class UserProfileDaoImpl implements UserProfileDao {
     }
 
     @Override
-    public boolean exists(Long userId) {
-        return userProfileRepository.exists(userId);
+    public boolean existsById(Long userId) {
+        return userProfileRepository.existsById(userId);
     }
 
     @Override
