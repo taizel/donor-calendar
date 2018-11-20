@@ -5,26 +5,24 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Configuration
-public class MvcConfig implements WebMvcConfigurer {
+public class JacksonConfig {
 
+    public static final String LOCAL_DATE_FORMAT = "yyyy-MM-dd";
     private static final ObjectMapper objectMapper = buildObjectMapper();
 
     private static ObjectMapper buildObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        //TODO Update back tp KEBAB_CASE when problem is identified
-        //mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.configOverride(LocalDate.class).
-                setFormat(JsonFormat.Value.forPattern("yyyy-MM-dd"));
+                setFormat(JsonFormat.Value.forPattern(LOCAL_DATE_FORMAT));
         mapper.registerModule(new JavaTimeModule());
         return mapper;
     }
@@ -33,8 +31,8 @@ public class MvcConfig implements WebMvcConfigurer {
         return objectMapper;
     }
 
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new MappingJackson2HttpMessageConverter(objectMapper)); // JSON converter
+    @Bean
+    public ObjectMapper customObjectMapper() {
+        return objectMapper;
     }
 }

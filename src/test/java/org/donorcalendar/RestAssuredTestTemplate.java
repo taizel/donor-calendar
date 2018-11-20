@@ -21,7 +21,7 @@ public abstract class RestAssuredTestTemplate {
         RestAssured.port = port;
         RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
                 new ObjectMapperConfig().jackson2ObjectMapperFactory(
-                (classType, charset) -> MvcConfig.getObjectMapper()
+                (classType, charset) -> JacksonConfig.getObjectMapper()
         ));
     }
 

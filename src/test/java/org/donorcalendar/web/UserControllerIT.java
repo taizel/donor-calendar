@@ -2,6 +2,7 @@ package org.donorcalendar.web;
 
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
+import org.donorcalendar.JacksonConfig;
 import org.donorcalendar.RestAssuredTestTemplate;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
@@ -36,7 +37,7 @@ public class UserControllerIT extends RestAssuredTestTemplate {
     private final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
     private final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
 
-    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
 
     @Autowired
     private UserProfileRepository userProfileRepository;
@@ -102,11 +103,11 @@ public class UserControllerIT extends RestAssuredTestTemplate {
                 assertThat().
                 body("name", equalTo(john.getName())).
                 body("email", equalTo(john.getEmail())).
-                body("bloodType", equalTo(john.getBloodType().toString())).
-                body("lastDonation", equalTo(john.getLastDonation().format(DATE_FORMATTER))).
-                body("daysBetweenReminders", equalTo(john.getDaysBetweenReminders())).
-                body("nextReminder", equalTo(john.getNextReminder().format(DATE_FORMATTER))).
-                body("userStatus", equalTo(john.getUserStatus().toString()));
+                body("blood-type", equalTo(john.getBloodType().toString())).
+                body("last-donation", equalTo(john.getLastDonation().format(DATE_FORMATTER))).
+                body("days-between-reminders", equalTo(john.getDaysBetweenReminders())).
+                body("next-reminder", equalTo(john.getNextReminder().format(DATE_FORMATTER))).
+                body("user-status", equalTo(john.getUserStatus().toString()));
     }
 
     @Test
@@ -191,12 +192,12 @@ public class UserControllerIT extends RestAssuredTestTemplate {
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
-                get("/user").peek().
+                get("/user").
                 then().
                 assertThat().
                 body("name", equalTo(newUserDto.getName())).
                 body("email", equalTo(newUserDto.getEmail())).
-                body("bloodType", equalTo(newUserDto.getBloodType().toString()));
+                body("blood-type", equalTo(newUserDto.getBloodType().toString()));
     }
 
     @Test
