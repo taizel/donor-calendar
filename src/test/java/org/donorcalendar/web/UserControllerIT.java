@@ -17,7 +17,6 @@ import org.donorcalendar.web.dto.UpdateUserPasswordDto;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerIT extends RestAssuredAbstractIntegrationTest {
 
     private final String JOHN_UNENCRYPTED_PASSWORD = "pass1";

@@ -11,13 +11,11 @@ import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DonorZoneControllerIT extends RestAssuredAbstractIntegrationTest {
 
     private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
