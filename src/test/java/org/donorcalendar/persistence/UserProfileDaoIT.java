@@ -1,24 +1,22 @@
 package org.donorcalendar.persistence;
 
+import org.donorcalendar.AbstractIntegrationTest;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserProfileDaoIT {
+public class UserProfileDaoIT extends AbstractIntegrationTest {
 
     @Autowired
     private UserProfileDao userProfileDao;

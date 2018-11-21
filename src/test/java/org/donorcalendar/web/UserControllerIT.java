@@ -3,7 +3,7 @@ package org.donorcalendar.web;
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.donorcalendar.JacksonConfig;
-import org.donorcalendar.RestAssuredTestTemplate;
+import org.donorcalendar.RestAssuredAbstractIntegrationTest;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
@@ -16,10 +16,8 @@ import org.donorcalendar.web.dto.UpdateUserDto;
 import org.donorcalendar.web.dto.UpdateUserPasswordDto;
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -27,10 +25,8 @@ import java.time.format.DateTimeFormatter;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
 
-
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerIT extends RestAssuredTestTemplate {
+public class UserControllerIT extends RestAssuredAbstractIntegrationTest {
 
     private final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
     private final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";

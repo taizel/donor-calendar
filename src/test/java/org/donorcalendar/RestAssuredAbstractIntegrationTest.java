@@ -6,7 +6,7 @@ import io.restassured.config.RestAssuredConfig;
 import org.junit.Before;
 import org.springframework.boot.web.server.LocalServerPort;
 
-public abstract class RestAssuredTestTemplate {
+public abstract class RestAssuredAbstractIntegrationTest extends AbstractIntegrationTest {
 
     @LocalServerPort
     protected int port;
@@ -26,5 +26,4 @@ public abstract class RestAssuredTestTemplate {
     }
 
     protected abstract void businessSetUp();
-
 }
