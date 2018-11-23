@@ -22,10 +22,11 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
-        if(needsToGenerateId(userProfile.getUserId())) {
-            userProfile.setUserId(IdGenerator.generateNewId());
+        UserProfileEntity userProfileEntity = convertUserToUserEntity(userProfile);
+        if(needsToGenerateId(userProfileEntity.getUserId())) {
+            userProfileEntity.setUserId(IdGenerator.generateNewId());
         }
-        UserProfileEntity userProfileEntity = userProfileRepository.save(convertUserToUserEntity(userProfile));
+        userProfileEntity = userProfileRepository.save(userProfileEntity);
         return userProfileEntity.getUserDetails();
     }
 
