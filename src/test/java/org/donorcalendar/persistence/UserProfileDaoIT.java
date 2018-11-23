@@ -26,12 +26,12 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
     @Rollback
     public void saveNewUserWithIdGeneratedAutomatically() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
+        userToPersist.setUserId(null);
 
         UserProfile persistedUser = userProfileDao.saveNewUser(userToPersist);
 
-        Assert.assertNotNull(persistedUser.getUserId());
         Assert.assertNotEquals(persistedUser.getUserId().longValue(), 0L);
-        assertUserProfilesFields(userToPersist, persistedUser);
+        assertUserProfileFieldsExceptIdMatches(userToPersist, persistedUser);
     }
 
     @Test
@@ -39,12 +39,10 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
     @Rollback
     public void saveNewUserWithProvidedId() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
-        userToPersist.setUserId(IdGenerator.generateNewId());
 
         UserProfile persistedUser = userProfileDao.saveNewUser(userToPersist);
 
-        Assert.assertEquals(userToPersist.getUserId(), persistedUser.getUserId());
-        assertUserProfilesFields(userToPersist, persistedUser);
+        assertUserProfileFieldsMatches(userToPersist, persistedUser);
     }
 
     @Test
@@ -52,15 +50,12 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
     @Rollback
     public void findById() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
+        userProfileDao.saveNewUser(userToPersist);
 
-        Long persistedId = userProfileDao.saveNewUser(userToPersist).getUserId();
-
-        Optional<UserProfile> persistedUser = userProfileDao.findById(persistedId);
+        Optional<UserProfile> persistedUser = userProfileDao.findById(userToPersist.getUserId());
 
         Assert.assertTrue(persistedUser.isPresent());
-        UserProfile userProfile = persistedUser.get();
-        Assert.assertEquals(persistedId, userProfile.getUserId());
-        assertUserProfilesFields(userToPersist, userProfile);
+        assertUserProfileFieldsMatches(userToPersist, persistedUser.get());
     }
 
     @Test
@@ -68,13 +63,12 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
     @Rollback
     public void findByEmail() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
+        userProfileDao.saveNewUser(userToPersist);
 
-        Long persistedId = userProfileDao.saveNewUser(userToPersist).getUserId();
+        Optional<UserProfile> persistedUser = userProfileDao.findByEmail(userToPersist.getEmail());
 
-        UserProfile persistedUser = userProfileDao.findByEmail(userToPersist.getEmail());
-
-        Assert.assertEquals(persistedId, persistedUser.getUserId());
-        assertUserProfilesFields(userToPersist, persistedUser);
+        Assert.assertTrue(persistedUser.isPresent());
+        assertUserProfileFieldsMatches(userToPersist, persistedUser.get());
     }
 
     @Test
@@ -82,12 +76,9 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
     @Rollback
     public void exists() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
-        userToPersist.setUserId(IdGenerator.generateNewId());
 
         boolean beforeSave = userProfileDao.existsById(userToPersist.getUserId());
-
         userProfileDao.saveNewUser(userToPersist);
-
         boolean afterSave = userProfileDao.existsById(userToPersist.getUserId());
 
         Assert.assertFalse(beforeSave);
@@ -97,6 +88,7 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
 
     private UserProfile generateDefaultTestUserProfile() {
         UserProfile user = new UserProfile();
+        user.setUserId(IdGenerator.generateNewId());
         user.setName("John Doe");
         user.setEmail("johntest@test.com");
         user.setLastDonation(LocalDate.now().minusDays(7));
@@ -107,11 +99,10 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
         return user;
     }
 
-    /**
-     * Validate if all the fields matches, with exception of the ID, which will be null in general for the expected
-     * user profile.
+    /*
+     * Validate if all the fields matches, except for user ID.
      */
-    private void assertUserProfilesFields(UserProfile expected, UserProfile actual) {
+    private void assertUserProfileFieldsExceptIdMatches(UserProfile expected, UserProfile actual) {
         Assert.assertEquals(expected.getName(), actual.getName());
         Assert.assertEquals(expected.getEmail(), actual.getEmail());
         Assert.assertEquals(expected.getLastDonation(), actual.getLastDonation());
@@ -119,5 +110,13 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
         Assert.assertEquals(expected.getDaysBetweenReminders(), actual.getDaysBetweenReminders());
         Assert.assertEquals(expected.getNextReminder(), actual.getNextReminder());
         Assert.assertEquals(expected.getUserStatus(), actual.getUserStatus());
+    }
+
+    /*
+     * Validate if all the fields matches.
+     */
+    private void assertUserProfileFieldsMatches(UserProfile expected, UserProfile actual) {
+        Assert.assertEquals(expected.getUserId(), actual.getUserId());
+        assertUserProfileFieldsExceptIdMatches(expected, actual);
     }
 }

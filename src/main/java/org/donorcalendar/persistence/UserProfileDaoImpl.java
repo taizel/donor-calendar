@@ -40,9 +40,9 @@ public class UserProfileDaoImpl implements UserProfileDao {
     }
 
     @Override
-    public UserProfile findByEmail(@Param("email") String email) {
+    public Optional<UserProfile> findByEmail(@Param("email") String email) {
         UserProfileEntity userProfileEntity = userProfileRepository.findByEmail(email);
-        return userProfileEntity != null ? userProfileEntity.getUserDetails() : null;
+        return userProfileEntity != null ? Optional.of(userProfileEntity.getUserDetails()) : Optional.empty();
     }
 
     @Override

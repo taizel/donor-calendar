@@ -12,7 +12,7 @@ public interface UserProfileDao {
 
     Optional<UserProfile> findById(Long id);
 
-    UserProfile findByEmail(@Param("email") String email);
+    Optional<UserProfile> findByEmail(@Param("email") String email);
 
     void updateUser(UserProfile userProfile);
 }

@@ -69,6 +69,6 @@ public class UserService {
     }
 
     private boolean isUserEmailAvailable(String userEmail) {
-        return userProfileDao.findByEmail(userEmail) == null;
+        return !userProfileDao.findByEmail(userEmail).isPresent();
     }
 }

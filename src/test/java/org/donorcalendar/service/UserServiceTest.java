@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class UserServiceTest {
 
@@ -44,7 +45,7 @@ public class UserServiceTest {
         UserProfile newUserAfterSuccess = createUserProfileForTest();
         newUserAfterSuccess.setUserId(1L);
 
-        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(null);
+        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
@@ -65,7 +66,7 @@ public class UserServiceTest {
         UserProfile newUserAfterSuccess = createUserProfileForTest();
         newUserAfterSuccess.setUserId(1L);
 
-        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(null);
+        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
@@ -86,7 +87,7 @@ public class UserServiceTest {
         UserProfile newUserAfterSuccess = createUserProfileForTest();
         newUserAfterSuccess.setUserId(1L);
 
-        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(null);
+        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
@@ -107,7 +108,7 @@ public class UserServiceTest {
         UserProfile newUserAfterSuccess = createUserProfileForTest();
         newUserAfterSuccess.setUserId(1L);
 
-        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(null);
+        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
@@ -125,7 +126,7 @@ public class UserServiceTest {
             UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
             User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
 
-            Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(null);
+            Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
 
             target.saveNewUser(userForTest);
             Assert.fail();
@@ -141,7 +142,7 @@ public class UserServiceTest {
             UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
             User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
 
-            Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(new UserProfile());
+            Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.of(new UserProfile()));
 
             target.saveNewUser(userForTest);
             Assert.fail();
