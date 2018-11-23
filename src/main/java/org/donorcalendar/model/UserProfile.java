@@ -14,6 +14,20 @@ public class UserProfile {
     private LocalDate nextReminder;
     private UserStatus userStatus;
 
+    public UserProfile() {
+    }
+
+    public UserProfile(UserProfile userProfile) {
+        this.userId = userProfile.userId;
+        this.name = userProfile.name;
+        this.email = userProfile.email;
+        this.lastDonation = userProfile.lastDonation;
+        this.bloodType = userProfile.bloodType;
+        this.daysBetweenReminders = userProfile.daysBetweenReminders;
+        this.nextReminder = userProfile.nextReminder;
+        this.userStatus = userProfile.userStatus;
+    }
+
     public Long getUserId() {
         return userId;
     }
