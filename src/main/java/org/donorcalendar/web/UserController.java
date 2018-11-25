@@ -43,12 +43,12 @@ public class UserController {
         UserProfile userProfileToUpdate = userDtoToUser(userDto);
         userProfileToUpdate.setUserId(userId);
 
-        userService.updateExistingUser(userProfileToUpdate);
+        userService.updateUserProfile(userProfileToUpdate);
         return userToUserDto(userProfileToUpdate);
     }
 
     @RequestMapping(value = "/update-password", method = RequestMethod.PUT)
-    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException {
+    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
 
         UserProfile userProfile = userDetails.getUserProfile();
         userService.updateUserPassword(userProfile.getUserId(), updateUserPasswordDtoDto.getNewPassword());

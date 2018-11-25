@@ -161,7 +161,7 @@ public class UserServiceTest {
 
             Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(false);
 
-            target.updateExistingUser(userProfileForTest);
+            target.updateUserProfile(userProfileForTest);
             Assert.fail();
         } catch (NotFoundException e) {
             Assert.assertThat(e.getMessage(), CoreMatchers.allOf(
@@ -178,7 +178,7 @@ public class UserServiceTest {
 
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
-        target.updateExistingUser(userProfileForTest);
+        target.updateUserProfile(userProfileForTest);
 
         Assert.assertEquals(UserStatus.DONOR, userProfileForTest.getUserStatus());
         Mockito.verify(userProfileDao).updateUser(userProfileForTest);
@@ -192,7 +192,7 @@ public class UserServiceTest {
 
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
-        target.updateExistingUser(userProfileForTest);
+        target.updateUserProfile(userProfileForTest);
 
         Assert.assertEquals(UserStatus.POTENTIAL_DONOR, userProfileForTest.getUserStatus());
         Mockito.verify(userProfileDao).updateUser(userProfileForTest);
@@ -206,7 +206,7 @@ public class UserServiceTest {
 
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
-        target.updateExistingUser(userProfileForTest);
+        target.updateUserProfile(userProfileForTest);
 
         Assert.assertEquals(UserStatus.NEED_TO_DONATE, userProfileForTest.getUserStatus());
         Mockito.verify(userProfileDao).updateUser(userProfileForTest);
@@ -220,7 +220,7 @@ public class UserServiceTest {
 
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
-        target.updateExistingUser(userProfileForTest);
+        target.updateUserProfile(userProfileForTest);
 
         Assert.assertEquals(UserStatus.NEED_TO_DONATE, userProfileForTest.getUserStatus());
         Mockito.verify(userProfileDao).updateUser(userProfileForTest);
@@ -234,7 +234,7 @@ public class UserServiceTest {
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
         try {
-            target.updateExistingUser(userProfileForTest);
+            target.updateUserProfile(userProfileForTest);
             Assert.fail();
         } catch (ValidationException e) {
             Assert.assertEquals("Last donation date can't be in the future.", e.getMessage());

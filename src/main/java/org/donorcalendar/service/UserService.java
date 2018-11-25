@@ -51,20 +51,24 @@ public class UserService {
         }
     }
 
-    public void updateExistingUser(UserProfile userProfile) throws ValidationException, NotFoundException {
-        if (userProfileDao.existsById(userProfile.getUserId())) {
-            populateUserStatus(userProfile);
-            userProfileDao.updateUser(userProfile);
-        } else {
-            throw new NotFoundException("User with id " + userProfile.getUserId() + " could not be found.");
-        }
+    public void updateUserProfile(UserProfile userProfile) throws ValidationException, NotFoundException {
+        validateIfUserExists(userProfile.getUserId());
+        populateUserStatus(userProfile);
+        userProfileDao.updateUser(userProfile);
     }
 
-    public void updateUserPassword(Long userId, String unencryptedPassword) throws ValidationException {
+    public void updateUserPassword(Long userId, String unencryptedPassword) throws ValidationException, NotFoundException {
         if (unencryptedPassword != null && !unencryptedPassword.isEmpty()) {
+            validateIfUserExists(userId);
             userSecurityService.updateUserPassword(userId, unencryptedPassword);
         } else {
             throw new ValidationException("New password cannot be empty.");
+        }
+    }
+
+    private void validateIfUserExists(Long userId) throws NotFoundException {
+        if (!userProfileDao.existsById(userId)) {
+            throw new NotFoundException("User with id " + userId + " could not be found.");
         }
     }
 
