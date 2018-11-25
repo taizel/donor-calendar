@@ -1,9 +1,9 @@
 package org.donorcalendar.security;
 
 import org.donorcalendar.model.UserProfile;
+import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.persistence.UserProfileDao;
-import org.donorcalendar.persistence.UserSecurityDetailsEntity;
-import org.donorcalendar.persistence.UserSecurityDetailsRepository;
+import org.donorcalendar.persistence.UserSecurityDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,12 +16,12 @@ import java.util.Optional;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserProfileDao userProfileDao;
-    private final UserSecurityDetailsRepository userSecurityDetailsRepository;
+    private final UserSecurityDao userSecurityDao;
 
     @Autowired
-    public UserDetailsServiceImpl(UserProfileDao userProfileDao, UserSecurityDetailsRepository userSecurityDetailsRepository) {
+    public UserDetailsServiceImpl(UserProfileDao userProfileDao, UserSecurityDao userSecurityDao) {
         this.userProfileDao = userProfileDao;
-        this.userSecurityDetailsRepository = userSecurityDetailsRepository;
+        this.userSecurityDao = userSecurityDao;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<UserProfile> optionalUserProfile = userProfileDao.findByEmail(email);
         if (optionalUserProfile.isPresent()) {
             UserProfile userProfile = optionalUserProfile.get();
-            UserSecurityDetailsEntity userSecurityDetails = userSecurityDetailsRepository.findByUserId(userProfile.getUserId());
+            UserSecurityDetails userSecurityDetails = userSecurityDao.findByUserId(userProfile.getUserId());
             return new UserAuthenticationDetails(userProfile, userSecurityDetails.getPassword());
         }
         throw new UsernameNotFoundException("No user registered with the email '" + email + "'");
