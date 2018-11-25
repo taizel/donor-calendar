@@ -9,10 +9,6 @@ public class User {
         this.userSecurity = userSecurity;
     }
 
-    public User(UserProfile userProfile) {
-        this.userProfile = userProfile;
-    }
-
     public UserProfile getUserProfile() {
         return userProfile;
     }

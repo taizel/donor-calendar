@@ -2,7 +2,6 @@ package org.donorcalendar.security;
 
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.persistence.UserProfileDao;
-import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserSecurityDetailsEntity;
 import org.donorcalendar.persistence.UserSecurityDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;

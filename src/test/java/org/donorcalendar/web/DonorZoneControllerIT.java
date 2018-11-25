@@ -40,7 +40,6 @@ public class DonorZoneControllerIT extends RestAssuredAbstractIntegrationTest {
         john.setBloodType(BloodType.AB_NEGATIVE);
         john.setUserStatus(UserStatus.DONOR);
 
-
         bilbo = new UserProfileEntity();
         bilbo.setUserId(IdGenerator.generateNewId());
         bilbo.setName("Bilbo");
