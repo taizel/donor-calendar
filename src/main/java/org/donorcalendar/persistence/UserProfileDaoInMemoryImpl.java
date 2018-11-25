@@ -1,11 +1,15 @@
 package org.donorcalendar.persistence;
 
-import java.util.HashMap;
-import java.util.Optional;
-
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.util.IdGenerator;
 import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UserProfileDaoInMemoryImpl implements UserProfileDao {
 
@@ -23,6 +27,11 @@ public class UserProfileDaoInMemoryImpl implements UserProfileDao {
 
     private boolean needsToGenerateId(Long userId) {
         return !(userId != null && userId > 0);
+    }
+
+    @Override
+    public List<UserProfile> findAll() {
+        return new ArrayList<>(cache.values());
     }
 
     @Override
@@ -47,5 +56,13 @@ public class UserProfileDaoInMemoryImpl implements UserProfileDao {
     @Override
     public void updateUser(UserProfile userProfile) {
         cache.put(userProfile.getUserId(), userProfile);
+    }
+
+    @Override
+    public List<UserProfile> findUsersToRemind() {
+        LocalDate currentLocalDate = LocalDate.now();
+        return cache.values().stream()
+                .filter(user -> user.getNextReminder() != null && user.getNextReminder().isBefore(currentLocalDate))
+                .collect(Collectors.toList());
     }
 }
