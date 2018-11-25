@@ -1,5 +1,7 @@
 package org.donorcalendar.persistence;
 
+import org.donorcalendar.model.UserSecurityDetails;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -29,5 +31,9 @@ public class UserSecurityDetailsEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    UserSecurityDetails getUserSecurityDetails() {
+        return new UserSecurityDetails(this.password);
     }
 }

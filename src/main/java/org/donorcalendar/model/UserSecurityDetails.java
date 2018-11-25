@@ -7,6 +7,10 @@ public class UserSecurityDetails {
         this.password = password;
     }
 
+    public UserSecurityDetails(UserSecurityDetails userSecurityDetails) {
+        this.password = userSecurityDetails.password;
+    }
+
     public String getPassword() {
         return password;
     }

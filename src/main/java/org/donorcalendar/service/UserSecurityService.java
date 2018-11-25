@@ -1,8 +1,8 @@
 package org.donorcalendar.service;
 
 import org.donorcalendar.model.User;
-import org.donorcalendar.persistence.UserSecurityDetailsEntity;
-import org.donorcalendar.persistence.UserSecurityDetailsRepository;
+import org.donorcalendar.model.UserSecurityDetails;
+import org.donorcalendar.persistence.UserSecurityDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,24 +12,21 @@ class UserSecurityService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    private final UserSecurityDetailsRepository userSecurityDetailsRepository;
+    private final UserSecurityDao userSecurityDao;
 
     @Autowired
-    UserSecurityService(UserSecurityDetailsRepository userSecurityDetailsRepository) {
-        this.userSecurityDetailsRepository = userSecurityDetailsRepository;
+    UserSecurityService(UserSecurityDao userSecurityDao) {
+        this.userSecurityDao = userSecurityDao;
         passwordEncoder = new BCryptPasswordEncoder();
     }
 
     void saveNewUserSecurityDetails(User user) {
-        UserSecurityDetailsEntity userSecurityDetailsEntity = new UserSecurityDetailsEntity();
-        userSecurityDetailsEntity.setUserId(user.getUserProfile().getUserId());
-        userSecurityDetailsEntity.setPassword(passwordEncoder.encode(user.getUserSecurity().getPassword()));
-        userSecurityDetailsRepository.save(userSecurityDetailsEntity);
+        UserSecurityDetails userSecurityDetails = new UserSecurityDetails(user.getUserSecurity());
+        userSecurityDetails.setPassword(passwordEncoder.encode(userSecurityDetails.getPassword()));
+        userSecurityDao.saveNewUserSecurityDetails(user.getUserProfile().getUserId(), userSecurityDetails);
     }
 
     void updateUserPassword(Long userId, String newPassword) {
-        UserSecurityDetailsEntity userSecurityDetailsEntity = userSecurityDetailsRepository.findByUserId(userId);
-        userSecurityDetailsEntity.setPassword(passwordEncoder.encode(newPassword));
-        userSecurityDetailsRepository.save(userSecurityDetailsEntity);
+        userSecurityDao.updateUserPassword(userId, passwordEncoder.encode(newPassword));
     }
 }
