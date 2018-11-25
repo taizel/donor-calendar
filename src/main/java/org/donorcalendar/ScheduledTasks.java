@@ -1,8 +1,8 @@
 package org.donorcalendar;
 
+import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
-import org.donorcalendar.persistence.UserProfileEntity;
-import org.donorcalendar.persistence.UserProfileRepository;
+import org.donorcalendar.persistence.UserProfileDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,25 +17,25 @@ public class ScheduledTasks {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final UserProfileRepository userProfileRepository;
+    private final UserProfileDao userProfileDao;
 
     @Autowired
-    public ScheduledTasks(UserProfileRepository userProfileRepository) {
-        this.userProfileRepository = userProfileRepository;
+    public ScheduledTasks(UserProfileDao userProfileDao) {
+        this.userProfileDao = userProfileDao;
     }
 
     @Scheduled(fixedRate = 10000)
     public void sendEmailToRememberDonors() {
-        for (UserProfileEntity user : userProfileRepository.findUsersToRemind()) {
+        for (UserProfile user : userProfileDao.findUsersToRemind()) {
             log.info("Sent reminder for user: " + user.getName());
             user.setNextReminder(user.getNextReminder().plusDays(user.getDaysBetweenReminders()));
-            userProfileRepository.save(user);
+            userProfileDao.updateUser(user);
         }
     }
 
     @Scheduled(fixedRate = 15000)
     public void updateUsersStatus() {
-        for (UserProfileEntity user : userProfileRepository.findAll()) {
+        for (UserProfile user : userProfileDao.findAll()) {
             LocalDate lastDonation = user.getLastDonation();
             if (lastDonation == null) {
                 continue;
@@ -46,7 +46,7 @@ public class ScheduledTasks {
             if (currentStatus != newStatus) {
                 log.info("User status changed: " + user.getName());
                 user.setUserStatus(newStatus);
-                userProfileRepository.save(user);
+                userProfileDao.updateUser(user);
             }
 
         }

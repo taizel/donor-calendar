@@ -7,7 +7,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -35,6 +38,14 @@ public class UserProfileDaoImpl implements UserProfileDao {
     }
 
     @Override
+    public List<UserProfile> findAll() {
+        List<UserProfile> usersList = new ArrayList<>();
+        userProfileRepository.findAll().iterator().forEachRemaining(
+                userProfileEntity -> usersList.add(userProfileEntity.getUserDetails()));
+        return usersList;
+    }
+
+    @Override
     public Optional<UserProfile> findById(Long id) {
         Optional<UserProfileEntity> userProfileEntity = userProfileRepository.findById(id);
         return userProfileEntity.map(UserProfileEntity::getUserDetails);
@@ -57,6 +68,10 @@ public class UserProfileDaoImpl implements UserProfileDao {
         userProfileRepository.save(userProfileEntity);
     }
 
+    @Override
+    public List<UserProfile> findUsersToRemind() {
+        return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserDetails).collect(Collectors.toList());
+    }
 
     private UserProfileEntity convertUserToUserEntity(UserProfile userProfile){
         UserProfileEntity userProfileEntity = new UserProfileEntity();
