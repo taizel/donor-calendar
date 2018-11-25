@@ -3,7 +3,7 @@ package org.donorcalendar.security;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.persistence.UserProfileDao;
-import org.donorcalendar.persistence.UserSecurityDao;
+import org.donorcalendar.persistence.UserSecurityDetailsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,12 +16,12 @@ import java.util.Optional;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserProfileDao userProfileDao;
-    private final UserSecurityDao userSecurityDao;
+    private final UserSecurityDetailsDao userSecurityDetailsDao;
 
     @Autowired
-    public UserDetailsServiceImpl(UserProfileDao userProfileDao, UserSecurityDao userSecurityDao) {
+    public UserDetailsServiceImpl(UserProfileDao userProfileDao, UserSecurityDetailsDao userSecurityDetailsDao) {
         this.userProfileDao = userProfileDao;
-        this.userSecurityDao = userSecurityDao;
+        this.userSecurityDetailsDao = userSecurityDetailsDao;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<UserProfile> optionalUserProfile = userProfileDao.findByEmail(email);
         if (optionalUserProfile.isPresent()) {
             UserProfile userProfile = optionalUserProfile.get();
-            UserSecurityDetails userSecurityDetails = userSecurityDao.findByUserId(userProfile.getUserId());
+            UserSecurityDetails userSecurityDetails = userSecurityDetailsDao.findByUserId(userProfile.getUserId());
             return new UserAuthenticationDetails(userProfile, userSecurityDetails.getPassword());
         }
         throw new UsernameNotFoundException("No user registered with the email '" + email + "'");

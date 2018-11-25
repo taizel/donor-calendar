@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserSecurityDaoImpl implements UserSecurityDao {
+public class UserSecurityDetailsDaoImpl implements UserSecurityDetailsDao {
 
     private final UserSecurityDetailsRepository userSecurityDetailsRepository;
 
     @Autowired
-    public UserSecurityDaoImpl(UserSecurityDetailsRepository userSecurityDetailsRepository) {
+    public UserSecurityDetailsDaoImpl(UserSecurityDetailsRepository userSecurityDetailsRepository) {
         this.userSecurityDetailsRepository = userSecurityDetailsRepository;
     }
 

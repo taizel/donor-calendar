@@ -3,7 +3,7 @@ package org.donorcalendar.service;
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserSecurityDetails;
-import org.donorcalendar.persistence.UserSecurityDao;
+import org.donorcalendar.persistence.UserSecurityDetailsDao;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,14 +16,14 @@ public class UserSecurityServiceTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    private UserSecurityDao userSecurityDao;
+    private UserSecurityDetailsDao userSecurityDetailsDao;
 
     private UserSecurityService target;
 
     @Before
     public void setUp() {
-        userSecurityDao = Mockito.mock(UserSecurityDao.class);
-        target = new UserSecurityService(userSecurityDao);
+        userSecurityDetailsDao = Mockito.mock(UserSecurityDetailsDao.class);
+        target = new UserSecurityService(userSecurityDetailsDao);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class UserSecurityServiceTest {
 
         target.saveNewUserSecurityDetails(user);
 
-        Mockito.verify(userSecurityDao).saveNewUserSecurityDetails(userIdParameter.capture(), securityDetailsParameter.capture());
+        Mockito.verify(userSecurityDetailsDao).saveNewUserSecurityDetails(userIdParameter.capture(), securityDetailsParameter.capture());
         Assert.assertEquals(user.getUserProfile().getUserId(), userIdParameter.getValue());
         Assert.assertTrue("Encrypted password does not look to be valid.",
                 passwordEncoder.matches(user.getUserSecurity().getPassword(), securityDetailsParameter.getValue().getPassword()));
@@ -46,13 +46,13 @@ public class UserSecurityServiceTest {
         String newPassword = "updatedPassword";
         Long userId = IdGenerator.generateNewId();
         UserSecurityDetails userSecurityDetails = new UserSecurityDetails(oldPassword);
-        Mockito.when(userSecurityDao.findByUserId(userId)).thenReturn(userSecurityDetails);
+        Mockito.when(userSecurityDetailsDao.findByUserId(userId)).thenReturn(userSecurityDetails);
         ArgumentCaptor<Long> userIdParameter = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> newPasswordParameter = ArgumentCaptor.forClass(String.class);
 
         target.updateUserPassword(userId, newPassword);
 
-        Mockito.verify(userSecurityDao).updateUserPassword(userIdParameter.capture(), newPasswordParameter.capture());
+        Mockito.verify(userSecurityDetailsDao).updateUserPassword(userIdParameter.capture(), newPasswordParameter.capture());
         Assert.assertEquals(userId, userIdParameter.getValue());
         Assert.assertTrue("Encrypted password does not look to be valid.",
                 passwordEncoder.matches(newPassword, newPasswordParameter.getValue()));
