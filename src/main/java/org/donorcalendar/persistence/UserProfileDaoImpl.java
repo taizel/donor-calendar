@@ -30,7 +30,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
             userProfileEntity.setUserId(IdGenerator.generateNewId());
         }
         userProfileEntity = userProfileRepository.save(userProfileEntity);
-        return userProfileEntity.getUserDetails();
+        return userProfileEntity.getUserProfile();
     }
 
     private boolean needsToGenerateId(Long userId) {
@@ -41,20 +41,20 @@ public class UserProfileDaoImpl implements UserProfileDao {
     public List<UserProfile> findAll() {
         List<UserProfile> usersList = new ArrayList<>();
         userProfileRepository.findAll().iterator().forEachRemaining(
-                userProfileEntity -> usersList.add(userProfileEntity.getUserDetails()));
+                userProfileEntity -> usersList.add(userProfileEntity.getUserProfile()));
         return usersList;
     }
 
     @Override
     public Optional<UserProfile> findById(Long id) {
         Optional<UserProfileEntity> userProfileEntity = userProfileRepository.findById(id);
-        return userProfileEntity.map(UserProfileEntity::getUserDetails);
+        return userProfileEntity.map(UserProfileEntity::getUserProfile);
     }
 
     @Override
     public Optional<UserProfile> findByEmail(@Param("email") String email) {
         UserProfileEntity userProfileEntity = userProfileRepository.findByEmail(email);
-        return userProfileEntity != null ? Optional.of(userProfileEntity.getUserDetails()) : Optional.empty();
+        return userProfileEntity != null ? Optional.of(userProfileEntity.getUserProfile()) : Optional.empty();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public List<UserProfile> findUsersToRemind() {
-        return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserDetails).collect(Collectors.toList());
+        return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserProfile).collect(Collectors.toList());
     }
 
     private UserProfileEntity convertUserToUserEntity(UserProfile userProfile){
