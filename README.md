@@ -3,7 +3,7 @@ Spring based project of a web application to remind users to donate blood.
 
 This project is mainly used to experiment with Spring while also serving as a personal reference implementation.
 
-It has the same set of unit tests using mocks and stubbing solely to compare both approaches, keeping both ways helps to evaluate how the application is designed and how it is evolving. The database containers started for integrations tests are configured to use in-memory file system (TmpFs) for performance reasons.
+It has the same set of unit tests using mocks and stubbing, solely to compare both approaches. The database containers started for integrations tests are configured to use in-memory file system (TmpFs) for performance reasons.
 
 ## Dependencies extra project
 - [Java Development Kit 8](https://openjdk.java.net/projects/jdk8) 
