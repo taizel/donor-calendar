@@ -22,7 +22,7 @@ public class UserProfileDaoInMemoryImpl implements UserProfileDao {
             userProfileCopy.setUserId(IdGenerator.generateNewId());
         }
         cache.put(userProfileCopy.getUserId(), userProfileCopy);
-        return userProfile;
+        return userProfileCopy;
     }
 
     private boolean needsToGenerateId(Long userId) {
