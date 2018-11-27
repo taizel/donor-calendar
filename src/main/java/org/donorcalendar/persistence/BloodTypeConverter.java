@@ -8,7 +8,7 @@ import javax.persistence.Converter;
 import org.donorcalendar.model.BloodType;
 
 @Converter(autoApply = true)
-class BloodTypeConverter implements AttributeConverter<BloodType, String> {
+public class BloodTypeConverter implements AttributeConverter<BloodType, String> {
 
     private static final HashMap<String, BloodType> valuesMap = new HashMap<>();
     static {
