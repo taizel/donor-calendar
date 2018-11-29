@@ -35,10 +35,27 @@ public class UserServiceTest {
     }
 
     @Test
+    public void anyUserCreatesProfileAndSecurityDetails() throws ValidationException {
+        UserProfile userProfileForTest = createUserProfileForTest();
+        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+
+        UserProfile newUserAfterSuccess = createUserProfileForTest();
+        newUserAfterSuccess.setUserId(1L);
+
+        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
+        Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
+
+        UserProfile savedUserProfile = target.saveNewUser(userForTest);
+
+        Assert.assertEquals(newUserAfterSuccess.getUserId(), savedUserProfile.getUserId());
+        Mockito.verify(userSecurityService).saveNewUserSecurityDetails(userForTest);
+    }
+
+    @Test
     public void saveUser_NewUserWithLastDonationUpToFiftySixDaysPast_SuccessWithStatusAsDonor() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
-        userProfileForTest.setUserStatus(null);
         UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
 
@@ -59,7 +76,6 @@ public class UserServiceTest {
     public void saveUser_NewUserWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPast_SuccessWithStatusAsPotentialDonor() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
-        userProfileForTest.setUserStatus(null);
         UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
 
@@ -157,7 +173,6 @@ public class UserServiceTest {
     public void updateUserProfile_UserProfileWithInvalidId_FailUserNotFound() throws ValidationException {
         try {
             UserProfile userProfileForTest = createUserProfileForTest();
-            userProfileForTest.setLastDonation(LocalDate.now());
 
             Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(false);
 
