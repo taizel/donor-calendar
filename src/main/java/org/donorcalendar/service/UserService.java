@@ -53,8 +53,9 @@ public class UserService {
 
     public void updateUserProfile(UserProfile userProfile) throws ValidationException, NotFoundException {
         validateIfUserExists(userProfile.getUserId());
-        populateUserStatus(userProfile);
-        userProfileDao.updateUser(userProfile);
+        UserProfile userToUpdate = new UserProfile(userProfile);
+        populateUserStatus(userToUpdate);
+        userProfileDao.updateUser(userToUpdate);
     }
 
     public void updateUserPassword(Long userId, String unencryptedPassword) throws ValidationException, NotFoundException {

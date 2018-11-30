@@ -175,58 +175,54 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationUpToFiftySixDaysPast_SuccessWithStatusAsDonor() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
-        userProfileForTest.setUserStatus(null);
+		UserProfile userProfileForTest = createUserProfileForTest();
+		userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
+		Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
-        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
+		target.updateUserProfile(userProfileForTest);
 
-        target.updateUserProfile(userProfileForTest);
-
-        Assert.assertEquals(UserStatus.DONOR, userProfileForTest.getUserStatus());
-        Mockito.verify(userProfileDao).updateUser(userProfileForTest);
+		ArgumentCaptor<UserProfile> userProfileCaptor = ArgumentCaptor.forClass(UserProfile.class);
+		Mockito.verify(userProfileDao).updateUser(userProfileCaptor.capture());
+		Assert.assertEquals(UserStatus.DONOR, userProfileCaptor.getValue().getUserStatus());
     }
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPast_SuccessWithStatusAsPotentialDonor() throws ValidationException, NotFoundException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
-        userProfileForTest.setUserStatus(null);
-
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
         target.updateUserProfile(userProfileForTest);
 
-        Assert.assertEquals(UserStatus.POTENTIAL_DONOR, userProfileForTest.getUserStatus());
-        Mockito.verify(userProfileDao).updateUser(userProfileForTest);
+		ArgumentCaptor<UserProfile> userProfileCaptor = ArgumentCaptor.forClass(UserProfile.class);
+		Mockito.verify(userProfileDao).updateUser(userProfileCaptor.capture());
+        Assert.assertEquals(UserStatus.POTENTIAL_DONOR, userProfileCaptor.getValue().getUserStatus());
     }
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationMoreThanHundredTwentyDays_SuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
-        userProfileForTest.setUserStatus(null);
+		UserProfile userProfileForTest = createUserProfileForTest();
+		userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
+		Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
-        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
+		target.updateUserProfile(userProfileForTest);
 
-        target.updateUserProfile(userProfileForTest);
-
-        Assert.assertEquals(UserStatus.NEED_TO_DONATE, userProfileForTest.getUserStatus());
-        Mockito.verify(userProfileDao).updateUser(userProfileForTest);
+		ArgumentCaptor<UserProfile> userProfileCaptor = ArgumentCaptor.forClass(UserProfile.class);
+		Mockito.verify(userProfileDao).updateUser(userProfileCaptor.capture());
+		Assert.assertEquals(UserStatus.NEED_TO_DONATE, userProfileCaptor.getValue().getUserStatus());
     }
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationNull_SuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
-        userProfileForTest.setLastDonation(null);
-        userProfileForTest.setUserStatus(null);
+		UserProfile userProfileForTest = createUserProfileForTest();
+		userProfileForTest.setLastDonation(null);
+		Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
-        Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
+		target.updateUserProfile(userProfileForTest);
 
-        target.updateUserProfile(userProfileForTest);
-
-        Assert.assertEquals(UserStatus.NEED_TO_DONATE, userProfileForTest.getUserStatus());
-        Mockito.verify(userProfileDao).updateUser(userProfileForTest);
+		ArgumentCaptor<UserProfile> userProfileCaptor = ArgumentCaptor.forClass(UserProfile.class);
+		Mockito.verify(userProfileDao).updateUser(userProfileCaptor.capture());
+		Assert.assertEquals(UserStatus.NEED_TO_DONATE, userProfileCaptor.getValue().getUserStatus());
     }
 
     @Test
