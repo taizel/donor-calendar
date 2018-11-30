@@ -10,7 +10,9 @@ import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.model.ValidationException;
+import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.persistence.UserProfileDaoInMemoryImpl;
+import org.donorcalendar.persistence.UserSecurityDetailsDao;
 import org.donorcalendar.persistence.UserSecurityDetailsDaoInMemoryImpl;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -20,9 +22,9 @@ public class UserServiceInMemoryTest {
 
     private final String UNENCRYPTED_TEST_PASSWORD = "pass1";
 
-    private final UserProfileDaoInMemoryImpl userProfileDao = new UserProfileDaoInMemoryImpl();
-    private final UserSecurityDetailsDaoInMemoryImpl userSecurityDetailsDaoInMemory = new UserSecurityDetailsDaoInMemoryImpl();
-    private final UserSecurityService userSecurityService = new UserSecurityService(userSecurityDetailsDaoInMemory);
+    private final UserProfileDao userProfileDao = new UserProfileDaoInMemoryImpl();
+    private final UserSecurityDetailsDao userSecurityDetailsDao = new UserSecurityDetailsDaoInMemoryImpl();
+    private final UserSecurityService userSecurityService = new UserSecurityService(userSecurityDetailsDao);
 
     private final UserService target = new UserService(userProfileDao, userSecurityService);
 
@@ -35,7 +37,7 @@ public class UserServiceInMemoryTest {
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
         Assert.assertTrue(userProfileDao.findById(savedUserProfile.getUserId()).isPresent());
-        Assert.assertNotNull(userSecurityDetailsDaoInMemory.findByUserId(savedUserProfile.getUserId()));
+        Assert.assertNotNull(userSecurityDetailsDao.findByUserId(savedUserProfile.getUserId()));
     }
 
     @Test
