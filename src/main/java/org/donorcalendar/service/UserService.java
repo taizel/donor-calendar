@@ -25,7 +25,7 @@ public class UserService {
     }
 
     public UserProfile saveNewUser(User user) throws ValidationException {
-        UserProfile userProfile = user.getUserProfile();
+        UserProfile userProfile = new UserProfile(user.getUserProfile());
         if (isUserEmailAvailable(userProfile.getEmail())) {
             populateUserStatus(userProfile);
             userProfile = userProfileDao.saveNewUser(userProfile);
