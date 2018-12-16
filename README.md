@@ -1,4 +1,7 @@
 # Donor Calendar
+
+[![Build Status](https://travis-ci.org/taizel/donor-calendar.svg?branch=master)](https://travis-ci.org/taizel/donor-calendar)
+
 Spring based project of a web application to remind users to donate blood.
 
 This project is mainly used to experiment with Spring while also serving as a personal reference implementation.
