@@ -20,7 +20,7 @@ public class JacksonConfig {
     private static ObjectMapper buildObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.KEBAB_CASE);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         mapper.configOverride(LocalDate.class).
                 setFormat(JsonFormat.Value.forPattern(LOCAL_DATE_FORMAT));
         mapper.registerModule(new JavaTimeModule());
