@@ -15,9 +15,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 public class AbstractIntegrationTest {
 
     private static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer<>().
-            withCreateContainerCmdModifier(cmd ->
-                    cmd.getHostConfig().withTmpFs(Collections.singletonMap(System.getProperty("java.io.tmpdir"), "rw"))
-            );
+            withTmpFs(Collections.singletonMap(System.getProperty("java.io.tmpdir"), "rw"));
 
     static {
         postgreSQLContainer.withDatabaseName("donor");
