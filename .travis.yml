@@ -7,5 +7,9 @@ services:
 
 jdk: oraclejdk8
 
+addons:
+  sonarcloud:
+    organization: "taizel-github"
+
 script:
-  - mvn clean verify -B
+  - mvn -B clean verify sonar:sonar
