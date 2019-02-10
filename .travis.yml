@@ -11,5 +11,9 @@ addons:
   sonarcloud:
     organization: "taizel-github"
 
+before_install:
+  # Travis defaults to shallow clone, but Sonar needs SCM information from all files for certain features
+  - git fetch --unshallow
+
 script:
   - mvn -B clean verify sonar:sonar -Dsonar.projectKey=donor-calendar
