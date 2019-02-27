@@ -119,17 +119,22 @@
                             <dataFile>${project.build.directory}/jacoco.exec</dataFile>
                             <rules>
                                 <rule>
-                                    <element>BUNDLE</element>
+                                    <element>PACKAGE</element>
+                                    <includes>
+                                        <include>org.donorcalendar.model</include>
+                                        <include>org.donorcalendar.service</include>
+                                        <include>org.donorcalendar.util</include>
+                                    </includes>
                                     <limits>
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.28</minimum>
+                                            <minimum>0.75</minimum>
                                         </limit>
                                         <limit>
                                             <counter>CLASS</counter>
                                             <value>MISSEDCOUNT</value>
-                                            <maximum>22</maximum>
+                                            <maximum>1</maximum>
                                         </limit>
                                     </limits>
                                 </rule>
