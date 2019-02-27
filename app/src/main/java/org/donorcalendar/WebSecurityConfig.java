@@ -2,6 +2,7 @@ package org.donorcalendar;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -30,7 +31,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
             .authorizeRequests()
-                // Allowing unauthenticated access to certain resources and methods
+                // Allowing unauthenticated access to static resources common locations
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                // Allowing unauthenticated access to method for registering a new donor
                 .mvcMatchers(HttpMethod.POST, "/user").permitAll()
                 // Requesting authentication on all requests except the allowed ones
                 .anyRequest().authenticated()

@@ -1,0 +1,90 @@
+<html lang="en">
+<body>
+<script src="https://unpkg.com/mithril/mithril.js"></script>
+<script>
+  var root = document.body;
+  var count = 0;
+
+  var newUser = {
+    name: "",
+    email: "",
+    password: "testpass",
+    "blood-type": "A_POSITIVE",
+    "last-donation": "2018-12-20"
+  };
+
+  function setNextTestUser() {
+    newUser.name = "Test" + count;
+    newUser.email = "test" + (count++) + "@testmail.com";
+  }
+
+  function newUserForm() {
+    setNextTestUser();
+    return m("form", {onsubmit: saveNewUser}, [
+      m("label", "Name:"),
+      m("input[type=text][name=name][placeholder=Full name]", {
+        value: newUser.name,
+        onchange: function (e) {
+          newUser.name = e.target.value;
+        }
+      }),
+      m("label", "Email:"),
+      m("input[type=text][name=email][placeholder=Email]", {
+        value: newUser.email,
+        onchange: function (e) {
+          newUser.email = e.target.value;
+        }
+      }),
+      m("label", "Password:"),
+      m("input", {
+        type: "password",
+        name: "password",
+        placeholder: "You secure password",
+        value: newUser.password,
+        onchange: function (e) {
+          newUser.password = e.target.value;
+        }
+      }),
+      m("label", "Blood type:"),
+      m("input[type=tex][name=blood-type][placeholder=Your blood type]", {
+        value: newUser["blood-type"],
+        onchange: function (e) {
+          newUser["blood-type"] = e.target.value;
+        }
+      }),
+      m("label", "Last donation:"),
+      m("input[type=tex][name=last-donation][placeholder=yyyy/MM/dd]", {
+        value: newUser["last-donation"],
+        onchange: function (e) {
+          newUser["last-donation"] = e.target.value;
+        }
+      }),
+      m("button[type=submit]", "Save")
+    ]);
+  }
+
+  function saveNewUser(e) {
+    e.preventDefault();
+    m.request({
+        method: "POST",
+        url: "http://localhost:8080/user/",
+        data: {name: newUser.name, email: newUser.email, password: newUser.password, "blood-type": newUser["blood-type"], "last-donation": newUser["last-donation"]}
+    })
+    .then(function(result) {
+        console.log(result);
+    });
+  }
+
+  var NewDonor = {
+    view: function () {
+      return m("main", [
+        m("h1", {class: "title"}, "My first app"),
+        newUserForm()
+      ]);
+    }
+  };
+
+  m.mount(root, NewDonor);
+</script>
+</body>
+</html>
