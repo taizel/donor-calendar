@@ -1,8 +1,9 @@
 package org.donorcalendar.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class UserProfile {
+public class UserProfile implements Serializable {
 
     private Long userId;
 

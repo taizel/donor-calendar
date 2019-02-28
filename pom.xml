@@ -25,11 +25,31 @@
     <properties>
         <java.version>1.8</java.version>
         <postgres.jdbc.version>42.2.5</postgres.jdbc.version>
+        <spotbugs.version>3.1.11</spotbugs.version>
         <jacoco-maven.version>0.8.3</jacoco-maven.version>
         <testcontainers.postgresql.version>1.10.5</testcontainers.postgresql.version>
         <rest-assured.version>3.0.0</rest-assured.version>
         <dockerfile-maven.version>1.4.8</dockerfile-maven.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.version}</version>
+                <executions>
+                    <execution>
+                        <id>analyze-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
