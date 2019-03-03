@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Create New Donor</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+    class NewDonorForm extends React.Component {
+        constructor(props) {
+            super(props);
+            this.count = 0;
+            this.state = {name: "Test" + this.count, email: "test" + (this.count) + "@testmail.com",
+                "last-donation": "2018-12-05", "blood-type": "B_NEGATIVE",
+                "password": "testpass"};
+
+            this.handleChangeName = this.handleChangeName.bind(this);
+            this.handleChangeEmail = this.handleChangeEmail.bind(this);
+            this.handleChangeLastDonation = this.handleChangeLastDonation.bind(this);
+            this.handleChangeBloodType = this.handleChangeBloodType.bind(this);
+            this.handleChangePassword = this.handleChangePassword.bind(this);
+            this.handleSubmit = this.handleSubmit.bind(this);
+        }
+
+        setNextTestUser() {
+            this.count++;
+            this.setState({name: "Test" + this.count});
+            this.setState({email: "test" + (this.count) + "@testmail.com"});
+        }
+
+        handleChangeName(event) {
+            this.setState({"name": event.target.value});
+        }
+
+        handleChangeEmail(event) {
+            this.setState({"email": event.target.value});
+        }
+
+        handleChangeLastDonation(event) {
+            this.setState({"last-donation": event.target.value});
+        }
+
+        handleChangeBloodType(event) {
+            this.setState({"blood-type": event.target.value});
+        }
+        handleChangePassword(event) {
+            this.setState({"password": event.target.value});
+        }
+
+        handleSubmit(event) {
+            event.preventDefault();
+            fetch("http://localhost:8080/user", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json; charset=UTF-8"
+                },
+                body: JSON.stringify({
+                    email: this.state.email,
+                    name: this.state.name,
+                    "last-donation": this.state["last-donation"],
+                    "blood-type": this.state["blood-type"],
+                    password: this.state.password
+                })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(jsonResponse) {
+                console.log(jsonResponse);
+            }).catch(function(error) {
+                console.log(error);
+            });
+
+            this.setNextTestUser();
+        }
+
+        render() {
+            return (
+                <div>
+                <h1 className="title">Create New Donor</h1>
+                <form onSubmit={this.handleSubmit}>
+                    <label>
+                        Name:
+                        <input type="text" value={this.state.name} onChange={this.handleChangeName} />
+                    </label>
+                    <label>
+                        Email:
+                        <input type="text" value={this.state.email} onChange={this.handleChangeEmail} />
+                    </label>
+                    <label>
+                        Password:
+                        <input type="password" value={this.state.password} onChange={this.handleChangePassword} />
+                    </label>
+                    <label>
+                        Blood type:
+                        <select value={this.state["blood-type"]} onChange={this.handleChangeBloodType}>
+                            <option value="A_NEGATIVE">A-</option>
+                            <option value="B_NEGATIVE">B-</option>
+                            <option value="O_NEGATIVE">O-</option>
+                        </select>
+                    </label>
+                    <label>
+                        Last donation:
+                        <input type="text" value={this.state["last-donation"]} onChange={this.handleChangeLastDonation} />
+                    </label>
+
+                    <input type="submit" value="Save" />
+                </form>
+                </div>
+            );
+        }
+    }
+
+    ReactDOM.render(
+        <NewDonorForm/>,
+        document.getElementById("root")
+    );
+
+</script>
+<!--
+  Note: this page is a great way to try React but it's not suitable for production.
+  It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+  Read this section for a production-ready setup with JSX:
+  https://reactjs.org/docs/add-react-to-a-website.html#add-jsx-to-a-project
+
+  In a larger project, you can use an integrated toolchain that includes JSX instead:
+  https://reactjs.org/docs/create-a-new-react-app.html
+
+  You can also use React without JSX, in which case you can remove Babel:
+  https://reactjs.org/docs/react-without-jsx.html
+-->
+</body>
+</html>
