@@ -10,20 +10,20 @@
     var count = 0;
 
     var newUser = {
-        name: "",
-        email: "",
+        name: "Test" + count,
+        email: "test" + count + "@testmail.com",
         password: "testpass",
         "blood-type": "A_NEGATIVE",
         "last-donation": "2018-12-20"
     };
 
     function setNextTestUser() {
+        count++;
         newUser.name = "Test" + count;
-        newUser.email = "test" + (count++) + "@testmail.com";
+        newUser.email = "test" + count + "@testmail.com";
     }
 
     function newUserForm() {
-        setNextTestUser();
         return m("form", {onsubmit: saveNewUser}, [
             m("label", "Name:"),
             m("input[type=text][name=name][placeholder=Full name]", {
@@ -84,9 +84,11 @@
                 "last-donation": newUser["last-donation"]
             }
         })
-            .then(function (result) {
-                console.log(result);
-            });
+        .then(function (result) {
+            console.log(result);
+        });
+
+        setNextTestUser();
     }
 
     var NewDonor = {
