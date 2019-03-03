@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>Save New Donor</title>
+    <title>Create New Donor</title>
     <script src="https://unpkg.com/mithril/mithril.js"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@
         newUser.email = "test" + count + "@testmail.com";
     }
 
-    function newUserForm() {
+    function newDonorForm() {
         return m("form", {onsubmit: saveNewUser}, [
             m("label", "Name:"),
             m("input[type=text][name=name][placeholder=Full name]", {
@@ -95,7 +95,7 @@
         view: function () {
             return m("main", [
                 m("h1", {class: "title"}, "Create New Donor"),
-                newUserForm()
+                newDonorForm()
             ]);
         }
     };
