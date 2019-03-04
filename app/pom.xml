@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>${parent.artifactId}-app</artifactId>
+    <artifactId>donor-calendar-app</artifactId>
     <name>Donor Calendar App</name>
 
     <build>

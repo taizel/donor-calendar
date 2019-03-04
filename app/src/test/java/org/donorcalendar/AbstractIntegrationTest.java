@@ -12,7 +12,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(initializers = { AbstractIntegrationTest.Initializer.class})
-public class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest {
 
     private static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer<>().
             withTmpFs(Collections.singletonMap(System.getProperty("java.io.tmpdir"), "rw"));
