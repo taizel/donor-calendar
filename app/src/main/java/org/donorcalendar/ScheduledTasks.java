@@ -27,7 +27,7 @@ public class ScheduledTasks {
     @Scheduled(fixedRate = 10000)
     public void sendEmailToRememberDonors() {
         for (UserProfile user : userProfileDao.findUsersToRemind()) {
-            log.info("Sent reminder for user: " + user.getName());
+            log.info("Sent reminder for user: {}", user.getName());
             user.setNextReminder(user.getNextReminder().plusDays(user.getDaysBetweenReminders()));
             userProfileDao.updateUser(user);
         }
@@ -44,7 +44,7 @@ public class ScheduledTasks {
             long daysSinceLastDonation = ChronoUnit.DAYS.between(lastDonation, LocalDate.now());
             UserStatus newStatus = UserStatus.fromNumberOfElapsedDaysSinceLastDonation(daysSinceLastDonation);
             if (currentStatus != newStatus) {
-                log.info("User status changed: " + user.getName());
+                log.info("User status changed: {}", user.getName());
                 user.setUserStatus(newStatus);
                 userProfileDao.updateUser(user);
             }

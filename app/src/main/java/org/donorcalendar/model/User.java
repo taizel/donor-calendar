@@ -13,16 +13,8 @@ public class User {
         return userProfile;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
-    }
-
     public UserSecurityDetails getUserSecurity() {
         return userSecurity;
-    }
-
-    public void setUserSecurity(UserSecurityDetails userSecurity) {
-        this.userSecurity = userSecurity;
     }
 
     @Override

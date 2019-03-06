@@ -29,8 +29,8 @@ public class UserService {
         if (isUserEmailAvailable(userProfile.getEmail())) {
             populateUserStatus(userProfile);
             userProfile = userProfileDao.saveNewUser(userProfile);
-            user.setUserProfile(userProfile);
-            userSecurityService.saveNewUserSecurityDetails(user);
+            User newUser = new User(userProfile, user.getUserSecurity());
+            userSecurityService.saveNewUserSecurityDetails(newUser);
             return userProfile;
         } else {
             throw new ValidationException("The email " + userProfile.getEmail() + " is already registered.");
