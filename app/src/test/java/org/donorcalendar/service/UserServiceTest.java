@@ -8,6 +8,7 @@ import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.ValidationException;
 import org.donorcalendar.persistence.UserProfileDao;
+import org.donorcalendar.util.IdGenerator;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -52,6 +53,21 @@ public class UserServiceTest {
         Mockito.verify(userSecurityService).saveNewUserSecurityDetails(userCaptor.capture());
         Assert.assertEquals(userProfileCaptor.getValue().getEmail(), userProfileForTest.getEmail());
         Assert.assertEquals(userCaptor.getValue().getUserSecurity(), userSecurityDetailsForTest);
+    }
+
+    @Test
+    public void newUserWithEmptyPassword() {
+        UserProfile userProfileForTest = createUserProfileForTest();
+        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails("");
+        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
+
+        try {
+            target.saveNewUser(userForTest);
+            Assert.fail();
+        } catch (ValidationException e) {
+            Assert.assertEquals("Password cannot be empty.", e.getMessage());
+        }
     }
 
     @Test
@@ -160,7 +176,7 @@ public class UserServiceTest {
     @Test
     public void updateUserProfile_UserProfileWithInvalidId_FailUserNotFound() throws ValidationException {
         try {
-            UserProfile userProfileForTest = createUserProfileForTest();
+            UserProfile userProfileForTest = createUserProfileForTestWithId();
 
             Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(false);
 
@@ -175,7 +191,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationUpToFiftySixDaysPast_SuccessWithStatusAsDonor() throws ValidationException, NotFoundException {
-		UserProfile userProfileForTest = createUserProfileForTest();
+		UserProfile userProfileForTest = createUserProfileForTestWithId();
 		userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
 		Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
@@ -188,7 +204,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPast_SuccessWithStatusAsPotentialDonor() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTestWithId();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
@@ -201,7 +217,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationMoreThanHundredTwentyDays_SuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
-		UserProfile userProfileForTest = createUserProfileForTest();
+		UserProfile userProfileForTest = createUserProfileForTestWithId();
 		userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
 		Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
@@ -214,7 +230,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfile_UserProfileWithLastDonationNull_SuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
-		UserProfile userProfileForTest = createUserProfileForTest();
+		UserProfile userProfileForTest = createUserProfileForTestWithId();
 		userProfileForTest.setLastDonation(null);
 		Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
 
@@ -227,7 +243,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfile_UserProfileLastDonationInFuture_FailValidationLastDonationDateInFuture() throws NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTestWithId();
         userProfileForTest.setLastDonation(LocalDate.now().plusDays(1));
 
         Mockito.when(userProfileDao.existsById(userProfileForTest.getUserId())).thenReturn(true);
@@ -240,6 +256,32 @@ public class UserServiceTest {
         }
     }
 
+
+    @Test
+    public void updateUserPassword() throws NotFoundException, ValidationException {
+        Long userId = IdGenerator.generateNewId();
+        String unencryptedNewPassword = "newPassword";
+        Mockito.when(userProfileDao.existsById(userId)).thenReturn(true);
+
+        target.updateUserPassword(userId, unencryptedNewPassword);
+
+        ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<String> unencryptedNewPasswordCaptor = ArgumentCaptor.forClass(String.class);
+        Mockito.verify(userSecurityService).updateUserPassword(userIdCaptor.capture(), unencryptedNewPasswordCaptor.capture());
+        Assert.assertEquals(userId, userIdCaptor.getValue());
+        Assert.assertEquals(unencryptedNewPassword, unencryptedNewPasswordCaptor.getValue());
+    }
+
+    @Test
+    public void updateUserPasswordWithoutPassword() throws NotFoundException {
+        try {
+            target.updateUserPassword(IdGenerator.generateNewId(), null);
+            Assert.fail();
+        } catch (ValidationException e) {
+            Assert.assertEquals("New password cannot be empty.", e.getMessage());
+        }
+    }
+
     private UserProfile createUserProfileForTest() {
         UserProfile userProfile = new UserProfile();
         userProfile.setName("John Test");
@@ -248,6 +290,12 @@ public class UserServiceTest {
         userProfile.setBloodType(BloodType.AB_NEGATIVE);
         userProfile.setDaysBetweenReminders(30);
         userProfile.setNextReminder(LocalDate.now().plusDays(60));
+        return userProfile;
+    }
+
+    private UserProfile createUserProfileForTestWithId() {
+        UserProfile userProfile = createUserProfileForTest();
+        userProfile.setUserId(IdGenerator.generateNewId());
         return userProfile;
     }
 }

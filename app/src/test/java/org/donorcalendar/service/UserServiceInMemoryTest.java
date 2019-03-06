@@ -14,6 +14,7 @@ import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.persistence.UserProfileDaoInMemoryImpl;
 import org.donorcalendar.persistence.UserSecurityDetailsDao;
 import org.donorcalendar.persistence.UserSecurityDetailsDaoInMemoryImpl;
+import org.donorcalendar.util.IdGenerator;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,6 +39,20 @@ public class UserServiceInMemoryTest {
 
         Assert.assertTrue(userProfileDao.findById(savedUserProfile.getUserId()).isPresent());
         Assert.assertNotNull(userSecurityDetailsDao.findByUserId(savedUserProfile.getUserId()));
+    }
+
+    @Test
+    public void newUserWithEmptyPassword() {
+        UserProfile userProfileForTest = createUserProfileForTest();
+        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails("");
+        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+
+        try {
+            target.saveNewUser(userForTest);
+            Assert.fail();
+        } catch (ValidationException e) {
+            Assert.assertEquals("Password cannot be empty.", e.getMessage());
+        }
     }
 
     @Test
@@ -209,6 +224,30 @@ public class UserServiceInMemoryTest {
             Assert.fail();
         } catch (ValidationException e) {
             Assert.assertEquals("Last donation date can't be in the future.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void updateUserPassword() throws NotFoundException, ValidationException {
+        UserProfile userProfileForTest = createUserProfileForTest();
+        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        userProfileForTest = target.saveNewUser(userForTest);
+        UserSecurityDetails securityDetailsBeforeUpdate = userSecurityDetailsDao.findByUserId(userProfileForTest.getUserId());
+
+        target.updateUserPassword(userProfileForTest.getUserId(), "differentPassword");
+
+        UserSecurityDetails securityDetailsAfterUpdate = userSecurityDetailsDao.findByUserId(userProfileForTest.getUserId());
+        Assert.assertNotEquals(securityDetailsBeforeUpdate.getPassword(), securityDetailsAfterUpdate.getPassword());
+    }
+
+    @Test
+    public void updateUserPasswordWithoutPassword() throws NotFoundException {
+        try{
+            target.updateUserPassword(IdGenerator.generateNewId(), null);
+            Assert.fail();
+        } catch (ValidationException e) {
+            Assert.assertEquals("New password cannot be empty.", e.getMessage());
         }
     }
 

@@ -27,6 +27,9 @@ public class UserService {
     public UserProfile saveNewUser(User user) throws ValidationException {
         UserProfile userProfile = new UserProfile(user.getUserProfile());
         if (isUserEmailAvailable(userProfile.getEmail())) {
+            if (isEmptyOrNullPassword(user.getUserSecurity().getPassword())) {
+                throw new ValidationException("Password cannot be empty.");
+            }
             populateUserStatus(userProfile);
             userProfile = userProfileDao.saveNewUser(userProfile);
             User newUser = new User(userProfile, user.getUserSecurity());
@@ -35,6 +38,11 @@ public class UserService {
         } else {
             throw new ValidationException("The email " + userProfile.getEmail() + " is already registered.");
         }
+    }
+
+    private boolean isEmptyOrNullPassword(String password) {
+        // could be improved to validate complexity of the password
+        return password == null || password.isEmpty();
     }
 
     private void populateUserStatus(UserProfile userProfile) throws ValidationException {
@@ -59,11 +67,11 @@ public class UserService {
     }
 
     public void updateUserPassword(Long userId, String unencryptedPassword) throws ValidationException, NotFoundException {
-        if (unencryptedPassword != null && !unencryptedPassword.isEmpty()) {
+        if (isEmptyOrNullPassword(unencryptedPassword)) {
+            throw new ValidationException("New password cannot be empty.");
+        } else {
             validateIfUserExists(userId);
             userSecurityService.updateUserPassword(userId, unencryptedPassword);
-        } else {
-            throw new ValidationException("New password cannot be empty.");
         }
     }
 
