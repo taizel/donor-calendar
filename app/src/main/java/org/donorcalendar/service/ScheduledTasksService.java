@@ -1,4 +1,4 @@
-package org.donorcalendar;
+package org.donorcalendar.service;
 
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
@@ -13,14 +13,14 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @Component
-public class ScheduledTasks {
+public class ScheduledTasksService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final UserProfileDao userProfileDao;
 
     @Autowired
-    public ScheduledTasks(UserProfileDao userProfileDao) {
+    public ScheduledTasksService(UserProfileDao userProfileDao) {
         this.userProfileDao = userProfileDao;
     }
 
@@ -28,7 +28,7 @@ public class ScheduledTasks {
     public void sendEmailToRememberDonors() {
         for (UserProfile user : userProfileDao.findUsersToRemind()) {
             log.info("Sent reminder for user: {}", user.getEmail());
-            user.setNextReminder(user.getNextReminder().plusDays(user.getDaysBetweenReminders()));
+            user.setNextReminder(LocalDate.now().plusDays(user.getDaysBetweenReminders()));
             userProfileDao.updateUser(user);
         }
     }
