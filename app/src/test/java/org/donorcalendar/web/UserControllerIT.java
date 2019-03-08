@@ -2,8 +2,8 @@ package org.donorcalendar.web;
 
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
+import org.donorcalendar.AbstractRestAssuredIntegrationTest;
 import org.donorcalendar.JacksonConfig;
-import org.donorcalendar.RestAssuredAbstractIntegrationTest;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.equalTo;
 
-public class UserControllerIT extends RestAssuredAbstractIntegrationTest {
+public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
     private final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
     private final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";

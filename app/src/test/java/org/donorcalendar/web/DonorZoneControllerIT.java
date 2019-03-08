@@ -1,7 +1,7 @@
 package org.donorcalendar.web;
 
 import org.apache.http.HttpStatus;
-import org.donorcalendar.RestAssuredAbstractIntegrationTest;
+import org.donorcalendar.AbstractRestAssuredIntegrationTest;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileEntity;
@@ -16,7 +16,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 
-public class DonorZoneControllerIT extends RestAssuredAbstractIntegrationTest {
+public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
 
     private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
     private static final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
