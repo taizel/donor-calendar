@@ -178,10 +178,19 @@
                                             <value>COVEREDRATIO</value>
                                             <minimum>0.77</minimum>
                                         </limit>
+                                    </limits>
+                                </rule>
+                                <rule>
+                                    <element>CLASS</element>
+                                    <excludes>
+                                        <exclude>*Exception</exclude>
+                                        <exclude>*Config</exclude>
+                                    </excludes>
+                                    <limits>
                                         <limit>
                                             <counter>CLASS</counter>
                                             <value>MISSEDCOUNT</value>
-                                            <maximum>1</maximum>
+                                            <maximum>0</maximum>
                                         </limit>
                                     </limits>
                                 </rule>
