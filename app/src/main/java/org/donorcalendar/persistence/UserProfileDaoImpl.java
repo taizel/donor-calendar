@@ -3,7 +3,6 @@ package org.donorcalendar.persistence;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +51,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
     }
 
     @Override
-    public Optional<UserProfile> findByEmail(@Param("email") String email) {
+    public Optional<UserProfile> findByEmail(String email) {
         UserProfileEntity userProfileEntity = userProfileRepository.findByEmail(email);
         return userProfileEntity != null ? Optional.of(userProfileEntity.getUserProfile()) : Optional.empty();
     }
