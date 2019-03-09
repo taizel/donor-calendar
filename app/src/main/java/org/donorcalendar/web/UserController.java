@@ -14,13 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(path = "/user")
 public class UserController {
 
     private final UserService userService;
@@ -30,13 +32,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public UserDto createNewUser(@RequestBody NewUserDto newUserDto) throws ValidationException {
         User user = newUserDtoToUser(newUserDto);
         return userToUserDto(userService.saveNewUser(user));
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @PutMapping
     public UserDto updateUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UserDto userDto) throws ValidationException, NotFoundException {
 
         Long userId = userDetails.getUserProfile().getUserId();
@@ -47,7 +49,7 @@ public class UserController {
         return userToUserDto(userProfileToUpdate);
     }
 
-    @RequestMapping(value = "/update-password", method = RequestMethod.PUT)
+    @PutMapping(path = "/update-password")
     public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
 
         UserProfile userProfile = userDetails.getUserProfile();
@@ -56,7 +58,7 @@ public class UserController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public UserDto getLoggedUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails) {
         return userToUserDto(userDetails.getUserProfile());
     }

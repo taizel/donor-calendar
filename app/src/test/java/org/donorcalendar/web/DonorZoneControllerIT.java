@@ -74,7 +74,7 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
             get("/donor-zone").
         then().
             assertThat().
-            body("shopping-facilities", hasItems("Cool Restaurant", "Nice Burger Place", "Amazing Bakery"));
+            body(".", hasItems("Cool Restaurant", "Nice Burger Place", "Amazing Bakery"));
     }
 
     @Test
