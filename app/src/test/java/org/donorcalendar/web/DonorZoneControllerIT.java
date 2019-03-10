@@ -32,7 +32,7 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
     private UserProfileEntity bilbo;
 
     @Override
-    public void businessSetUp() {
+    public void setUp() {
         john = new UserProfileEntity();
         john.setUserId(IdGenerator.generateNewId());
         john.setName("John");
@@ -47,7 +47,6 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
         bilbo.setBloodType(BloodType.A_NEGATIVE);
         bilbo.setUserStatus(UserStatus.NEED_TO_DONATE);
 
-        userProfileRepository.deleteAll();
         john = userProfileRepository.save(john);
         bilbo = userProfileRepository.save(bilbo);
 
@@ -59,9 +58,14 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
         userSecurityDetailsEntityBilbo.setUserId(bilbo.getUserId());
         userSecurityDetailsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
 
-        userSecurityDetailsRepository.deleteAll();
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
+    }
+
+    @Override
+    public void tearDown() {
+        userProfileRepository.deleteAll();
+        userSecurityDetailsRepository.deleteAll();
     }
 
     @Test

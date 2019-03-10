@@ -1,6 +1,5 @@
 package org.donorcalendar.web;
 
-import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;
 import org.donorcalendar.AbstractRestAssuredIntegrationTest;
 import org.donorcalendar.JacksonConfig;
@@ -14,7 +13,6 @@ import org.donorcalendar.util.IdGenerator;
 import org.donorcalendar.web.dto.NewUserDto;
 import org.donorcalendar.web.dto.UpdateUserDto;
 import org.donorcalendar.web.dto.UpdateUserPasswordDto;
-import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,12 +24,14 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
-    private final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
-    private final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
-    private final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
-    private final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
+    private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
+    private static final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
+    private static final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
+    private static final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
+    private static final String BASE_PATH = "/user";
+    private static final String JSON_CONTENT_TYPE = "application/json";
 
-    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
 
     @Autowired
     private UserProfileRepository userProfileRepository;
@@ -42,7 +42,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     private UserProfileEntity bilbo;
 
     @Override
-    public void businessSetUp() {
+    public void setUp() {
         john = new UserProfileEntity();
         john.setUserId(IdGenerator.generateNewId());
         john.setName("John");
@@ -63,7 +63,6 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         bilbo.setNextReminder(LocalDate.now());
         bilbo.setUserStatus(UserStatus.DONOR);
 
-        userProfileRepository.deleteAll();
         john = userProfileRepository.save(john);
         bilbo = userProfileRepository.save(bilbo);
 
@@ -75,14 +74,14 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         userSecurityDetailsEntityBilbo.setUserId(bilbo.getUserId());
         userSecurityDetailsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
 
-        userSecurityDetailsRepository.deleteAll();
         userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
         userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
     }
 
-    @After
-    public void cleanUp() {
-        RestAssured.reset();
+    @Override
+    public void tearDown() {
+        userProfileRepository.deleteAll();
+        userSecurityDetailsRepository.deleteAll();
     }
 
     @Test
@@ -92,7 +91,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
-                get("/user").
+                get(BASE_PATH).
         then().
                 assertThat().
                 body("name", equalTo(john.getName())).
@@ -111,7 +110,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         expect().
             statusCode(HttpStatus.SC_OK).
         when().
-            get("/user").
+            get(BASE_PATH).
         then().
             assertThat().
                 body("name", equalTo(bilbo.getName())).
@@ -122,20 +121,22 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     public void canUpdateUserTest() {
         UpdateUserDto updateUserDto = userEntityToUserDto(bilbo);
         updateUserDto.setName("Bilbo Update");
-        RestAssured.authentication = basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD);
 
         given().
-                contentType("application/json").
+                contentType(JSON_CONTENT_TYPE).
                 body(updateUserDto).
+                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
                 when().
-                put("/user");
+                put(BASE_PATH);
 
+        given().
+                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
-                get("/user").
+                get(BASE_PATH).
         then().
             assertThat().
                 body("name", equalTo(updateUserDto.getName()));
@@ -147,20 +148,20 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         String newPassword = "passwordUpdate";
         userPasswordDto.setNewPassword(newPassword);
         given().
-            contentType("application/json").
+            contentType(JSON_CONTENT_TYPE).
             body(userPasswordDto).
             auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
             statusCode(HttpStatus.SC_NO_CONTENT).
         when().
-            put("/user/update-password");
+            put(BASE_PATH + "/update-password");
 
         given().
             auth().basic(bilbo.getEmail(), newPassword).
         expect().
             statusCode(HttpStatus.SC_OK).
         when().
-            get("/user");
+            get(BASE_PATH);
     }
 
     @Test
@@ -174,19 +175,19 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         newUserDto.setUserStatus(UserStatus.fromNumberOfElapsedDaysSinceLastDonation(60));
 
         given().
-                contentType("application/json").
+                contentType(JSON_CONTENT_TYPE).
                 body(newUserDto).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
-                post("/user");
+                post(BASE_PATH);
 
         given().
                 auth().basic(newUserDto.getEmail(), newUserDto.getPassword()).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
-                get("/user").
+                get(BASE_PATH).
                 then().
                 assertThat().
                 body("name", equalTo(newUserDto.getName())).
@@ -204,20 +205,20 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         newUserDto.setBloodType(BloodType.A_POSITIVE);
 
         given().
-                contentType("application/json").
+                contentType(JSON_CONTENT_TYPE).
                 body(newUserDto).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
-                post("/user");
+                post(BASE_PATH);
 
         given().
-                contentType("application/json").
+                contentType(JSON_CONTENT_TYPE).
                 body(newUserDto).
         expect().
                 statusCode(HttpStatus.SC_BAD_REQUEST).
         when().
-                post("/user");
+                post(BASE_PATH);
     }
 
     private UpdateUserDto userEntityToUserDto(UserProfileEntity user) {
