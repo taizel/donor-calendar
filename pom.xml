@@ -24,6 +24,7 @@
     <modules>
         <module>app</module>
         <module>core</module>
+        <module>reporting</module>
     </modules>
 
     <scm>

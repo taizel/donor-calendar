@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>donor-calendar-parent</artifactId>
+        <groupId>org.donorcalendar</groupId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>donor-calendar-reporting</artifactId>
+    <packaging>pom</packaging>
+    <name>Donor Calendar Reporting</name>
+    <description>Module to aggregate JaCoCo reports for multiple modules.</description>
+
+    <profiles>
+        <profile>
+            <id>report-aggregate</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>aggregate-unit</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report-aggregate</goal>
+                                </goals>
+                                <configuration>
+                                    <title>Donor Calendar Unit Tests Coverage</title>
+                                    <dataFileExcludes>
+                                        <dataFileExclude>target/jacoco-it.exec</dataFileExclude>
+                                    </dataFileExcludes>
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-unit</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>aggregate-integration</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report-aggregate</goal>
+                                </goals>
+                                <configuration>
+                                    <title>Donor Calendar Integration Tests Coverage</title>
+                                    <dataFileExcludes>
+                                        <dataFileExclude>target/jacoco.exec</dataFileExclude>
+                                    </dataFileExcludes>
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-integration</outputDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>aggregate-all</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>report-aggregate</goal>
+                                </goals>
+                                <configuration>
+                                    <title>Donor Calendar Unit and Integration Tests Coverage</title>
+                                    <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-all</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-app</artifactId>
+			<version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+</project>
