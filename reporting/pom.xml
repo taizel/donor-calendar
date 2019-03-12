@@ -29,15 +29,15 @@
                         <executions>
                             <execution>
                                 <id>aggregate-unit</id>
-                                <phase>verify</phase>
+                                <phase>test</phase>
                                 <goals>
                                     <goal>report-aggregate</goal>
                                 </goals>
                                 <configuration>
                                     <title>Donor Calendar Unit Tests Coverage</title>
-                                    <dataFileExcludes>
-                                        <dataFileExclude>target/jacoco-it.exec</dataFileExclude>
-                                    </dataFileExcludes>
+                                    <dataFileIncludes>
+                                        <dataFileInclude>target/jacoco.exec</dataFileInclude>
+                                    </dataFileIncludes>
                                     <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-unit</outputDirectory>
                                 </configuration>
                             </execution>
@@ -49,9 +49,9 @@
                                 </goals>
                                 <configuration>
                                     <title>Donor Calendar Integration Tests Coverage</title>
-                                    <dataFileExcludes>
-                                        <dataFileExclude>target/jacoco.exec</dataFileExclude>
-                                    </dataFileExcludes>
+                                    <dataFileIncludes>
+                                        <dataFileInclude>target/jacoco-it.exec</dataFileInclude>
+                                    </dataFileIncludes>
                                     <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-integration</outputDirectory>
                                 </configuration>
                             </execution>
