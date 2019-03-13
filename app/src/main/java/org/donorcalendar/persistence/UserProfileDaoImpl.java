@@ -1,10 +1,8 @@
 package org.donorcalendar.persistence;
 
 import org.donorcalendar.model.UserProfile;
-import org.donorcalendar.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-@Transactional
 public class UserProfileDaoImpl implements UserProfileDao {
 
     private final UserProfileRepository userProfileRepository;
@@ -25,15 +22,8 @@ public class UserProfileDaoImpl implements UserProfileDao {
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
         UserProfileEntity userProfileEntity = convertUserToUserEntity(userProfile);
-        if(needsToGenerateId(userProfileEntity.getUserId())) {
-            userProfileEntity.setUserId(IdGenerator.generateNewId());
-        }
         userProfileEntity = userProfileRepository.save(userProfileEntity);
         return userProfileEntity.getUserProfile();
-    }
-
-    private boolean needsToGenerateId(Long userId) {
-        return !(userId != null && userId > 0);
     }
 
     @Override
@@ -62,7 +52,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
     }
 
     @Override
-    public void updateUser(UserProfile userProfile){
+    public void updateUser(UserProfile userProfile) {
         UserProfileEntity userProfileEntity = convertUserToUserEntity(userProfile);
         userProfileRepository.save(userProfileEntity);
     }
@@ -72,7 +62,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
         return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserProfile).collect(Collectors.toList());
     }
 
-    private UserProfileEntity convertUserToUserEntity(UserProfile userProfile){
+    private UserProfileEntity convertUserToUserEntity(UserProfile userProfile) {
         UserProfileEntity userProfileEntity = new UserProfileEntity();
         userProfileEntity.setUserId(userProfile.getUserId());
         userProfileEntity.setName(userProfile.getName());

@@ -6,6 +6,7 @@ import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.ValidationException;
 import org.donorcalendar.persistence.UserProfileDao;
+import org.donorcalendar.util.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class UserService {
                 throw new ValidationException("Password cannot be empty.");
             }
             populateUserStatus(userProfile);
+            userProfile.setUserId(IdGenerator.generateNewId());
             userProfile = userProfileDao.saveNewUser(userProfile);
             User newUser = new User(userProfile, user.getUserSecurity());
             userSecurityService.saveNewUserSecurityDetails(newUser);

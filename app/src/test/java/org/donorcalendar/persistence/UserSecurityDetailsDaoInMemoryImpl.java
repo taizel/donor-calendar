@@ -10,8 +10,9 @@ public class UserSecurityDetailsDaoInMemoryImpl implements UserSecurityDetailsDa
     private final HashMap<Long, UserSecurityDetails> cache = new HashMap<>();
 
     @Override
-    public void saveNewUserSecurityDetails(Long userId, UserSecurityDetails userSecurityDetails) {
+    public UserSecurityDetails saveNewUserSecurityDetails(Long userId, UserSecurityDetails userSecurityDetails) {
         cache.put(userId, new UserSecurityDetails(userSecurityDetails));
+        return new UserSecurityDetails(userSecurityDetails);
     }
 
     @Override

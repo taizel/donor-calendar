@@ -62,8 +62,8 @@ public class ScheduledTasksServiceTest {
     private UserProfile createTestUserSkeleton() {
         UserProfile user = new UserProfile();
         user.setUserId(IdGenerator.generateNewId());
-        user.setName("John Doe");
-        user.setEmail("johntest@test.com");
+        user.setName("John Doe " + user.getUserId());
+        user.setEmail(user.getUserId() + "johntest@test.com");
         user.setBloodType(BloodType.A_NEGATIVE);
         return user;
     }

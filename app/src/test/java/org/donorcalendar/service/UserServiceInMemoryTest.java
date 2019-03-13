@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class UserServiceInMemoryTest {
 
-    private final String UNENCRYPTED_TEST_PASSWORD = "pass1";
+    private static final String UNENCRYPTED_TEST_PASSWORD = "pass1";
 
     private final UserProfileDao userProfileDao = new UserProfileDaoInMemoryImpl();
     private final UserSecurityDetailsDao userSecurityDetailsDao = new UserSecurityDetailsDaoInMemoryImpl();
@@ -253,8 +253,9 @@ public class UserServiceInMemoryTest {
 
     private UserProfile createUserProfileForTest() {
         UserProfile userProfile = new UserProfile();
-        userProfile.setName("John Test");
-        userProfile.setEmail("johntest@test.com");
+        long id = IdGenerator.generateNewId();
+        userProfile.setName("John Doe " + id);
+        userProfile.setEmail(id + "johntest@test.com");
         userProfile.setLastDonation(LocalDate.now().minusDays(7));
         userProfile.setBloodType(BloodType.AB_NEGATIVE);
         userProfile.setDaysBetweenReminders(30);

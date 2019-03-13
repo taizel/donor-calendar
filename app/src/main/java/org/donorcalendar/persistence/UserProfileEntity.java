@@ -96,7 +96,7 @@ public class UserProfileEntity {
         this.userStatus = userStatus;
     }
 
-    public UserProfile getUserProfile(){
+    UserProfile getUserProfile() {
         UserProfile userProfile = new UserProfile();
         userProfile.setUserId(this.getUserId());
         userProfile.setName(this.getName());

@@ -15,11 +15,11 @@ public class UserSecurityDetailsDaoImpl implements UserSecurityDetailsDao {
     }
 
     @Override
-    public void saveNewUserSecurityDetails(Long userId, UserSecurityDetails userSecurityDetails) {
+    public UserSecurityDetails saveNewUserSecurityDetails(Long userId, UserSecurityDetails userSecurityDetails) {
         UserSecurityDetailsEntity userSecurityDetailsEntity = new UserSecurityDetailsEntity();
         userSecurityDetailsEntity.setUserId(userId);
         userSecurityDetailsEntity.setPassword(userSecurityDetails.getPassword());
-        userSecurityDetailsRepository.save(userSecurityDetailsEntity);
+        return userSecurityDetailsRepository.save(userSecurityDetailsEntity).getUserSecurityDetails();
     }
 
     @Override
