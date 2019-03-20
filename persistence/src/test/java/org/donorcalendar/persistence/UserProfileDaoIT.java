@@ -1,6 +1,6 @@
 package org.donorcalendar.persistence;
 
-import org.donorcalendar.AbstractIntegrationTest;
+import org.donorcalendar.AbstractPersistenceIntegrationTest;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
@@ -13,11 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @SpringBootTest
-public class UserProfileDaoIT extends AbstractIntegrationTest {
+public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
 
     @Autowired
     private UserProfileDao userProfileDao;
@@ -27,7 +26,6 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
     @Test
     public void saveNewUser() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
-
         UserProfile persistedUser = userProfileDao.saveNewUser(userToPersist);
 
         assertUserProfileFieldsMatches(userToPersist, persistedUser);
@@ -59,10 +57,9 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         userProfileDao.saveNewUser(userToPersist);
 
-        Optional<UserProfile> persistedUser = userProfileDao.findById(userToPersist.getUserId());
+        UserProfile persistedUser = userProfileDao.findById(userToPersist.getUserId()).orElse(new UserProfile());
 
-        Assert.assertTrue(persistedUser.isPresent());
-        assertUserProfileFieldsMatches(userToPersist, persistedUser.get());
+        assertUserProfileFieldsMatches(userToPersist, persistedUser);
     }
 
     @Test
@@ -70,10 +67,9 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         userProfileDao.saveNewUser(userToPersist);
 
-        Optional<UserProfile> persistedUser = userProfileDao.findByEmail(userToPersist.getEmail());
+        UserProfile persistedUser = userProfileDao.findByEmail(userToPersist.getEmail()).orElse(new UserProfile());
 
-        Assert.assertTrue(persistedUser.isPresent());
-        assertUserProfileFieldsMatches(userToPersist, persistedUser.get());
+        assertUserProfileFieldsMatches(userToPersist, persistedUser);
     }
 
     @Test
@@ -86,6 +82,26 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
 
         Assert.assertFalse(beforeSave);
         Assert.assertTrue(afterSave);
+    }
+
+    @Test
+    public void updateUser() {
+        UserProfile userToPersist = generateDefaultTestUserProfile();
+        userToPersist.setBloodType(BloodType.O_POSITIVE);
+        userToPersist.setUserStatus(UserStatus.NEED_TO_DONATE);
+        UserProfile userToUpdate = userProfileDao.saveNewUser(userToPersist);
+        userToUpdate.setName("Updated " + userToUpdate.getName());
+        userToUpdate.setEmail("update" + userToUpdate.getEmail());
+        userToUpdate.setLastDonation(userToUpdate.getLastDonation().minusDays(1));
+        userToUpdate.setBloodType(BloodType.AB_NEGATIVE);
+        userToUpdate.setDaysBetweenReminders(userToUpdate.getDaysBetweenReminders() + 30);
+        userToUpdate.setNextReminder(userToUpdate.getNextReminder().plusDays(90));
+        userToUpdate.setUserStatus(UserStatus.DONOR);
+
+        userProfileDao.updateUser(userToUpdate);
+
+        UserProfile updatedUserProfile = userProfileDao.findById(userToUpdate.getUserId()).orElse(new UserProfile());
+        assertUserProfileFieldsMatches(userToUpdate, updatedUserProfile);
     }
 
     @Test
@@ -125,7 +141,7 @@ public class UserProfileDaoIT extends AbstractIntegrationTest {
         user.setEmail(user.getUserId() + "johntest@test.com");
         user.setLastDonation(TODAY.minusDays(7));
         user.setBloodType(BloodType.A_NEGATIVE);
-        user.setDaysBetweenReminders(30);
+        user.setDaysBetweenReminders(90);
         user.setNextReminder(TODAY.plusDays(23));
         user.setUserStatus(UserStatus.fromNumberOfElapsedDaysSinceLastDonation(7));
         return user;

@@ -11,8 +11,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(initializers = { AbstractIntegrationTest.Initializer.class})
-public abstract class AbstractIntegrationTest {
+@ContextConfiguration(initializers = { AbstractPersistenceIntegrationTest.Initializer.class})
+public abstract class AbstractPersistenceIntegrationTest {
 
     private static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer<>().
             withTmpFs(Collections.singletonMap(System.getProperty("java.io.tmpdir"), "rw"));

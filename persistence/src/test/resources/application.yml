@@ -1,8 +1,5 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://db-donor-calendar:5432/donor
-    username: donor
-    password: donor-password
+  # Spring datasource configuration is done via code on AbstractPersistenceIntegrationTest
 
   flyway:
     enabled: true

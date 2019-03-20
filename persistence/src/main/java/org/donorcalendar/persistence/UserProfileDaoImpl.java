@@ -42,8 +42,8 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public Optional<UserProfile> findByEmail(String email) {
-        UserProfileEntity userProfileEntity = userProfileRepository.findByEmail(email);
-        return userProfileEntity != null ? Optional.of(userProfileEntity.getUserProfile()) : Optional.empty();
+        Optional<UserProfileEntity> userProfileEntity = userProfileRepository.findByEmail(email);
+        return userProfileEntity.map(UserProfileEntity::getUserProfile);
     }
 
     @Override

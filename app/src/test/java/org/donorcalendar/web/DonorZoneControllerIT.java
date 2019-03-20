@@ -64,8 +64,8 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
 
     @Override
     public void tearDown() {
-        userProfileRepository.deleteAll();
         userSecurityDetailsRepository.deleteAll();
+        userProfileRepository.deleteAll();
     }
 
     @Test

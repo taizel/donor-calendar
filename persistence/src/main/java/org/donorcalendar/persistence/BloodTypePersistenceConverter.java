@@ -8,7 +8,7 @@ import javax.persistence.Converter;
 import org.donorcalendar.model.BloodType;
 
 @Converter(autoApply = true)
-public class BloodTypeConverter implements AttributeConverter<BloodType, String> {
+public class BloodTypePersistenceConverter implements AttributeConverter<BloodType, String> {
 
     private static final HashMap<String, BloodType> valuesMap = new HashMap<>();
     static {
@@ -24,7 +24,7 @@ public class BloodTypeConverter implements AttributeConverter<BloodType, String>
     }
 
     @Override
-    public BloodType convertToEntityAttribute(String bloodType) {
-        return valuesMap.get(bloodType);
+    public BloodType convertToEntityAttribute(String value) {
+        return valuesMap.get(value);
     }
 }

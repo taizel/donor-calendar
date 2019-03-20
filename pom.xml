@@ -25,6 +25,7 @@
         <module>app</module>
         <module>core</module>
         <module>reporting</module>
+        <module>persistence</module>
     </modules>
 
     <scm>
