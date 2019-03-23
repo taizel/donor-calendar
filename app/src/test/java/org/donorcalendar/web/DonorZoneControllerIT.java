@@ -91,7 +91,7 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
                 get("/donor-zone").
         then().
                 assertThat().
-                body("error-message", equalTo("You need to be in the status \"Donor\"or \"Potential Donor\" to access this resource."));
+                body("errorMessage", equalTo("You need to be in the status \"Donor\"or \"Potential Donor\" to access this resource."));
     }
 
 }

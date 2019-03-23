@@ -11,16 +11,16 @@
 
     var newUser = {
         name: "Test" + count,
-        email: "test" + count + "@testmail.com",
-        password: "testpass",
-        "blood-type": "A_NEGATIVE",
-        "last-donation": "2018-12-20"
+        email: "test" + count + "@test.mail.com",
+        password: "test+pass",
+        bloodType: "A_NEGATIVE",
+        lastDonation: "2018-12-20"
     };
 
     function setNextTestUser() {
         count++;
         newUser.name = "Test" + count;
-        newUser.email = "test" + count + "@testmail.com";
+        newUser.email = "test" + count + "@test.mail.com";
     }
 
     function newDonorForm() {
@@ -51,9 +51,9 @@
             }),
             m("label", "Blood type:"),
             m("select", {
-                value: newUser["blood-type"],
+                value: newUser.bloodType,
                 onchange: function (e) {
-                    newUser["blood-type"] = e.target.value;
+                    newUser.bloodType = e.target.value;
                 }
             }, [
                 m("option", {value: "A_NEGATIVE"}, "A-"),
@@ -61,10 +61,10 @@
                 m("option", {value: "O_NEGATIVE"}, "O-")
             ]),
             m("label", "Last donation:"),
-            m("input[type=tex][name=last-donation][placeholder=yyyy/MM/dd]", {
-                value: newUser["last-donation"],
+            m("input[type=tex][name=lastDonation][placeholder=yyyy/MM/dd]", {
+                value: newUser.lastDonation,
                 onchange: function (e) {
-                    newUser["last-donation"] = e.target.value;
+                    newUser.lastDonation = e.target.value;
                 }
             }),
             m("button[type=submit]", "Save")
@@ -80,8 +80,8 @@
                 name: newUser.name,
                 email: newUser.email,
                 password: newUser.password,
-                "blood-type": newUser["blood-type"],
-                "last-donation": newUser["last-donation"]
+                bloodType: newUser.bloodType,
+                lastDonation: newUser.lastDonation
             }
         })
         .then(function (result) {

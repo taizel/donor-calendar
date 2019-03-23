@@ -15,9 +15,9 @@
         constructor(props) {
             super(props);
             this.count = 0;
-            this.state = {name: "Test" + this.count, email: "test" + (this.count) + "@testmail.com",
-                "last-donation": "2018-12-05", "blood-type": "B_NEGATIVE",
-                "password": "testpass"};
+            this.state = {name: "Test" + this.count, email: "test" + (this.count) + "@test.mail.com",
+                lastDonation: "2018-12-05", bloodType: "B_NEGATIVE",
+                password: "test+pass"};
 
             this.handleChangeName = this.handleChangeName.bind(this);
             this.handleChangeEmail = this.handleChangeEmail.bind(this);
@@ -30,26 +30,26 @@
         setNextTestUser() {
             this.count++;
             this.setState({name: "Test" + this.count});
-            this.setState({email: "test" + (this.count) + "@testmail.com"});
+            this.setState({email: "test" + (this.count) + "@test.mail.com"});
         }
 
         handleChangeName(event) {
-            this.setState({"name": event.target.value});
+            this.setState({name: event.target.value});
         }
 
         handleChangeEmail(event) {
-            this.setState({"email": event.target.value});
+            this.setState({email: event.target.value});
         }
 
         handleChangeLastDonation(event) {
-            this.setState({"last-donation": event.target.value});
+            this.setState({lastDonation: event.target.value});
         }
 
         handleChangeBloodType(event) {
-            this.setState({"blood-type": event.target.value});
+            this.setState({bloodType: event.target.value});
         }
         handleChangePassword(event) {
-            this.setState({"password": event.target.value});
+            this.setState({password: event.target.value});
         }
 
         handleSubmit(event) {
@@ -63,8 +63,8 @@
                 body: JSON.stringify({
                     email: this.state.email,
                     name: this.state.name,
-                    "last-donation": this.state["last-donation"],
-                    "blood-type": this.state["blood-type"],
+                    lastDonation: this.state.lastDonation,
+                    bloodType: this.state.bloodType,
                     password: this.state.password
                 })
             })
@@ -99,7 +99,7 @@
                     </label>
                     <label>
                         Blood type:
-                        <select value={this.state["blood-type"]} onChange={this.handleChangeBloodType}>
+                        <select value={this.state.bloodType} onChange={this.handleChangeBloodType}>
                             <option value="A_NEGATIVE">A-</option>
                             <option value="B_NEGATIVE">B-</option>
                             <option value="O_NEGATIVE">O-</option>
@@ -107,7 +107,7 @@
                     </label>
                     <label>
                         Last donation:
-                        <input type="text" value={this.state["last-donation"]} onChange={this.handleChangeLastDonation} />
+                        <input type="text" value={this.state.lastDonation} onChange={this.handleChangeLastDonation} />
                     </label>
 
                     <input type="submit" value="Save" />
