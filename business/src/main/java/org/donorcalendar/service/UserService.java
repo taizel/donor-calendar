@@ -17,12 +17,12 @@ import java.time.temporal.ChronoUnit;
 public class UserService {
 
     private final UserProfileDao userProfileDao;
-    private final UserSecurityService userSecurityService;
+    private final UserSecurityDetailsService userSecurityDetailsService;
 
     @Autowired
-    public UserService(UserProfileDao userProfileDao, UserSecurityService userSecurityService) {
+    public UserService(UserProfileDao userProfileDao, UserSecurityDetailsService userSecurityDetailsService) {
         this.userProfileDao = userProfileDao;
-        this.userSecurityService = userSecurityService;
+        this.userSecurityDetailsService = userSecurityDetailsService;
     }
 
     public UserProfile saveNewUser(User user) throws ValidationException {
@@ -35,7 +35,7 @@ public class UserService {
             userProfile.setUserId(IdGenerator.generateNewId());
             userProfile = userProfileDao.saveNewUser(userProfile);
             User newUser = new User(userProfile, user.getUserSecurity());
-            userSecurityService.saveNewUserSecurityDetails(newUser);
+            userSecurityDetailsService.saveNewUserSecurityDetails(newUser);
             return userProfile;
         } else {
             throw new ValidationException("The email " + userProfile.getEmail() + " is already registered.");
@@ -73,7 +73,7 @@ public class UserService {
             throw new ValidationException("New password cannot be empty.");
         } else {
             validateIfUserExists(userId);
-            userSecurityService.updateUserPassword(userId, unencryptedPassword);
+            userSecurityDetailsService.updateUserPassword(userId, unencryptedPassword);
         }
     }
 

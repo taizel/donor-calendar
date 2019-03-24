@@ -54,41 +54,6 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>default-check</id>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <phase>test</phase>
-                        <configuration>
-                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>
-                            <rules>
-                                <rule>
-                                    <element>PACKAGE</element>
-                                    <includes>
-                                        <include>org.donorcalendar.service</include>
-                                    </includes>
-                                    <limits>
-                                        <limit>
-                                            <counter>INSTRUCTION</counter>
-                                            <value>COVEREDRATIO</value>
-                                            <minimum>1.00</minimum>
-                                        </limit>
-                                        <limit>
-                                            <counter>BRANCH</counter>
-                                            <value>MISSEDCOUNT</value>
-                                            <maximum>0</maximum>
-                                        </limit>
-                                        <limit>
-                                            <counter>CLASS</counter>
-                                            <value>MISSEDCOUNT</value>
-                                            <maximum>0</maximum>
-                                        </limit>
-                                    </limits>
-                                </rule>
-                            </rules>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>default-check-integration</id>
                         <goals>
                             <goal>check</goal>
@@ -97,7 +62,6 @@
                             <dataFile>${project.build.directory}/jacoco-it.exec</dataFile>
                             <excludes>
                                 <exclude>**/ControllerAdvice.class</exclude>
-                                <exclude>**/*Entity.class</exclude>
                             </excludes>
                             <rules>
                                 <rule>
@@ -150,6 +114,11 @@
         <dependency>
             <groupId>org.donorcalendar</groupId>
             <artifactId>donor-calendar-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-business</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

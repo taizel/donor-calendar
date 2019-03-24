@@ -26,6 +26,7 @@
         <module>core</module>
         <module>reporting</module>
         <module>persistence</module>
+        <module>business</module>
     </modules>
 
     <scm>

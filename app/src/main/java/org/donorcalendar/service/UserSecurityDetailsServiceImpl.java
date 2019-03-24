@@ -8,25 +8,27 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-class UserSecurityService {
+class UserSecurityDetailsServiceImpl implements UserSecurityDetailsService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final UserSecurityDetailsDao userSecurityDetailsDao;
 
     @Autowired
-    UserSecurityService(UserSecurityDetailsDao userSecurityDetailsDao) {
+    UserSecurityDetailsServiceImpl(UserSecurityDetailsDao userSecurityDetailsDao) {
         this.userSecurityDetailsDao = userSecurityDetailsDao;
         passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    void saveNewUserSecurityDetails(User user) {
+    @Override
+    public void saveNewUserSecurityDetails(User user) {
         UserSecurityDetails userSecurityDetails = new UserSecurityDetails(user.getUserSecurity());
         userSecurityDetails.setPassword(passwordEncoder.encode(userSecurityDetails.getPassword()));
         userSecurityDetailsDao.saveNewUserSecurityDetails(user.getUserProfile().getUserId(), userSecurityDetails);
     }
 
-    void updateUserPassword(Long userId, String newPassword) {
+    @Override
+    public void updateUserPassword(Long userId, String newPassword) {
         userSecurityDetailsDao.updateUserPassword(userId, passwordEncoder.encode(newPassword));
     }
 }

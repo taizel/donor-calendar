@@ -10,13 +10,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.Assert.assertTrue;
 
-public class UserSecurityServiceInMemoryTest {
+public class UserSecurityDetailsServiceInMemoryTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private final UserSecurityDetailsDaoInMemoryImpl userSecurityDao = new UserSecurityDetailsDaoInMemoryImpl();
 
-    private final UserSecurityService target = new UserSecurityService(userSecurityDao);
+    private final UserSecurityDetailsServiceImpl target = new UserSecurityDetailsServiceImpl(userSecurityDao);
 
     @Test
     public void saveNewUserSecurityDetails_ValidDetails_Success() {

@@ -12,18 +12,18 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public class UserSecurityServiceTest {
+public class UserSecurityDetailsServiceTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     private UserSecurityDetailsDao userSecurityDetailsDao;
 
-    private UserSecurityService target;
+    private UserSecurityDetailsServiceImpl target;
 
     @Before
     public void setUp() {
         userSecurityDetailsDao = Mockito.mock(UserSecurityDetailsDao.class);
-        target = new UserSecurityService(userSecurityDetailsDao);
+        target = new UserSecurityDetailsServiceImpl(userSecurityDetailsDao);
     }
 
     @Test

@@ -25,15 +25,15 @@ public class UserServiceTest {
 
     private UserProfileDao userProfileDao;
 
-    private UserSecurityService userSecurityService;
+    private UserSecurityDetailsService userSecurityDetailsService;
 
     private UserService target;
 
     @Before
     public void setUp() {
         userProfileDao = Mockito.mock(UserProfileDao.class);
-        userSecurityService = Mockito.mock(UserSecurityService.class);
-        target = new UserService(userProfileDao, userSecurityService);
+        userSecurityDetailsService = Mockito.mock(UserSecurityDetailsService.class);
+        target = new UserService(userProfileDao, userSecurityDetailsService);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class UserServiceTest {
         ArgumentCaptor<UserProfile> userProfileCaptor = ArgumentCaptor.forClass(UserProfile.class);
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         Mockito.verify(userProfileDao).saveNewUser(userProfileCaptor.capture());
-        Mockito.verify(userSecurityService).saveNewUserSecurityDetails(userCaptor.capture());
+        Mockito.verify(userSecurityDetailsService).saveNewUserSecurityDetails(userCaptor.capture());
         Assert.assertEquals(userProfileCaptor.getValue().getEmail(), userProfileForTest.getEmail());
         Assert.assertEquals(userCaptor.getValue().getUserSecurity(), userSecurityDetailsForTest);
     }
@@ -267,7 +267,7 @@ public class UserServiceTest {
 
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> unencryptedNewPasswordCaptor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(userSecurityService).updateUserPassword(userIdCaptor.capture(), unencryptedNewPasswordCaptor.capture());
+        Mockito.verify(userSecurityDetailsService).updateUserPassword(userIdCaptor.capture(), unencryptedNewPasswordCaptor.capture());
         Assert.assertEquals(userId, userIdCaptor.getValue());
         Assert.assertEquals(unencryptedNewPassword, unencryptedNewPasswordCaptor.getValue());
     }
