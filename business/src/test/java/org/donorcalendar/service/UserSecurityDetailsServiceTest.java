@@ -4,17 +4,18 @@ import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.persistence.UserSecurityDetailsDao;
+import org.donorcalendar.security.FakePasswordEncoder;
+import org.donorcalendar.security.PasswordEncoder;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserSecurityDetailsServiceTest {
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new FakePasswordEncoder();
 
     private UserSecurityDetailsDao userSecurityDetailsDao;
 
@@ -23,7 +24,7 @@ public class UserSecurityDetailsServiceTest {
     @Before
     public void setUp() {
         userSecurityDetailsDao = Mockito.mock(UserSecurityDetailsDao.class);
-        target = new UserSecurityDetailsServiceImpl(userSecurityDetailsDao);
+        target = new UserSecurityDetailsServiceImpl(userSecurityDetailsDao ,passwordEncoder);
     }
 
     @Test

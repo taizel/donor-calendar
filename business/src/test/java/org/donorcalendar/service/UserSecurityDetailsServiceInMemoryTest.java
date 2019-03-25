@@ -4,19 +4,20 @@ import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.persistence.UserSecurityDetailsDaoInMemoryImpl;
+import org.donorcalendar.security.FakePasswordEncoder;
+import org.donorcalendar.security.PasswordEncoder;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.Assert.assertTrue;
 
 public class UserSecurityDetailsServiceInMemoryTest {
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new FakePasswordEncoder();
 
     private final UserSecurityDetailsDaoInMemoryImpl userSecurityDao = new UserSecurityDetailsDaoInMemoryImpl();
 
-    private final UserSecurityDetailsServiceImpl target = new UserSecurityDetailsServiceImpl(userSecurityDao);
+    private final UserSecurityDetailsServiceImpl target = new UserSecurityDetailsServiceImpl(userSecurityDao, passwordEncoder);
 
     @Test
     public void saveNewUserSecurityDetails_ValidDetails_Success() {

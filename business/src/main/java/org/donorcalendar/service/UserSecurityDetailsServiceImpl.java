@@ -3,21 +3,21 @@ package org.donorcalendar.service;
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserSecurityDetails;
 import org.donorcalendar.persistence.UserSecurityDetailsDao;
+import org.donorcalendar.security.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 class UserSecurityDetailsServiceImpl implements UserSecurityDetailsService {
 
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserSecurityDetailsDao userSecurityDetailsDao;
 
     @Autowired
-    UserSecurityDetailsServiceImpl(UserSecurityDetailsDao userSecurityDetailsDao) {
+    UserSecurityDetailsServiceImpl(UserSecurityDetailsDao userSecurityDetailsDao, PasswordEncoder passwordEncoder) {
         this.userSecurityDetailsDao = userSecurityDetailsDao;
-        passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override

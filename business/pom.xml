@@ -11,6 +11,7 @@
 
     <artifactId>donor-calendar-business</artifactId>
     <name>Donor Calendar Business</name>
+    <description>To be able to use this module a component that implements the PasswordEncoder interface needs to be provided.</description>
 
     <build>
         <plugins>

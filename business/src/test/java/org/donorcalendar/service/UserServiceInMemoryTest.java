@@ -9,12 +9,13 @@ import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.model.ValidationException;
 import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.persistence.UserProfileDaoInMemoryImpl;
+import org.donorcalendar.persistence.UserSecurityDetailsDao;
+import org.donorcalendar.persistence.UserSecurityDetailsDaoInMemoryImpl;
+import org.donorcalendar.security.FakePasswordEncoder;
 import org.donorcalendar.util.IdGenerator;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -24,7 +25,9 @@ public class UserServiceInMemoryTest {
     private static final String UNENCRYPTED_TEST_PASSWORD = "pass1";
 
     private final UserProfileDao userProfileDao = new UserProfileDaoInMemoryImpl();
-    private final UserSecurityDetailsService userSecurityDetailsService = Mockito.mock(UserSecurityDetailsService.class);
+    private final UserSecurityDetailsDao userSecurityDetailsDao = new UserSecurityDetailsDaoInMemoryImpl();
+    private final UserSecurityDetailsService userSecurityDetailsService = new UserSecurityDetailsServiceImpl(userSecurityDetailsDao, new FakePasswordEncoder());
+
     private final UserService target = new UserService(userProfileDao, userSecurityDetailsService);
 
     @Test
@@ -35,10 +38,8 @@ public class UserServiceInMemoryTest {
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        Mockito.verify(userSecurityDetailsService).saveNewUserSecurityDetails(userCaptor.capture());
-        Assert.assertEquals(userCaptor.getValue().getUserSecurity(), userSecurityDetailsForTest);
         Assert.assertTrue(userProfileDao.findById(savedUserProfile.getUserId()).isPresent());
+        Assert.assertNotNull(userSecurityDetailsDao.findByUserId(savedUserProfile.getUserId()));
     }
 
     @Test
@@ -233,15 +234,12 @@ public class UserServiceInMemoryTest {
         UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        String unencryptedNewPassword = "differentPassword";
+        UserSecurityDetails securityDetailsBeforeUpdate = userSecurityDetailsDao.findByUserId(userProfileForTest.getUserId());
 
-        target.updateUserPassword(userProfileForTest.getUserId(), unencryptedNewPassword);
+        target.updateUserPassword(userProfileForTest.getUserId(), "differentPassword");
 
-        ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
-        ArgumentCaptor<String> unencryptedNewPasswordCaptor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(userSecurityDetailsService).updateUserPassword(userIdCaptor.capture(), unencryptedNewPasswordCaptor.capture());
-        Assert.assertEquals(userProfileForTest.getUserId(), userIdCaptor.getValue());
-        Assert.assertEquals(unencryptedNewPassword, unencryptedNewPasswordCaptor.getValue());
+        UserSecurityDetails securityDetailsAfterUpdate = userSecurityDetailsDao.findByUserId(userProfileForTest.getUserId());
+        Assert.assertNotEquals(securityDetailsBeforeUpdate.getPassword(), securityDetailsAfterUpdate.getPassword());
     }
 
     @Test
