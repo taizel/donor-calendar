@@ -18,14 +18,16 @@ public abstract class AbstractRestAssuredIntegrationTest extends AbstractPersist
 
     @Before
     public void completeSetUp() {
+        setUp();
         // one time set-up to get around static restriction on @BeforeClass and use of instance @LocalServerPort
         if (isRestAssuredNotConfigured) {
-            configureRestAssured(port);
+            configureRestAssured();
         }
-        setUp();
     }
 
-    private static void configureRestAssured(int port) {
+    protected abstract void setUp();
+
+    private void configureRestAssured() {
         RestAssured.port = port;
         RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
                 new ObjectMapperConfig().jackson2ObjectMapperFactory(
@@ -33,8 +35,6 @@ public abstract class AbstractRestAssuredIntegrationTest extends AbstractPersist
                 ));
         isRestAssuredNotConfigured = false;
     }
-
-    protected abstract void setUp();
 
     @After
     public abstract void tearDown();
