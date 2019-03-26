@@ -4,12 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.0.RELEASE</version>
-    </parent>
-
     <groupId>org.donorcalendar</groupId>
     <artifactId>donor-calendar-parent</artifactId>
     <version>0.1.0-SNAPSHOT</version>
@@ -39,6 +33,10 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <spring-boot.version>2.1.0.RELEASE</spring-boot.version>
         <jdbc.postgres.version>42.2.5</jdbc.postgres.version>
         <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
@@ -193,6 +191,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
