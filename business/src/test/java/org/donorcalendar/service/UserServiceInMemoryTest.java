@@ -11,7 +11,6 @@ import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.persistence.UserProfileDaoInMemoryImpl;
 import org.donorcalendar.persistence.UserSecurityDetailsDao;
 import org.donorcalendar.persistence.UserSecurityDetailsDaoInMemoryImpl;
-import org.donorcalendar.security.FakePasswordEncoder;
 import org.donorcalendar.util.IdGenerator;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -26,7 +25,7 @@ public class UserServiceInMemoryTest {
 
     private final UserProfileDao userProfileDao = new UserProfileDaoInMemoryImpl();
     private final UserSecurityDetailsDao userSecurityDetailsDao = new UserSecurityDetailsDaoInMemoryImpl();
-    private final UserSecurityDetailsService userSecurityDetailsService = new UserSecurityDetailsServiceImpl(userSecurityDetailsDao, new FakePasswordEncoder());
+    private final UserSecurityDetailsService userSecurityDetailsService = new UserSecurityDetailsService(userSecurityDetailsDao);
 
     private final UserService target = new UserService(userProfileDao, userSecurityDetailsService);
 
