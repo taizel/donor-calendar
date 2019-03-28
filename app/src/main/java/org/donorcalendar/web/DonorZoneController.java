@@ -2,7 +2,7 @@ package org.donorcalendar.web;
 
 import org.donorcalendar.model.ForbiddenAccessException;
 import org.donorcalendar.model.UserStatus;
-import org.donorcalendar.security.UserAuthenticationDetails;
+import org.donorcalendar.security.UserSecurityDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +16,7 @@ import java.util.List;
 public class DonorZoneController {
 
     @GetMapping
-    public List<String> getShoppingFacilities(@AuthenticationPrincipal UserAuthenticationDetails userDetails) throws ForbiddenAccessException {
+    public List<String> getShoppingFacilities(@AuthenticationPrincipal UserSecurityDetails userDetails) throws ForbiddenAccessException {
         if (!userDetails.getUserProfile().getUserStatus().equals(UserStatus.NEED_TO_DONATE)) {
             return Arrays.asList("Cool Restaurant", "Nice Burger Place", "Amazing Bakery");
         } else {

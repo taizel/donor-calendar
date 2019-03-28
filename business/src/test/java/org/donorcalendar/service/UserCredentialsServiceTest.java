@@ -2,8 +2,8 @@ package org.donorcalendar.service;
 
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
-import org.donorcalendar.model.UserSecurityDetails;
-import org.donorcalendar.persistence.UserSecurityDetailsDao;
+import org.donorcalendar.model.UserCredentials;
+import org.donorcalendar.persistence.UserCredentialsDao;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,47 +12,47 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public class UserSecurityDetailsServiceTest {
+public class UserCredentialsServiceTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    private UserSecurityDetailsDao userSecurityDetailsDao;
+    private UserCredentialsDao userCredentialsDao;
 
-    private UserSecurityDetailsService target;
+    private UserCredentialsService target;
 
     @Before
     public void setUp() {
-        userSecurityDetailsDao = Mockito.mock(UserSecurityDetailsDao.class);
-        target = new UserSecurityDetailsService(userSecurityDetailsDao);
+        userCredentialsDao = Mockito.mock(UserCredentialsDao.class);
+        target = new UserCredentialsService(userCredentialsDao);
     }
 
     @Test
-    public void saveNewUserSecurityDetails_ValidDetails_Success() {
+    public void saveNewUserCredentials_ValidCredentials_Success() {
         User user = createUserForTest();
         ArgumentCaptor<Long> userIdParameter = ArgumentCaptor.forClass(Long.class);
-        ArgumentCaptor<UserSecurityDetails> securityDetailsParameter = ArgumentCaptor.forClass(UserSecurityDetails.class);
+        ArgumentCaptor<UserCredentials> securityDetailsParameter = ArgumentCaptor.forClass(UserCredentials.class);
 
-        target.saveNewUserSecurityDetails(user);
+        target.saveNewUserCredentials(user);
 
-        Mockito.verify(userSecurityDetailsDao).saveNewUserSecurityDetails(userIdParameter.capture(), securityDetailsParameter.capture());
+        Mockito.verify(userCredentialsDao).saveNewUserCredentials(userIdParameter.capture(), securityDetailsParameter.capture());
         Assert.assertEquals(user.getUserProfile().getUserId(), userIdParameter.getValue());
         Assert.assertTrue("Encrypted password does not look to be valid.",
                 passwordEncoder.matches(user.getUserSecurity().getPassword(), securityDetailsParameter.getValue().getPassword()));
     }
 
     @Test
-    public void updateUserPassword_ValidDetails_Success() {
+    public void updateUserPassword_ValidCredentials_Success() {
         String oldPassword = "oldPassword";
         String newPassword = "updatedPassword";
         Long userId = IdGenerator.generateNewId();
-        UserSecurityDetails userSecurityDetails = new UserSecurityDetails(oldPassword);
-        Mockito.when(userSecurityDetailsDao.findByUserId(userId)).thenReturn(userSecurityDetails);
+        UserCredentials userCredentials = new UserCredentials(oldPassword);
+        Mockito.when(userCredentialsDao.findByUserId(userId)).thenReturn(userCredentials);
         ArgumentCaptor<Long> userIdParameter = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> newPasswordParameter = ArgumentCaptor.forClass(String.class);
 
         target.updateUserPassword(userId, newPassword);
 
-        Mockito.verify(userSecurityDetailsDao).updateUserPassword(userIdParameter.capture(), newPasswordParameter.capture());
+        Mockito.verify(userCredentialsDao).updateUserPassword(userIdParameter.capture(), newPasswordParameter.capture());
         Assert.assertEquals(userId, userIdParameter.getValue());
         Assert.assertTrue("Encrypted password does not look to be valid.",
                 passwordEncoder.matches(newPassword, newPasswordParameter.getValue()));
@@ -61,6 +61,6 @@ public class UserSecurityDetailsServiceTest {
     private User createUserForTest() {
         UserProfile userProfile = new UserProfile();
         userProfile.setUserId(IdGenerator.generateNewId());
-        return new User(userProfile, new UserSecurityDetails("password" + userProfile.getUserId()));
+        return new User(userProfile, new UserCredentials("password" + userProfile.getUserId()));
     }
 }

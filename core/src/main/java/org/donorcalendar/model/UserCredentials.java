@@ -1,14 +1,14 @@
 package org.donorcalendar.model;
 
-public class UserSecurityDetails {
+public class UserCredentials {
     private String password;
 
-    public UserSecurityDetails(String password) {
+    public UserCredentials(String password) {
         this.password = password;
     }
 
-    public UserSecurityDetails(UserSecurityDetails userSecurityDetails) {
-        this.password = userSecurityDetails.password;
+    public UserCredentials(UserCredentials userCredentials) {
+        this.password = userCredentials.password;
     }
 
     public String getPassword() {

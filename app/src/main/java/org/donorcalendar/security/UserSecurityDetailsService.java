@@ -1,9 +1,9 @@
 package org.donorcalendar.security;
 
 import org.donorcalendar.model.UserProfile;
-import org.donorcalendar.model.UserSecurityDetails;
+import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.persistence.UserProfileDao;
-import org.donorcalendar.persistence.UserSecurityDetailsDao;
+import org.donorcalendar.persistence.UserCredentialsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,15 +13,15 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service("UserDetailsService")
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserSecurityDetailsService implements UserDetailsService {
 
     private final UserProfileDao userProfileDao;
-    private final UserSecurityDetailsDao userSecurityDetailsDao;
+    private final UserCredentialsDao userCredentialsDao;
 
     @Autowired
-    public UserDetailsServiceImpl(UserProfileDao userProfileDao, UserSecurityDetailsDao userSecurityDetailsDao) {
+    public UserSecurityDetailsService(UserProfileDao userProfileDao, UserCredentialsDao userCredentialsDao) {
         this.userProfileDao = userProfileDao;
-        this.userSecurityDetailsDao = userSecurityDetailsDao;
+        this.userCredentialsDao = userCredentialsDao;
     }
 
     @Override
@@ -29,8 +29,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<UserProfile> optionalUserProfile = userProfileDao.findByEmail(email);
         if (optionalUserProfile.isPresent()) {
             UserProfile userProfile = optionalUserProfile.get();
-            UserSecurityDetails userSecurityDetails = userSecurityDetailsDao.findByUserId(userProfile.getUserId());
-            return new UserAuthenticationDetails(userProfile, userSecurityDetails.getPassword());
+            UserCredentials userCredentials = userCredentialsDao.findByUserId(userProfile.getUserId());
+            return new UserSecurityDetails(userProfile, userCredentials.getPassword());
         }
         throw new UsernameNotFoundException("No user registered with the email '" + email + "'");
     }

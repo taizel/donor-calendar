@@ -1,7 +1,7 @@
 create table user_profile
 (
   user_id                bigint  not null
-    constraint user_profile_pkey
+    constraint user_profile_pk
     primary key,
   blood_type             varchar(3) not null,
   days_between_reminders integer,

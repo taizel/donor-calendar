@@ -1,10 +1,10 @@
 package org.donorcalendar.model;
 
 public class User {
-    private UserProfile userProfile;
-    private UserSecurityDetails userSecurity;
+    private final UserProfile userProfile;
+    private final UserCredentials userSecurity;
 
-    public User(UserProfile userProfile, UserSecurityDetails userSecurity) {
+    public User(UserProfile userProfile, UserCredentials userSecurity) {
         this.userProfile = userProfile;
         this.userSecurity = userSecurity;
     }
@@ -13,7 +13,7 @@ public class User {
         return userProfile;
     }
 
-    public UserSecurityDetails getUserSecurity() {
+    public UserCredentials getUserSecurity() {
         return userSecurity;
     }
 

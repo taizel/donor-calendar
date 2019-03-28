@@ -4,10 +4,10 @@ import org.apache.http.HttpStatus;
 import org.donorcalendar.AbstractRestAssuredIntegrationTest;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
+import org.donorcalendar.persistence.UserCredentialsEntity;
 import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserProfileRepository;
-import org.donorcalendar.persistence.UserSecurityDetailsEntity;
-import org.donorcalendar.persistence.UserSecurityDetailsRepository;
+import org.donorcalendar.persistence.UserCredentialsRepository;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
     @Autowired
     private UserProfileRepository userProfileRepository;
     @Autowired
-    private UserSecurityDetailsRepository userSecurityDetailsRepository;
+    private UserCredentialsRepository userCredentialsRepository;
 
     private UserProfileEntity john;
     private UserProfileEntity bilbo;
@@ -50,21 +50,21 @@ public class DonorZoneControllerIT extends AbstractRestAssuredIntegrationTest {
         john = userProfileRepository.save(john);
         bilbo = userProfileRepository.save(bilbo);
 
-        UserSecurityDetailsEntity userSecurityDetailsEntityJohn = new UserSecurityDetailsEntity();
-        userSecurityDetailsEntityJohn.setUserId(john.getUserId());
-        userSecurityDetailsEntityJohn.setPassword(JOHN_ENCRYPTED_PASSWORD);
+        UserCredentialsEntity userCredentialsEntityJohn = new UserCredentialsEntity();
+        userCredentialsEntityJohn.setUserId(john.getUserId());
+        userCredentialsEntityJohn.setPassword(JOHN_ENCRYPTED_PASSWORD);
 
-        UserSecurityDetailsEntity userSecurityDetailsEntityBilbo = new UserSecurityDetailsEntity();
-        userSecurityDetailsEntityBilbo.setUserId(bilbo.getUserId());
-        userSecurityDetailsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
+        UserCredentialsEntity userCredentialsEntityBilbo = new UserCredentialsEntity();
+        userCredentialsEntityBilbo.setUserId(bilbo.getUserId());
+        userCredentialsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
 
-        userSecurityDetailsRepository.save(userSecurityDetailsEntityJohn);
-        userSecurityDetailsRepository.save(userSecurityDetailsEntityBilbo);
+        userCredentialsRepository.save(userCredentialsEntityJohn);
+        userCredentialsRepository.save(userCredentialsEntityBilbo);
     }
 
     @Override
     public void tearDown() {
-        userSecurityDetailsRepository.deleteAll();
+        userCredentialsRepository.deleteAll();
         userProfileRepository.deleteAll();
     }
 

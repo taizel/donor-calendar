@@ -3,7 +3,7 @@ package org.donorcalendar.service;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
-import org.donorcalendar.model.UserSecurityDetails;
+import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.ValidationException;
@@ -25,22 +25,22 @@ public class UserServiceTest {
 
     private UserProfileDao userProfileDao;
 
-    private UserSecurityDetailsService userSecurityDetailsService;
+    private UserCredentialsService userCredentialsService;
 
     private UserService target;
 
     @Before
     public void setUp() {
         userProfileDao = Mockito.mock(UserProfileDao.class);
-        userSecurityDetailsService = Mockito.mock(UserSecurityDetailsService.class);
-        target = new UserService(userProfileDao, userSecurityDetailsService);
+        userCredentialsService = Mockito.mock(UserCredentialsService.class);
+        target = new UserService(userProfileDao, userCredentialsService);
     }
 
     @Test
     public void anyUserCreatesProfileAndSecurityDetails() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
-        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest, userCredentialsForTest);
         UserProfile newUserAfterSuccess = new UserProfile(userProfileForTest);
         Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
@@ -50,16 +50,16 @@ public class UserServiceTest {
         ArgumentCaptor<UserProfile> userProfileCaptor = ArgumentCaptor.forClass(UserProfile.class);
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         Mockito.verify(userProfileDao).saveNewUser(userProfileCaptor.capture());
-        Mockito.verify(userSecurityDetailsService).saveNewUserSecurityDetails(userCaptor.capture());
+        Mockito.verify(userCredentialsService).saveNewUserCredentials(userCaptor.capture());
         Assert.assertEquals(userProfileCaptor.getValue().getEmail(), userProfileForTest.getEmail());
-        Assert.assertEquals(userCaptor.getValue().getUserSecurity(), userSecurityDetailsForTest);
+        Assert.assertEquals(userCaptor.getValue().getUserSecurity(), userCredentialsForTest);
     }
 
     @Test
     public void newUserWithEmptyPassword() {
         UserProfile userProfileForTest = createUserProfileForTest();
-        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails("");
-        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        UserCredentials userCredentialsForTest = new UserCredentials("");
+        User userForTest = new User(userProfileForTest, userCredentialsForTest);
         Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
 
         try {
@@ -74,8 +74,8 @@ public class UserServiceTest {
     public void saveUser_NewUserWithLastDonationUpToFiftySixDaysPast_SuccessWithStatusAsDonor() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
-        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest, userCredentialsForTest);
         UserProfile newUserAfterSuccess = new UserProfile(userProfileForTest);
         Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
@@ -91,8 +91,8 @@ public class UserServiceTest {
     public void saveUser_NewUserWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPast_SuccessWithStatusAsPotentialDonor() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
-        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest, userCredentialsForTest);
         UserProfile newUserAfterSuccess = new UserProfile(userProfileForTest);
         Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
@@ -108,8 +108,8 @@ public class UserServiceTest {
     public void saveUser_NewUserWithLastDonationMoreThanHundredTwentyDays_SuccessWithStatusAsNeedToDonate() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
-        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest, userCredentialsForTest);
         UserProfile newUserAfterSuccess = new UserProfile(userProfileForTest);
         Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
@@ -125,8 +125,8 @@ public class UserServiceTest {
     public void saveUser_NewUserWithLastDonationNull_SuccessWithStatusAsNeedToDonate() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(null);
-        UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+        UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest, userCredentialsForTest);
         UserProfile newUserAfterSuccess = new UserProfile(userProfileForTest);
         Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
         Mockito.when(userProfileDao.saveNewUser(userProfileForTest)).thenReturn(newUserAfterSuccess);
@@ -143,8 +143,8 @@ public class UserServiceTest {
         try {
             UserProfile userProfileForTest = createUserProfileForTest();
             userProfileForTest.setLastDonation(LocalDate.now().plusDays(2));
-            UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
-            User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+            UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+            User userForTest = new User(userProfileForTest, userCredentialsForTest);
 
             Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.empty());
 
@@ -159,8 +159,8 @@ public class UserServiceTest {
     public void saveUser_NewUser_FailValidationEmailAlreadyTaken() {
         try {
             UserProfile userProfileForTest = createUserProfileForTest();
-            UserSecurityDetails userSecurityDetailsForTest = new UserSecurityDetails(UNENCRYPTED_TEST_PASSWORD);
-            User userForTest = new User(userProfileForTest, userSecurityDetailsForTest);
+            UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+            User userForTest = new User(userProfileForTest, userCredentialsForTest);
 
             Mockito.when(userProfileDao.findByEmail(userProfileForTest.getEmail())).thenReturn(Optional.of(new UserProfile()));
 
@@ -267,7 +267,7 @@ public class UserServiceTest {
 
         ArgumentCaptor<Long> userIdCaptor = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> unencryptedNewPasswordCaptor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(userSecurityDetailsService).updateUserPassword(userIdCaptor.capture(), unencryptedNewPasswordCaptor.capture());
+        Mockito.verify(userCredentialsService).updateUserPassword(userIdCaptor.capture(), unencryptedNewPasswordCaptor.capture());
         Assert.assertEquals(userId, userIdCaptor.getValue());
         Assert.assertEquals(unencryptedNewPassword, unencryptedNewPasswordCaptor.getValue());
     }

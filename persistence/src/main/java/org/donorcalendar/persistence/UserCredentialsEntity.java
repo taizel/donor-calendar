@@ -1,6 +1,6 @@
 package org.donorcalendar.persistence;
 
-import org.donorcalendar.model.UserSecurityDetails;
+import org.donorcalendar.model.UserCredentials;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,8 +8,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "user_security")
-public class UserSecurityDetailsEntity {
+@Table(name = "user_credentials")
+public class UserCredentialsEntity {
 
     @Id
     private Long userId;
@@ -33,7 +33,7 @@ public class UserSecurityDetailsEntity {
         this.password = password;
     }
 
-    UserSecurityDetails getUserSecurityDetails() {
-        return new UserSecurityDetails(this.password);
+    UserCredentials getUserCredentials() {
+        return new UserCredentials(this.password);
     }
 }

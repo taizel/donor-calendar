@@ -2,10 +2,10 @@ package org.donorcalendar.web;
 
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
-import org.donorcalendar.model.UserSecurityDetails;
+import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.ValidationException;
-import org.donorcalendar.security.UserAuthenticationDetails;
+import org.donorcalendar.security.UserSecurityDetails;
 import org.donorcalendar.service.UserService;
 import org.donorcalendar.web.dto.NewUserDto;
 import org.donorcalendar.web.dto.UpdateUserPasswordDto;
@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping
-    public UserDto updateUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UserDto userDto) throws ValidationException, NotFoundException {
+    public UserDto updateUser(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UserDto userDto) throws ValidationException, NotFoundException {
 
         Long userId = userDetails.getUserProfile().getUserId();
         UserProfile userProfileToUpdate = userDtoToUser(userDto);
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping(path = "/update-password")
-    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserAuthenticationDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
+    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
 
         UserProfile userProfile = userDetails.getUserProfile();
         userService.updateUserPassword(userProfile.getUserId(), updateUserPasswordDtoDto.getNewPassword());
@@ -59,14 +59,14 @@ public class UserController {
     }
 
     @GetMapping
-    public UserDto getLoggedUser(@AuthenticationPrincipal UserAuthenticationDetails userDetails) {
+    public UserDto getLoggedUser(@AuthenticationPrincipal UserSecurityDetails userDetails) {
         return userToUserDto(userDetails.getUserProfile());
     }
 
     private User newUserDtoToUser(NewUserDto newUserDto) {
         UserProfile userProfile = userDtoToUser(newUserDto);
-        UserSecurityDetails userSecurityDetails = new UserSecurityDetails(newUserDto.getPassword());
-        return new User(userProfile, userSecurityDetails);
+        UserCredentials userCredentials = new UserCredentials(newUserDto.getPassword());
+        return new User(userProfile, userCredentials);
     }
 
     private UserProfile userDtoToUser(UserDto userDto) {
