@@ -29,8 +29,7 @@ public abstract class AbstractPersistenceIntegrationTest {
             TestPropertyValues.of(
                     "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
                     "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-                    "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "org.donorcalendar.scheduling.enable=false" // disable scheduled jobs
+                    "spring.datasource.password=" + postgreSQLContainer.getPassword()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
     }
