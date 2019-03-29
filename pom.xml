@@ -17,10 +17,11 @@
 
     <modules>
         <module>app</module>
-        <module>core</module>
-        <module>reporting</module>
-        <module>persistence</module>
         <module>business</module>
+        <module>core</module>
+        <module>persistence</module>
+        <module>reporting</module>
+        <module>security</module>
     </modules>
 
     <scm>

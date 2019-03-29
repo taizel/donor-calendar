@@ -5,19 +5,20 @@ import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.persistence.UserCredentialsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-class UserCredentialsService {
+public class UserCredentialsService {
 
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserCredentialsDao userCredentialsDao;
 
     @Autowired
-    UserCredentialsService(UserCredentialsDao userCredentialsDao) {
+    public UserCredentialsService(UserCredentialsDao userCredentialsDao) {
         this.userCredentialsDao = userCredentialsDao;
-        passwordEncoder = new BCryptPasswordEncoder();
+        passwordEncoder = getNewPasswordEncoder();
     }
 
     void saveNewUserCredentials(User user) {
@@ -28,5 +29,9 @@ class UserCredentialsService {
 
     void updateUserPassword(Long userId, String newPassword) {
         userCredentialsDao.updateUserPassword(userId, passwordEncoder.encode(newPassword));
+    }
+
+    public static PasswordEncoder getNewPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

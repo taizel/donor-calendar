@@ -123,7 +123,7 @@
         </dependency>
         <dependency>
             <groupId>org.donorcalendar</groupId>
-            <artifactId>donor-calendar-persistence</artifactId>
+            <artifactId>donor-calendar-security</artifactId>
             <version>${project.version}</version>
         </dependency>
 
