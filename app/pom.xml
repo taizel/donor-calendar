@@ -12,11 +12,26 @@
     <artifactId>donor-calendar-app</artifactId>
     <name>Donor Calendar App</name>
 
+    <properties>
+        <boot-classifier>exec</boot-classifier>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>exec</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>
@@ -45,7 +60,7 @@
                     <repository>donor-calendar</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
-                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                        <JAR_FILE>${project.build.finalName}-${boot-classifier}.jar</JAR_FILE>
                     </buildArgs>
                 </configuration>
             </plugin>
