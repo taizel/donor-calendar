@@ -1,4 +1,4 @@
-package org.donorcalendar.web;
+package org.donorcalendar.rest;
 
 import org.apache.http.HttpStatus;
 import org.donorcalendar.AbstractRestAssuredIntegrationTest;
@@ -10,9 +10,9 @@ import org.donorcalendar.persistence.UserProfileEntity;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.persistence.UserCredentialsRepository;
 import org.donorcalendar.util.IdGenerator;
-import org.donorcalendar.web.dto.NewUserDto;
-import org.donorcalendar.web.dto.UpdateUserDto;
-import org.donorcalendar.web.dto.UpdateUserPasswordDto;
+import org.donorcalendar.rest.dto.NewUserDto;
+import org.donorcalendar.rest.dto.UpdateUserDto;
+import org.donorcalendar.rest.dto.UpdateUserPasswordDto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

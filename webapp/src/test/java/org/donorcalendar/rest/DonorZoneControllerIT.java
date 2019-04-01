@@ -1,4 +1,4 @@
-package org.donorcalendar.web;
+package org.donorcalendar.rest;
 
 import org.apache.http.HttpStatus;
 import org.donorcalendar.AbstractRestAssuredIntegrationTest;

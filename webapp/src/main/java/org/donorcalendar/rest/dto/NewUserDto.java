@@ -1,4 +1,4 @@
-package org.donorcalendar.web.dto;
+package org.donorcalendar.rest.dto;
 
 public class NewUserDto extends UserDto {
 

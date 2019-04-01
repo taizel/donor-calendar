@@ -1,4 +1,4 @@
-package org.donorcalendar.web;
+package org.donorcalendar.rest;
 
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
@@ -7,9 +7,9 @@ import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.ValidationException;
 import org.donorcalendar.security.UserSecurityDetails;
 import org.donorcalendar.service.UserService;
-import org.donorcalendar.web.dto.NewUserDto;
-import org.donorcalendar.web.dto.UpdateUserPasswordDto;
-import org.donorcalendar.web.dto.UserDto;
+import org.donorcalendar.rest.dto.NewUserDto;
+import org.donorcalendar.rest.dto.UpdateUserPasswordDto;
+import org.donorcalendar.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -76,12 +76,27 @@
     <dependencies>
         <dependency>
             <groupId>org.donorcalendar</groupId>
-            <artifactId>donor-calendar-app</artifactId>
-			<version>${project.version}</version>
+            <artifactId>donor-calendar-business</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.donorcalendar</groupId>
             <artifactId>donor-calendar-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-persistence</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-webapp</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

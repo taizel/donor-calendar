@@ -1,4 +1,4 @@
-package org.donorcalendar.web;
+package org.donorcalendar.rest;
 
 import org.donorcalendar.model.ForbiddenAccessException;
 import org.donorcalendar.model.UserStatus;

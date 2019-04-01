@@ -16,12 +16,12 @@
     </developers>
 
     <modules>
-        <module>app</module>
         <module>business</module>
         <module>core</module>
         <module>persistence</module>
         <module>reporting</module>
         <module>security</module>
+        <module>webapp</module>
     </modules>
 
     <scm>

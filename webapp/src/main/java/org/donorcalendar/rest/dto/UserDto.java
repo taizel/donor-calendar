@@ -1,4 +1,4 @@
-package org.donorcalendar.web.dto;
+package org.donorcalendar.rest.dto;
 
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
