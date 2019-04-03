@@ -96,6 +96,11 @@
         </dependency>
         <dependency>
             <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-smoke-tests</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
             <artifactId>donor-calendar-webapp</artifactId>
             <version>${project.version}</version>
         </dependency>
