@@ -16,9 +16,7 @@ public class UserCredentialsDaoImpl implements UserCredentialsDao {
 
     @Override
     public UserCredentials saveNewUserCredentials(Long userId, UserCredentials userCredentials) {
-        UserCredentialsEntity userCredentialsEntity = new UserCredentialsEntity();
-        userCredentialsEntity.setUserId(userId);
-        userCredentialsEntity.setPassword(userCredentials.getPassword());
+        UserCredentialsEntity userCredentialsEntity = new UserCredentialsEntity(userId, userCredentials);
         return userCredentialsRepository.save(userCredentialsEntity).getUserCredentials();
     }
 

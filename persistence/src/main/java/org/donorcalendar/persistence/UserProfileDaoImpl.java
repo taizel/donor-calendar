@@ -21,7 +21,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
-        UserProfileEntity userProfileEntity = convertUserToUserEntity(userProfile);
+        UserProfileEntity userProfileEntity = new UserProfileEntity(userProfile);
         userProfileEntity = userProfileRepository.save(userProfileEntity);
         return userProfileEntity.getUserProfile();
     }
@@ -53,25 +53,12 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public void updateUser(UserProfile userProfile) {
-        UserProfileEntity userProfileEntity = convertUserToUserEntity(userProfile);
+        UserProfileEntity userProfileEntity = new UserProfileEntity(userProfile);
         userProfileRepository.save(userProfileEntity);
     }
 
     @Override
     public List<UserProfile> findUsersToRemind() {
         return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserProfile).collect(Collectors.toList());
-    }
-
-    private UserProfileEntity convertUserToUserEntity(UserProfile userProfile) {
-        UserProfileEntity userProfileEntity = new UserProfileEntity();
-        userProfileEntity.setUserId(userProfile.getUserId());
-        userProfileEntity.setName(userProfile.getName());
-        userProfileEntity.setEmail(userProfile.getEmail());
-        userProfileEntity.setBloodType(userProfile.getBloodType());
-        userProfileEntity.setDaysBetweenReminders(userProfile.getDaysBetweenReminders());
-        userProfileEntity.setLastDonation(userProfile.getLastDonation());
-        userProfileEntity.setNextReminder(userProfile.getNextReminder());
-        userProfileEntity.setUserStatus(userProfile.getUserStatus());
-        return userProfileEntity;
     }
 }

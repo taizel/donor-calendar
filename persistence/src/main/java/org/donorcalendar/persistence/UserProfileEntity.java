@@ -19,10 +19,10 @@ public class UserProfileEntity {
     @Id
     private Long userId;
 
-	@NotNull
+    @NotNull
     private String name;
     @NotNull
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     @NotNull
     private BloodType bloodType;
@@ -32,6 +32,20 @@ public class UserProfileEntity {
     private LocalDate lastDonation;
     private Integer daysBetweenReminders;
     private LocalDate nextReminder;
+
+    UserProfileEntity() {
+    }
+
+    UserProfileEntity(UserProfile userProfile) {
+        this.userId = userProfile.getUserId();
+        this.name = userProfile.getName();
+        this.email = userProfile.getEmail();
+        this.bloodType = userProfile.getBloodType();
+        this.daysBetweenReminders = userProfile.getDaysBetweenReminders();
+        this.lastDonation = userProfile.getLastDonation();
+        this.nextReminder = userProfile.getNextReminder();
+        this.userStatus = userProfile.getUserStatus();
+    }
 
     public Long getUserId() {
         return userId;

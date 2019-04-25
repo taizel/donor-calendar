@@ -17,6 +17,14 @@ public class UserCredentialsEntity {
     @NotNull
     private String password;
 
+    UserCredentialsEntity() {
+    }
+
+    UserCredentialsEntity(Long userId, UserCredentials userCredentials) {
+        this.userId = userId;
+        this.password = userCredentials.getPassword();
+    }
+
     public Long getUserId() {
         return userId;
     }

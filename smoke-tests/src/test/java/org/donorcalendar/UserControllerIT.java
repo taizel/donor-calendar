@@ -2,11 +2,13 @@ package org.donorcalendar;
 
 import org.apache.http.HttpStatus;
 import org.donorcalendar.model.BloodType;
+import org.donorcalendar.model.UserCredentials;
+import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
-import org.donorcalendar.persistence.UserCredentialsEntity;
-import org.donorcalendar.persistence.UserProfileEntity;
-import org.donorcalendar.persistence.UserProfileRepository;
+import org.donorcalendar.persistence.UserCredentialsDao;
 import org.donorcalendar.persistence.UserCredentialsRepository;
+import org.donorcalendar.persistence.UserProfileDao;
+import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.util.IdGenerator;
 import org.donorcalendar.rest.dto.NewUserDto;
 import org.donorcalendar.rest.dto.UpdateUserDto;
@@ -33,12 +35,16 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     private UserProfileRepository userProfileRepository;
     @Autowired
     private UserCredentialsRepository userCredentialsRepository;
+    @Autowired
+    private UserProfileDao userProfileDao;
+    @Autowired
+    private UserCredentialsDao userCredentialsDao;
 
-    private UserProfileEntity bilbo;
+    private UserProfile bilbo;
 
     @Override
     public void setUp() {
-        bilbo = new UserProfileEntity();
+        bilbo = new UserProfile();
         bilbo.setUserId(IdGenerator.generateNewId());
         bilbo.setName("Bilbo");
         bilbo.setEmail("bilbo@middlehearth.com");
@@ -48,13 +54,11 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         bilbo.setNextReminder(LocalDate.now());
         bilbo.setUserStatus(UserStatus.DONOR);
 
-        bilbo = userProfileRepository.save(bilbo);
+        bilbo = userProfileDao.saveNewUser(bilbo);
 
-        UserCredentialsEntity userCredentialsEntityBilbo = new UserCredentialsEntity();
-        userCredentialsEntityBilbo.setUserId(bilbo.getUserId());
-        userCredentialsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
+        UserCredentials userCredentialsEntityBilbo = new UserCredentials(BILBO_ENCRYPTED_PASSWORD);
 
-        userCredentialsRepository.save(userCredentialsEntityBilbo);
+        userCredentialsDao.saveNewUserCredentials(bilbo.getUserId(), userCredentialsEntityBilbo);
     }
 
     @Override
@@ -84,7 +88,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
     @Test
     public void canUpdateUser() {
-        UpdateUserDto updateUserDto = userEntityToUserDto(bilbo);
+        UpdateUserDto updateUserDto = userModelToUserDto(bilbo);
         updateUserDto.setName("Bilbo Update");
 
         given().
@@ -160,7 +164,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
                 body("bloodType", equalTo(newUserDto.getBloodType().toString()));
     }
 
-    private UpdateUserDto userEntityToUserDto(UserProfileEntity user) {
+    private UpdateUserDto userModelToUserDto(UserProfile user) {
         UpdateUserDto updateUserDto = new UpdateUserDto();
         updateUserDto.setEmail(user.getEmail());
         updateUserDto.setName(user.getName());
