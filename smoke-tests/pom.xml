@@ -12,8 +12,16 @@
     <artifactId>donor-calendar-smoke-tests</artifactId>
     <name>Donor Calendar Smoke Tests</name>
 
-    <dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
+    <dependencies>
         <dependency>
             <groupId>org.donorcalendar</groupId>
             <artifactId>donor-calendar-webapp</artifactId>
