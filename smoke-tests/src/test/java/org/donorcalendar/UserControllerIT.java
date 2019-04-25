@@ -1,8 +1,6 @@
-package org.donorcalendar.rest;
+package org.donorcalendar;
 
 import org.apache.http.HttpStatus;
-import org.donorcalendar.AbstractRestAssuredIntegrationTest;
-import org.donorcalendar.JacksonConfig;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserCredentialsEntity;
@@ -24,8 +22,6 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
-    private static final String JOHN_UNENCRYPTED_PASSWORD = "pass1";
-    private static final String JOHN_ENCRYPTED_PASSWORD = "$2a$10$f2H/Y/6Px.LnaSdKF1.I3uKUqjZ.Da2adgUTM8jT5.sjBJqD4qz1a";
     private static final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
     private static final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
     private static final String BASE_PATH = "/user";
@@ -38,21 +34,10 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     @Autowired
     private UserCredentialsRepository userCredentialsRepository;
 
-    private UserProfileEntity john;
     private UserProfileEntity bilbo;
 
     @Override
     public void setUp() {
-        john = new UserProfileEntity();
-        john.setUserId(IdGenerator.generateNewId());
-        john.setName("John");
-        john.setEmail("john@middlehearth.com");
-        john.setBloodType(BloodType.AB_NEGATIVE);
-        john.setLastDonation(LocalDate.now().minusDays(7));
-        john.setDaysBetweenReminders(7);
-        john.setNextReminder(LocalDate.now());
-        john.setUserStatus(UserStatus.DONOR);
-
         bilbo = new UserProfileEntity();
         bilbo.setUserId(IdGenerator.generateNewId());
         bilbo.setName("Bilbo");
@@ -63,18 +48,12 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         bilbo.setNextReminder(LocalDate.now());
         bilbo.setUserStatus(UserStatus.DONOR);
 
-        john = userProfileRepository.save(john);
         bilbo = userProfileRepository.save(bilbo);
-
-        UserCredentialsEntity userCredentialsEntityJohn = new UserCredentialsEntity();
-        userCredentialsEntityJohn.setUserId(john.getUserId());
-        userCredentialsEntityJohn.setPassword(JOHN_ENCRYPTED_PASSWORD);
 
         UserCredentialsEntity userCredentialsEntityBilbo = new UserCredentialsEntity();
         userCredentialsEntityBilbo.setUserId(bilbo.getUserId());
         userCredentialsEntityBilbo.setPassword(BILBO_ENCRYPTED_PASSWORD);
 
-        userCredentialsRepository.save(userCredentialsEntityJohn);
         userCredentialsRepository.save(userCredentialsEntityBilbo);
     }
 
@@ -85,26 +64,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void canGetUserJohnTest() {
-        given().
-                auth().basic(john.getEmail(), JOHN_UNENCRYPTED_PASSWORD).
-        expect().
-                statusCode(HttpStatus.SC_OK).
-        when().
-                get(BASE_PATH).
-        then().
-                assertThat().
-                body("name", equalTo(john.getName())).
-                body("email", equalTo(john.getEmail())).
-                body("bloodType", equalTo(john.getBloodType().toString())).
-                body("lastDonation", equalTo(john.getLastDonation().format(DATE_FORMATTER))).
-                body("daysBetweenReminders", equalTo(john.getDaysBetweenReminders())).
-                body("nextReminder", equalTo(john.getNextReminder().format(DATE_FORMATTER))).
-                body("userStatus", equalTo(john.getUserStatus().toString()));
-    }
-
-    @Test
-    public void canGetUserBilboTest() {
+    public void canGetUser() {
         given().
             auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
         expect().
@@ -114,11 +74,16 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         then().
             assertThat().
                 body("name", equalTo(bilbo.getName())).
-                body("email", equalTo(bilbo.getEmail()));
+                body("email", equalTo(bilbo.getEmail())).
+                body("bloodType", equalTo(bilbo.getBloodType().toString())).
+                body("lastDonation", equalTo(bilbo.getLastDonation().format(DATE_FORMATTER))).
+                body("daysBetweenReminders", equalTo(bilbo.getDaysBetweenReminders())).
+                body("nextReminder", equalTo(bilbo.getNextReminder().format(DATE_FORMATTER))).
+                body("userStatus", equalTo(bilbo.getUserStatus().toString()));
     }
 
     @Test
-    public void canUpdateUserTest() {
+    public void canUpdateUser() {
         UpdateUserDto updateUserDto = userEntityToUserDto(bilbo);
         updateUserDto.setName("Bilbo Update");
 
@@ -143,7 +108,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void canUpdateUserPasswordTest() {
+    public void canUpdateUserPassword() {
         UpdateUserPasswordDto userPasswordDto = new UpdateUserPasswordDto();
         String newPassword = "passwordUpdate";
         userPasswordDto.setNewPassword(newPassword);
@@ -165,7 +130,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void canCreateNewUserTest() {
+    public void canCreateNewUser() {
         NewUserDto newUserDto = new NewUserDto();
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");
@@ -193,32 +158,6 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
                 body("name", equalTo(newUserDto.getName())).
                 body("email", equalTo(newUserDto.getEmail())).
                 body("bloodType", equalTo(newUserDto.getBloodType().toString()));
-    }
-
-    @Test
-    public void validateEmailAlreadyTakenForNewUserTest() {
-        NewUserDto newUserDto = new NewUserDto();
-        newUserDto.setName("New");
-        newUserDto.setEmail("new@newuser.com");
-        newUserDto.setPassword("new");
-        newUserDto.setLastDonation(LocalDate.now().minusDays(2));
-        newUserDto.setBloodType(BloodType.A_POSITIVE);
-
-        given().
-                contentType(JSON_CONTENT_TYPE).
-                body(newUserDto).
-        expect().
-                statusCode(HttpStatus.SC_OK).
-        when().
-                post(BASE_PATH);
-
-        given().
-                contentType(JSON_CONTENT_TYPE).
-                body(newUserDto).
-        expect().
-                statusCode(HttpStatus.SC_BAD_REQUEST).
-        when().
-                post(BASE_PATH);
     }
 
     private UpdateUserDto userEntityToUserDto(UserProfileEntity user) {
