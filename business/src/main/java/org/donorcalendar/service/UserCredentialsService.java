@@ -22,13 +22,13 @@ public class UserCredentialsService {
     }
 
     void saveNewUserCredentials(User user) {
-        UserCredentials userCredentials = new UserCredentials(user.getUserSecurity());
+        UserCredentials userCredentials = new UserCredentials(user.getUserCredentials());
         userCredentials.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
         userCredentialsDao.saveNewUserCredentials(user.getUserProfile().getUserId(), userCredentials);
     }
 
     void updateUserPassword(Long userId, String newPassword) {
-        userCredentialsDao.updateUserPassword(userId, passwordEncoder.encode(newPassword));
+        userCredentialsDao.saveUserPassword(userId, passwordEncoder.encode(newPassword));
     }
 
     public static PasswordEncoder getNewPasswordEncoder() {

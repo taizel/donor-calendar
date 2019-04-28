@@ -2,10 +2,14 @@ package org.donorcalendar.persistence;
 
 import org.donorcalendar.model.UserCredentials;
 
+import java.util.Optional;
+
 public interface UserCredentialsDao {
     UserCredentials saveNewUserCredentials(Long userId, UserCredentials userCredentials);
 
-    UserCredentials findByUserId(Long userId);
+    Optional<UserCredentials> findByUserId(Long userId);
 
-    void updateUserPassword(Long userId, String encodedNewPassword);
+    void saveUserPassword(Long userId, String encodedNewPassword);
+
+    void deleteAll();
 }

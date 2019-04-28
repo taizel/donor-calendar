@@ -16,7 +16,9 @@ public interface UserProfileDao {
 
     Optional<UserProfile> findByEmail(String email);
 
+    List<UserProfile> findUsersToRemind();
+
     void updateUser(UserProfile userProfile);
 
-    List<UserProfile> findUsersToRemind();
+    void deleteAll();
 }

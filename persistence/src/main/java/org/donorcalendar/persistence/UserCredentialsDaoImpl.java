@@ -4,6 +4,8 @@ import org.donorcalendar.model.UserCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class UserCredentialsDaoImpl implements UserCredentialsDao {
 
@@ -16,19 +18,33 @@ public class UserCredentialsDaoImpl implements UserCredentialsDao {
 
     @Override
     public UserCredentials saveNewUserCredentials(Long userId, UserCredentials userCredentials) {
-        UserCredentialsEntity userCredentialsEntity = new UserCredentialsEntity(userId, userCredentials);
-        return userCredentialsRepository.save(userCredentialsEntity).getUserCredentials();
+        return savePassword(userId, userCredentials.getPassword()).getUserCredentials();
+    }
+
+    private UserCredentialsEntity savePassword(Long userId, String encodedPassword) {
+        Optional<UserCredentialsEntity> optionalEntity = userCredentialsRepository.findByUserId(userId);
+        if (optionalEntity.isPresent()) {
+            UserCredentialsEntity userCredentialsEntity = optionalEntity.get();
+            userCredentialsEntity.setPassword(encodedPassword);
+            return userCredentialsRepository.save(userCredentialsEntity);
+        } else {
+            return userCredentialsRepository.save(new UserCredentialsEntity(userId, new UserCredentials(encodedPassword)));
+        }
     }
 
     @Override
-    public UserCredentials findByUserId(Long userId) {
-        return userCredentialsRepository.findByUserId(userId).getUserCredentials();
+    public Optional<UserCredentials> findByUserId(Long userId) {
+        Optional<UserCredentialsEntity> userCredentialsEntity = userCredentialsRepository.findByUserId(userId);
+        return userCredentialsEntity.map(UserCredentialsEntity::getUserCredentials);
     }
 
     @Override
-    public void updateUserPassword(Long userId, String newEncodedPassword) {
-        UserCredentialsEntity userCredentialsEntity = userCredentialsRepository.findByUserId(userId);
-        userCredentialsEntity.setPassword(newEncodedPassword);
-        userCredentialsRepository.save(userCredentialsEntity);
+    public void saveUserPassword(Long userId, String newEncodedPassword) {
+        savePassword(userId, newEncodedPassword);
+    }
+
+    @Override
+    public void deleteAll() {
+        userCredentialsRepository.deleteAll();
     }
 }

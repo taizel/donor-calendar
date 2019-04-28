@@ -5,6 +5,7 @@ import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.persistence.UserCredentialsDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,8 +30,11 @@ public class UserSecurityDetailsService implements UserDetailsService {
         Optional<UserProfile> optionalUserProfile = userProfileDao.findByEmail(email);
         if (optionalUserProfile.isPresent()) {
             UserProfile userProfile = optionalUserProfile.get();
-            UserCredentials userCredentials = userCredentialsDao.findByUserId(userProfile.getUserId());
-            return new UserSecurityDetails(userProfile, userCredentials.getPassword());
+            Optional<UserCredentials> userCredentials = userCredentialsDao.findByUserId(userProfile.getUserId());
+            if(userCredentials.isPresent()) {
+                return new UserSecurityDetails(userProfile, userCredentials.get().getPassword());
+            }
+            throw new BadCredentialsException("User password could not be recovered for authentication");
         }
         throw new UsernameNotFoundException("No user registered with the email '" + email + "'");
     }

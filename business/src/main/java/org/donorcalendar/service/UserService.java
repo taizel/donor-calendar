@@ -28,13 +28,13 @@ public class UserService {
     public UserProfile saveNewUser(User user) throws ValidationException {
         UserProfile userProfile = new UserProfile(user.getUserProfile());
         if (isUserEmailAvailable(userProfile.getEmail())) {
-            if (isEmptyOrNullPassword(user.getUserSecurity().getPassword())) {
+            if (isEmptyOrNullPassword(user.getUserCredentials().getPassword())) {
                 throw new ValidationException("Password cannot be empty.");
             }
             populateUserStatus(userProfile);
             userProfile.setUserId(IdGenerator.generateNewId());
             userProfile = userProfileDao.saveNewUser(userProfile);
-            User newUser = new User(userProfile, user.getUserSecurity());
+            User newUser = new User(userProfile, user.getUserCredentials());
             userCredentialsService.saveNewUserCredentials(newUser);
             return userProfile;
         } else {

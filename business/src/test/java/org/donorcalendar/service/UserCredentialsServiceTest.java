@@ -12,6 +12,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Optional;
+
 public class UserCredentialsServiceTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -37,7 +39,7 @@ public class UserCredentialsServiceTest {
         Mockito.verify(userCredentialsDao).saveNewUserCredentials(userIdParameter.capture(), securityDetailsParameter.capture());
         Assert.assertEquals(user.getUserProfile().getUserId(), userIdParameter.getValue());
         Assert.assertTrue("Encrypted password does not look to be valid.",
-                passwordEncoder.matches(user.getUserSecurity().getPassword(), securityDetailsParameter.getValue().getPassword()));
+                passwordEncoder.matches(user.getUserCredentials().getPassword(), securityDetailsParameter.getValue().getPassword()));
     }
 
     @Test
@@ -46,13 +48,13 @@ public class UserCredentialsServiceTest {
         String newPassword = "updatedPassword";
         Long userId = IdGenerator.generateNewId();
         UserCredentials userCredentials = new UserCredentials(oldPassword);
-        Mockito.when(userCredentialsDao.findByUserId(userId)).thenReturn(userCredentials);
+        Mockito.when(userCredentialsDao.findByUserId(userId)).thenReturn(Optional.of(userCredentials));
         ArgumentCaptor<Long> userIdParameter = ArgumentCaptor.forClass(Long.class);
         ArgumentCaptor<String> newPasswordParameter = ArgumentCaptor.forClass(String.class);
 
         target.updateUserPassword(userId, newPassword);
 
-        Mockito.verify(userCredentialsDao).updateUserPassword(userIdParameter.capture(), newPasswordParameter.capture());
+        Mockito.verify(userCredentialsDao).saveUserPassword(userIdParameter.capture(), newPasswordParameter.capture());
         Assert.assertEquals(userId, userIdParameter.getValue());
         Assert.assertTrue("Encrypted password does not look to be valid.",
                 passwordEncoder.matches(newPassword, newPasswordParameter.getValue()));

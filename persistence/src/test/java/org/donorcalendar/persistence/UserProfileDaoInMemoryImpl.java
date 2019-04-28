@@ -3,6 +3,7 @@ package org.donorcalendar.persistence;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.util.IdGenerator;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class UserProfileDaoInMemoryImpl implements UserProfileDao {
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
         UserProfile userProfileCopy = new UserProfile(userProfile);
-        if(needsToGenerateId(userProfileCopy.getUserId())) {
+        if (needsToGenerateId(userProfileCopy.getUserId())) {
             userProfileCopy.setUserId(IdGenerator.generateNewId());
         }
         cache.put(userProfileCopy.getUserId(), userProfileCopy);
@@ -36,11 +37,10 @@ public class UserProfileDaoInMemoryImpl implements UserProfileDao {
 
     @Override
     public Optional<UserProfile> findById(Long id) {
-        if(cache.containsKey(id)) {
-            return Optional.of(cache.get(id));
-        } else {
-            return Optional.empty();
+        if (cache.containsKey(id)) {
+            return Optional.of(new UserProfile(cache.get(id)));
         }
+        return Optional.empty();
     }
 
     @Override
@@ -64,5 +64,10 @@ public class UserProfileDaoInMemoryImpl implements UserProfileDao {
         return cache.values().stream()
                 .filter(user -> user.getNextReminder() != null && user.getNextReminder().isBefore(currentLocalDate))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteAll() {
+        cache.clear();
     }
 }

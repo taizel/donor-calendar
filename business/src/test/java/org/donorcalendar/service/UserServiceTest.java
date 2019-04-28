@@ -52,7 +52,7 @@ public class UserServiceTest {
         Mockito.verify(userProfileDao).saveNewUser(userProfileCaptor.capture());
         Mockito.verify(userCredentialsService).saveNewUserCredentials(userCaptor.capture());
         Assert.assertEquals(userProfileCaptor.getValue().getEmail(), userProfileForTest.getEmail());
-        Assert.assertEquals(userCaptor.getValue().getUserSecurity(), userCredentialsForTest);
+        Assert.assertEquals(userCaptor.getValue().getUserCredentials(), userCredentialsForTest);
     }
 
     @Test

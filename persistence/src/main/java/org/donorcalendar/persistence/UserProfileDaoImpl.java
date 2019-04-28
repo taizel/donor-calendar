@@ -61,4 +61,9 @@ public class UserProfileDaoImpl implements UserProfileDao {
     public List<UserProfile> findUsersToRemind() {
         return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserProfile).collect(Collectors.toList());
     }
+
+    @Override
+    public void deleteAll() {
+        userProfileRepository.deleteAll();
+    }
 }

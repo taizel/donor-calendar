@@ -4,6 +4,7 @@ import org.donorcalendar.model.UserCredentials;
 
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class UserCredentialsDaoInMemoryImpl implements UserCredentialsDao {
 
@@ -16,12 +17,19 @@ public class UserCredentialsDaoInMemoryImpl implements UserCredentialsDao {
     }
 
     @Override
-    public UserCredentials findByUserId(Long userId) {
-        return new UserCredentials(cache.get(userId));
+    public Optional<UserCredentials> findByUserId(Long userId) {
+        if (cache.containsKey(userId)) {
+            return Optional.of(new UserCredentials(cache.get(userId)));
+        }
+        return Optional.empty();
     }
 
     @Override
-    public void updateUserPassword(Long userId, String encodedNewPassword) {
+    public void saveUserPassword(Long userId, String encodedNewPassword) {
         cache.get(userId).setPassword(encodedNewPassword);
+    }
+
+    public void deleteAll() {
+        cache.clear();
     }
 }

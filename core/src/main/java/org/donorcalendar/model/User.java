@@ -13,7 +13,7 @@ public class User {
         return userProfile;
     }
 
-    public UserCredentials getUserSecurity() {
+    public UserCredentials getUserCredentials() {
         return userSecurity;
     }
 

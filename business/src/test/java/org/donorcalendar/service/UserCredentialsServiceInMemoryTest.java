@@ -24,9 +24,9 @@ public class UserCredentialsServiceInMemoryTest {
 
         target.saveNewUserCredentials(user);
 
-        UserCredentials userCredentials = userSecurityDao.findByUserId(user.getUserProfile().getUserId());
+        UserCredentials userCredentials = userSecurityDao.findByUserId(user.getUserProfile().getUserId()).orElse(null);
         assertTrue("Encrypted password does not look to be valid.",
-                passwordEncoder.matches(user.getUserSecurity().getPassword(), userCredentials.getPassword()));
+                passwordEncoder.matches(user.getUserCredentials().getPassword(), userCredentials.getPassword()));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class UserCredentialsServiceInMemoryTest {
 
         target.updateUserPassword(userId, newPassword);
 
-        UserCredentials updatedSecurityDetails = userSecurityDao.findByUserId(userId);
+        UserCredentials updatedSecurityDetails = userSecurityDao.findByUserId(userId).orElse(null);
         assertTrue("Encrypted password does not look to be valid.",
                 passwordEncoder.matches(newPassword, updatedSecurityDetails.getPassword()));
     }

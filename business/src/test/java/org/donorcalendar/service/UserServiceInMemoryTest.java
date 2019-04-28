@@ -233,11 +233,11 @@ public class UserServiceInMemoryTest {
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        UserCredentials securityDetailsBeforeUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId());
+        UserCredentials securityDetailsBeforeUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId()).orElse(null);
 
         target.updateUserPassword(userProfileForTest.getUserId(), "differentPassword");
 
-        UserCredentials securityDetailsAfterUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId());
+        UserCredentials securityDetailsAfterUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId()).orElse(null);
         Assert.assertNotEquals(securityDetailsBeforeUpdate.getPassword(), securityDetailsAfterUpdate.getPassword());
     }
 
