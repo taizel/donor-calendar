@@ -1,11 +1,14 @@
 package org.donorcalendar.persistence;
 
 import org.donorcalendar.model.UserCredentials;
-
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Optional;
 
+@Component
+@Profile("test")
 public class UserCredentialsDaoInMemoryImpl implements UserCredentialsDao {
 
     private final HashMap<Long, UserCredentials> cache = new HashMap<>();

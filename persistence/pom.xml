@@ -26,7 +26,8 @@
                         <configuration>
                             <includes>
                                 <include>**/*InMemoryImpl.class</include>
-                                <include>**/*AbstractPersistenceIntegrationTest*.class</include>
+                                <include>**/AbstractPersistenceIntegrationTest.class</include>
+                                <include>**/DisableDataBaseAutoConfiguration.class</include>
                             </includes>
                         </configuration>
                     </execution>

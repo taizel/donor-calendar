@@ -1,18 +1,24 @@
-package org.donorcalendar;
+package org.donorcalendar.rest;
 
 import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
+import org.donorcalendar.JacksonConfig;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
+@ActiveProfiles("test")
 @TestPropertySource(properties = {"org.donorcalendar.scheduling.enable = false"}) // disable scheduled jobs
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public abstract class AbstractRestAssuredIntegrationTest extends AbstractPersistenceIntegrationTest {
+public abstract class AbstractRestAssuredIntegrationTest {
 
     private static boolean isRestAssuredNotConfigured = true;
     @LocalServerPort

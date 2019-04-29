@@ -2,6 +2,7 @@ package org.donorcalendar.persistence;
 
 import org.donorcalendar.model.UserProfile;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@Profile("production")
 public class UserProfileDaoImpl implements UserProfileDao {
 
     private final UserProfileRepository userProfileRepository;

@@ -6,12 +6,14 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(initializers = { AbstractPersistenceIntegrationTest.Initializer.class})
+@ActiveProfiles("production")
 public abstract class AbstractPersistenceIntegrationTest {
 
     private static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer<>().

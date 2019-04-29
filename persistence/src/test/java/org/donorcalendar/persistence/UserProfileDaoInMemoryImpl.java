@@ -2,6 +2,7 @@ package org.donorcalendar.persistence;
 
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.util.IdGenerator;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Component
+@Profile("test")
 public class UserProfileDaoInMemoryImpl implements UserProfileDao {
 
     private final HashMap<Long, UserProfile> cache = new HashMap<>();

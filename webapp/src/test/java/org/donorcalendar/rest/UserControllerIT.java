@@ -1,12 +1,12 @@
-package org.donorcalendar;
+package org.donorcalendar.rest;
 
 import org.apache.http.HttpStatus;
+import org.donorcalendar.JacksonConfig;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserCredentialsDao;
-import org.donorcalendar.persistence.UserCredentialsRepository;
 import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.persistence.UserProfileRepository;
 import org.donorcalendar.util.IdGenerator;
@@ -31,10 +31,6 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
 
-    @Autowired
-    private UserProfileRepository userProfileRepository;
-    @Autowired
-    private UserCredentialsRepository userCredentialsRepository;
     @Autowired
     private UserProfileDao userProfileDao;
     @Autowired
@@ -63,8 +59,8 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
     @Override
     public void tearDown() {
-        userCredentialsRepository.deleteAll();
-        userProfileRepository.deleteAll();
+        userProfileDao.deleteAll();
+        userCredentialsDao.deleteAll();
     }
 
     @Test

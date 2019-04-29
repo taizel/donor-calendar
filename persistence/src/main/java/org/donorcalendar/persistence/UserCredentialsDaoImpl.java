@@ -2,11 +2,13 @@ package org.donorcalendar.persistence;
 
 import org.donorcalendar.model.UserCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@Profile("production")
 public class UserCredentialsDaoImpl implements UserCredentialsDao {
 
     private final UserCredentialsRepository userCredentialsRepository;
