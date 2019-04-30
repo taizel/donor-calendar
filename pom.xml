@@ -50,8 +50,9 @@
         <rest-assured.version>3.0.0</rest-assured.version>
         <dockerfile-maven-plugin.version>1.4.8</dockerfile-maven-plugin.version>
         <!-- Sonar -->
-        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
-        <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/../reporting/target/site/jacoco-aggregate-all/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <build>
@@ -153,42 +154,6 @@
                             <goals>
                                 <goal>report-integration</goal>
                             </goals>
-                        </execution>
-                        <execution>
-                            <id>default-merge</id>
-                            <goals>
-                                <goal>merge</goal>
-                            </goals>
-                            <phase>test</phase>
-                            <configuration>
-                                <fileSets>
-                                    <fileSet>
-                                        <directory>${project.build.directory}</directory>
-                                        <includes>
-                                            <include>jacoco.exec</include>
-                                        </includes>
-                                    </fileSet>
-                                </fileSets>
-                                <destFile>${sonar.jacoco.reportPath}</destFile>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>default-merge-integration</id>
-                            <goals>
-                                <goal>merge</goal>
-                            </goals>
-                            <phase>verify</phase>
-                            <configuration>
-                                <fileSets>
-                                    <fileSet>
-                                        <directory>${project.build.directory}</directory>
-                                        <includes>
-                                            <include>jacoco-it.exec</include>
-                                        </includes>
-                                    </fileSet>
-                                </fileSets>
-                                <destFile>${sonar.jacoco.itReportPath}</destFile>
-                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

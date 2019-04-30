@@ -16,4 +16,4 @@ before_install:
   - git fetch --unshallow
 
 script:
-  - mvn -B clean verify sonar:sonar -Dsonar.projectKey=donor-calendar
+  - mvn -B clean verify -P report-aggregate sonar:sonar -Dsonar.projectKey=donor-calendar
