@@ -8,13 +8,14 @@ import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserCredentialsDao;
 import org.donorcalendar.persistence.UserProfileDao;
-import org.donorcalendar.persistence.UserProfileRepository;
+import org.donorcalendar.service.UserCredentialsService;
 import org.donorcalendar.util.IdGenerator;
 import org.donorcalendar.rest.dto.NewUserDto;
 import org.donorcalendar.rest.dto.UpdateUserDto;
 import org.donorcalendar.rest.dto.UpdateUserPasswordDto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -24,8 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
-    private static final String BILBO_UNENCRYPTED_PASSWORD = "pass2";
-    private static final String BILBO_ENCRYPTED_PASSWORD = "$2a$10$ygbIolKsXFB6JnbVjnrhI.OWgW4nqgfIBLszx3eFxaJ1H7w/5tILe";
+    private static final String BILBO_PASSWORD = "pass2";
     private static final String BASE_PATH = "/user";
     private static final String JSON_CONTENT_TYPE = "application/json";
 
@@ -35,6 +35,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     private UserProfileDao userProfileDao;
     @Autowired
     private UserCredentialsDao userCredentialsDao;
+    private PasswordEncoder passwordEncoder = UserCredentialsService.getNewPasswordEncoder();
 
     private UserProfile bilbo;
 
@@ -52,7 +53,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
         bilbo = userProfileDao.saveNewUser(bilbo);
 
-        UserCredentials userCredentialsEntityBilbo = new UserCredentials(BILBO_ENCRYPTED_PASSWORD);
+        UserCredentials userCredentialsEntityBilbo = new UserCredentials(passwordEncoder.encode(BILBO_PASSWORD));
 
         userCredentialsDao.saveNewUserCredentials(bilbo.getUserId(), userCredentialsEntityBilbo);
     }
@@ -66,7 +67,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     @Test
     public void canGetUser() {
         given().
-            auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
+            auth().basic(bilbo.getEmail(), BILBO_PASSWORD).
         expect().
             statusCode(HttpStatus.SC_OK).
         when().
@@ -90,14 +91,14 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         given().
                 contentType(JSON_CONTENT_TYPE).
                 body(updateUserDto).
-                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
+                auth().basic(bilbo.getEmail(), BILBO_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
                 when().
                 put(BASE_PATH);
 
         given().
-                auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
+                auth().basic(bilbo.getEmail(), BILBO_PASSWORD).
         expect().
                 statusCode(HttpStatus.SC_OK).
         when().
@@ -115,7 +116,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         given().
             contentType(JSON_CONTENT_TYPE).
             body(userPasswordDto).
-            auth().basic(bilbo.getEmail(), BILBO_UNENCRYPTED_PASSWORD).
+            auth().basic(bilbo.getEmail(), BILBO_PASSWORD).
         expect().
             statusCode(HttpStatus.SC_NO_CONTENT).
         when().
