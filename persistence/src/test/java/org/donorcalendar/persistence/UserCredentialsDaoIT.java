@@ -9,14 +9,12 @@ import org.donorcalendar.util.IdGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 @Transactional
-@SpringBootTest
 public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
 
     private static final String TEST_PASSWORD = "test_password";

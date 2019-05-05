@@ -6,7 +6,6 @@ import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,6 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 @Transactional
-@SpringBootTest
 public class PersistenceConvertersIT extends AbstractPersistenceIntegrationTest {
 
     @Autowired

@@ -8,14 +8,12 @@ import org.donorcalendar.util.IdGenerator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Transactional
-@SpringBootTest
 public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
 
     @Autowired

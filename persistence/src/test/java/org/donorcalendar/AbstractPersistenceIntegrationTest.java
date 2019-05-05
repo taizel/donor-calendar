@@ -1,7 +1,5 @@
 package org.donorcalendar;
 
-import java.util.Collections;
-
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
@@ -11,8 +9,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.Collections;
+
 @RunWith(SpringRunner.class)
-@ContextConfiguration(initializers = { AbstractPersistenceIntegrationTest.Initializer.class})
+@ContextConfiguration(classes = {PersistenceIntegrationTestConfig.class},
+        initializers = {AbstractPersistenceIntegrationTest.Initializer.class})
 @ActiveProfiles("production")
 public abstract class AbstractPersistenceIntegrationTest {
 
