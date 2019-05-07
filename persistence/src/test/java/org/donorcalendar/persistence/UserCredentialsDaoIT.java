@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 @Transactional
 public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
@@ -66,15 +65,5 @@ public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
         target.saveUserPassword(TEST_ID, newPassword);
 
         assertEquals(newPassword, target.findByUserId(TEST_ID).orElse(userCredentials).getPassword());
-    }
-
-    @Test
-    public void deleteAll() {
-        UserCredentials userCredentials = new UserCredentials(TEST_PASSWORD);
-        target.saveNewUserCredentials(TEST_ID, userCredentials);
-
-        target.deleteAll();
-
-        assertFalse(target.findByUserId(TEST_ID).isPresent());
     }
 }

@@ -61,7 +61,6 @@ public class UserProfileDaoInMemoryImpl implements UserProfileDao {
                 .collect(Collectors.toList());
     }
 
-    @Override
     public void deleteAll() {
         cache.clear();
     }

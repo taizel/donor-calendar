@@ -44,9 +44,4 @@ public class UserCredentialsDaoImpl implements UserCredentialsDao {
     public void saveUserPassword(Long userId, String newEncodedPassword) {
         savePassword(userId, newEncodedPassword);
     }
-
-    @Override
-    public void deleteAll() {
-        userCredentialsRepository.deleteAll();
-    }
 }

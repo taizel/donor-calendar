@@ -19,6 +19,4 @@ public interface UserProfileDao {
     List<UserProfile> findUsersToRemind();
 
     void updateUser(UserProfile userProfile);
-
-    void deleteAll();
 }

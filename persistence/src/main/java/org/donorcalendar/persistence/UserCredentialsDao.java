@@ -10,6 +10,4 @@ public interface UserCredentialsDao {
     Optional<UserCredentials> findByUserId(Long userId);
 
     void saveUserPassword(Long userId, String encodedNewPassword);
-
-    void deleteAll();
 }

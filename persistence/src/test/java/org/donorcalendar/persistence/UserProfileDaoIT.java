@@ -131,18 +131,6 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
         }
     }
 
-    @Test
-    public void deleteAll() {
-        UserProfile userToPersist1 = generateDefaultTestUserProfile();
-        UserProfile userToPersist2 = generateDefaultTestUserProfile();
-        userProfileDao.saveNewUser(userToPersist1);
-        userProfileDao.saveNewUser(userToPersist2);
-
-        userProfileDao.deleteAll();
-
-        Assert.assertEquals(0, userProfileDao.findAll().size());
-    }
-
     private UserProfile generateDefaultTestUserProfile() {
         UserProfile user = new UserProfile();
         user.setUserId(IdGenerator.generateNewId());
