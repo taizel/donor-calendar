@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Profile("test")
-public class UserProfileDaoInMemoryImpl implements UserProfileDao {
+public class FakeUserProfileDao implements UserProfileDao {
 
     private final HashMap<Long, UserProfile> cache = new HashMap<>();
 

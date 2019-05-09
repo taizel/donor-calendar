@@ -6,8 +6,8 @@ import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
-import org.donorcalendar.persistence.UserCredentialsDaoInMemoryImpl;
-import org.donorcalendar.persistence.UserProfileDaoInMemoryImpl;
+import org.donorcalendar.persistence.FakeUserCredentialsDao;
+import org.donorcalendar.persistence.FakeUserProfileDao;
 import org.donorcalendar.service.UserCredentialsService;
 import org.donorcalendar.util.IdGenerator;
 import org.donorcalendar.rest.dto.NewUserDto;
@@ -32,9 +32,9 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
 
     @Autowired
-    private UserProfileDaoInMemoryImpl userProfileDao;
+    private FakeUserProfileDao userProfileDao;
     @Autowired
-    private UserCredentialsDaoInMemoryImpl userCredentialsDao;
+    private FakeUserCredentialsDao userCredentialsDao;
     private final PasswordEncoder passwordEncoder = UserCredentialsService.getNewPasswordEncoder();
 
     private UserProfile bilbo;

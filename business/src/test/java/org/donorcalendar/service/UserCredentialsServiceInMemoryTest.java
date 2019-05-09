@@ -3,7 +3,7 @@ package org.donorcalendar.service;
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserCredentials;
-import org.donorcalendar.persistence.UserCredentialsDaoInMemoryImpl;
+import org.donorcalendar.persistence.FakeUserCredentialsDao;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,12 +14,12 @@ public class UserCredentialsServiceInMemoryTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    private final UserCredentialsDaoInMemoryImpl userSecurityDao = new UserCredentialsDaoInMemoryImpl();
+    private final FakeUserCredentialsDao userSecurityDao = new FakeUserCredentialsDao();
 
     private final UserCredentialsService target = new UserCredentialsService(userSecurityDao);
 
     @Test
-    public void saveNewUserCredentials_ValidCredentials_Success() {
+    public void saveNewUserCredentials() {
         User user = createUserForTest();
 
         target.saveNewUserCredentials(user);
@@ -30,7 +30,7 @@ public class UserCredentialsServiceInMemoryTest {
     }
 
     @Test
-    public void updateUserPassword_ValidCredentials_Success() {
+    public void updateUserPassword() {
         User user = createUserForTest();
         Long userId = user.getUserProfile().getUserId();
         String newPassword = "updatedPassword";

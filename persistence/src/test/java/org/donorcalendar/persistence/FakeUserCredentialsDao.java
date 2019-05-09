@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Component
 @Profile("test")
-public class UserCredentialsDaoInMemoryImpl implements UserCredentialsDao {
+public class FakeUserCredentialsDao implements UserCredentialsDao {
 
     private final HashMap<Long, UserCredentials> cache = new HashMap<>();
 

@@ -25,8 +25,8 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/*InMemoryImpl.class</include>
-                                <include>**/DisableDataBaseAutoConfiguration.class</include>
+                                <include>**/*Fake*.class</include>
+								<include>**/DisableDataBaseAutoConfiguration.class</include>
                             </includes>
                         </configuration>
                     </execution>

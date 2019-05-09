@@ -8,9 +8,9 @@ import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.model.ValidationException;
 import org.donorcalendar.persistence.UserProfileDao;
-import org.donorcalendar.persistence.UserProfileDaoInMemoryImpl;
+import org.donorcalendar.persistence.FakeUserProfileDao;
 import org.donorcalendar.persistence.UserCredentialsDao;
-import org.donorcalendar.persistence.UserCredentialsDaoInMemoryImpl;
+import org.donorcalendar.persistence.FakeUserCredentialsDao;
 import org.donorcalendar.util.IdGenerator;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -23,8 +23,8 @@ public class UserServiceInMemoryTest {
 
     private static final String UNENCRYPTED_TEST_PASSWORD = "pass1";
 
-    private final UserProfileDao userProfileDao = new UserProfileDaoInMemoryImpl();
-    private final UserCredentialsDao userCredentialsDao = new UserCredentialsDaoInMemoryImpl();
+    private final UserProfileDao userProfileDao = new FakeUserProfileDao();
+    private final UserCredentialsDao userCredentialsDao = new FakeUserCredentialsDao();
     private final UserCredentialsService userCredentialsService = new UserCredentialsService(userCredentialsDao);
 
     private final UserService target = new UserService(userProfileDao, userCredentialsService);
@@ -56,7 +56,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void saveUser_NewUserWithLastDonationUpToFiftySixDaysPast_SuccessWithStatusAsDonor() throws ValidationException {
+    public void newUserWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -68,7 +68,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void saveUser_NewUserWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPast_SuccessWithStatusAsPotentialDonor() throws ValidationException {
+    public void newUserWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -80,7 +80,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void saveUser_NewUserWithLastDonationMoreThanHundredTwentyDays_SuccessWithStatusAsNeedToDonate() throws ValidationException {
+    public void newUserWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -92,7 +92,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void saveUser_NewUserWithLastDonationNull_SuccessWithStatusAsNeedToDonate() throws ValidationException {
+    public void newUserWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         userProfileForTest.setLastDonation(null);
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -104,7 +104,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void saveUser_NewUserWithLastDonationInFuture_FailValidationLastDonationDateInFuture() {
+    public void newUserWithLastDonationInFutureFailValidationLastDonationDateInFuture() {
         try {
             UserProfile userProfileForTest = createUserProfileForTest();
             userProfileForTest.setLastDonation(LocalDate.now().plusDays(2));
@@ -119,7 +119,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void saveUser_NewUser_FailValidationEmailAlreadyTaken() {
+    public void newUserFailValidationEmailAlreadyTaken() {
         try {
             UserProfile userProfileForTest1 = createUserProfileForTest();
             UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -137,7 +137,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void updateUserProfile_UserProfileWithInvalidId_FailUserNotFound() throws ValidationException {
+    public void updateUserProfileFailUserNotFound() throws ValidationException {
         try {
             UserProfile userProfileForTest = createUserProfileForTest();
 
@@ -151,7 +151,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void updateUserProfile_UserProfileWithLastDonationUpToFiftySixDaysPast_SuccessWithStatusAsDonor() throws ValidationException, NotFoundException {
+    public void updateUserProfileWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws ValidationException, NotFoundException {
         UserProfile userProfileForTest = createUserProfileForTest();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -166,7 +166,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void updateUserProfile_UserProfileWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPast_SuccessWithStatusAsPotentialDonor() throws ValidationException, NotFoundException {
+    public void updateUserProfileWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws ValidationException, NotFoundException {
         UserProfile userProfileForTest = createUserProfileForTest();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -181,7 +181,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void updateUserProfile_UserProfileWithLastDonationMoreThanHundredTwentyDays_SuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
+    public void updateUserProfileWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
         UserProfile userProfileForTest = createUserProfileForTest();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -196,7 +196,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void updateUserProfile_UserProfileWithLastDonationNull_SuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
+    public void updateUserProfileWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
         UserProfile userProfileForTest = createUserProfileForTest();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -211,7 +211,7 @@ public class UserServiceInMemoryTest {
     }
 
     @Test
-    public void updateUserProfile_UserProfileLastDonationInFuture_FailValidationLastDonationDateInFuture()
+    public void updateUserProfileLastDonationInFutureFailValidationLastDonationDateInFuture()
             throws NotFoundException, ValidationException {
         UserProfile userProfileForTest = createUserProfileForTest();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -233,11 +233,11 @@ public class UserServiceInMemoryTest {
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        UserCredentials securityDetailsBeforeUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId()).orElse(null);
+        UserCredentials securityDetailsBeforeUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId()).get();
 
         target.updateUserPassword(userProfileForTest.getUserId(), "differentPassword");
 
-        UserCredentials securityDetailsAfterUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId()).orElse(null);
+        UserCredentials securityDetailsAfterUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId()).get();
         Assert.assertNotEquals(securityDetailsBeforeUpdate.getPassword(), securityDetailsAfterUpdate.getPassword());
     }
 
