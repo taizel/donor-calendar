@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.Assert.assertTrue;
 
-public class UserCredentialsServiceInMemoryTest {
+public class UserCredentialsServiceTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

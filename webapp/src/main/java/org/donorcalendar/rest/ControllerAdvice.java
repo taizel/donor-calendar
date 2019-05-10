@@ -35,6 +35,10 @@ public class ControllerAdvice {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
+    /*
+     * This case should never happen as Spring unauthorized error should happen before, but as it's part of the signature in some UserController
+     * methods I decided to add it here just in case something unexpected happens.
+     */
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ClientErrorInformationDto> handleNotFoundError(HttpServletRequest req, NotFoundException e) {
         ClientErrorInformationDto error = buildClientErrorInformationDto(req, e.getMessage());

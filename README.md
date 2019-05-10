@@ -7,7 +7,7 @@ Spring based project of a web application to remind users to donate blood.
 
 This project is mainly used to experiment with Spring while also serving as a personal reference implementation.
 
-It has the same set of unit tests using mocks and stubbing, solely to compare both approaches. The database containers started for integrations tests are configured to use in-memory file system (TmpFs) for performance reasons.
+The database containers started for integrations tests (persistence only) and smoke tests are configured to use in-memory file system (TmpFs) for performance reasons.
 
 Two pages to create new donors are available as static resources under /js (http://localhost:8080/js when using the provided docker-compose.yml file).
 - The mithril-index.html which uses [Mithril](https://mithril.js.org/) 

@@ -19,7 +19,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class UserServiceInMemoryTest {
+public class UserServiceTest {
 
     private static final String UNENCRYPTED_TEST_PASSWORD = "pass1";
 
