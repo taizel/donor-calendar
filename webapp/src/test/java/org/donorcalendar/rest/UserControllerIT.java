@@ -138,7 +138,6 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         newUserDto.setPassword("new");
         newUserDto.setLastDonation(LocalDate.now().minusMonths(2));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
-        newUserDto.setUserStatus(UserStatus.fromNumberOfElapsedDaysSinceLastDonation(60));
 
         given().
                 contentType(JSON_CONTENT_TYPE).

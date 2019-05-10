@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>donor-calendar-webapp</artifactId>
-    <name>Donor Calendar App</name>
+    <name>Donor Calendar Webapp</name>
 
     <properties>
         <boot-classifier>exec</boot-classifier>
