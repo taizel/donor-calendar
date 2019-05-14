@@ -1,5 +1,7 @@
 package org.donorcalendar;
 
+import static org.junit.Assert.assertEquals;
+
 import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.persistence.FakeUserProfileDao;
@@ -10,6 +12,7 @@ import org.donorcalendar.security.UserSecurityDetailsService;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Test;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class UserSecurityDetailsServiceTest {
@@ -35,7 +38,10 @@ public class UserSecurityDetailsServiceTest {
     public void loadUserByUsernameSuccess() {
         createUserProfile();
         userCredentialsDao.saveNewUserCredentials(TEST_ID, new UserCredentials("password"));
-        target.loadUserByUsername(TEST_EMAIL);
+
+        UserDetails userDetails = target.loadUserByUsername(TEST_EMAIL);
+
+        assertEquals(TEST_EMAIL, userDetails.getUsername());
     }
 
     private void createUserProfile() {

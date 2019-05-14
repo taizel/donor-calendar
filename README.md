@@ -30,5 +30,11 @@ Those are simple pages added for basic experiments and tests with Mithril and Re
 
 ## Running the application
 On the root folder, one simple way to start the project is:
-- Build it with Maven (`mvn clean package` at least)
+- Build the project with Maven (`mvn clean package` at least)
 - After you can start it with `docker-compose`
+
+To start the project with the spring-boot Maven plugin:
+- Start a PostgreSQL database (you can use the one defined on the docker-compose by running `docker-compose up -d db-donor-calendar`)
+- Update the _persistence.properties_ file in the persistence module to match the connection details of the database that you want to connect
+- On the root folder, build the project with Maven (`mvn clean package` at least)
+- On the webapp folder run `mvn spring-boot:run -Dspring.profiles.active=production`
