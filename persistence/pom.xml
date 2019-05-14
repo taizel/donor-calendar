@@ -26,6 +26,7 @@
                         <configuration>
                             <includes>
                                 <include>**/*Fake*.class</include>
+                                <include>**/DatabaseContainerStarter.class</include>
 								<include>**/DisableDataBaseAutoConfiguration.class</include>
                             </includes>
                         </configuration>

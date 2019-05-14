@@ -12,15 +12,6 @@
     <artifactId>donor-calendar-smoke-tests</artifactId>
     <name>Donor Calendar Smoke Tests</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>org.donorcalendar</groupId>
@@ -29,6 +20,19 @@
         </dependency>
 
         <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.donorcalendar</groupId>
+            <artifactId>donor-calendar-persistence</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>

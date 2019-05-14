@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
+    public static final String APPLICATION_READY = "Donor Calendar initial configuration done";
+
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
@@ -17,6 +19,6 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... strings) {
-        log.info("Donor Calendar initial configuration done");
+        log.info(APPLICATION_READY);
     }
 }
