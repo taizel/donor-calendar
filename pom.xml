@@ -40,14 +40,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring-boot.version>2.1.0.RELEASE</spring-boot.version>
+        <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
         <jdbc.postgres.version>42.2.5</jdbc.postgres.version>
-        <maven-surefire-failsafe-plugin.version>3.0.0-M3</maven-surefire-failsafe-plugin.version>
+        <maven-surefire-failsafe-plugin.version>2.22.2</maven-surefire-failsafe-plugin.version>
         <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
-        <jacoco-maven-plugin.version>0.8.3</jacoco-maven-plugin.version>
-        <testcontainers.postgresql.version>1.10.5</testcontainers.postgresql.version>
-        <rest-assured.version>3.0.0</rest-assured.version>
+        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <testcontainers.postgresql.version>1.11.3</testcontainers.postgresql.version>
+        <rest-assured.version>3.3.0</rest-assured.version><!-- TODO update to 4.0.0 -->
         <dockerfile-maven-plugin.version>1.4.8</dockerfile-maven-plugin.version>
         <!-- Sonar -->
         <sonar.coverage.jacoco.xmlReportPaths>
