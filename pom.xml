@@ -47,7 +47,6 @@
         <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
         <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
         <testcontainers.postgresql.version>1.11.3</testcontainers.postgresql.version>
-        <rest-assured.version>3.3.0</rest-assured.version><!-- TODO update to 4.0.0 -->
         <dockerfile-maven-plugin.version>1.4.8</dockerfile-maven-plugin.version>
         <!-- Sonar -->
         <sonar.coverage.jacoco.xmlReportPaths>
@@ -170,22 +169,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${jdbc.postgres.version}</version>
-            </dependency>
 
             <!-- Test dependencies -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${testcontainers.postgresql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.rest-assured</groupId>
-                <artifactId>rest-assured</artifactId>
-                <version>${rest-assured.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
