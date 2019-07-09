@@ -59,6 +59,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
                     <repository>donor-calendar</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
