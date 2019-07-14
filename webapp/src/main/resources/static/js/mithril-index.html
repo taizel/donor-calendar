@@ -8,6 +8,7 @@
 <script>
     var root = document.body;
     var count = 0;
+    var baseUrl = window.location.protocol + "//" + window.location.host;
 
     var newUser = {
         name: "Test" + count,
@@ -61,7 +62,7 @@
                 m("option", {value: "O_NEGATIVE"}, "O-")
             ]),
             m("label", "Last donation:"),
-            m("input[type=tex][name=lastDonation][placeholder=yyyy/MM/dd]", {
+            m("input[type=tex][name=lastDonation][placeholder=yyyy-MM-dd]", {
                 value: newUser.lastDonation,
                 onchange: function (e) {
                     newUser.lastDonation = e.target.value;
@@ -75,8 +76,8 @@
         e.preventDefault();
         m.request({
             method: "POST",
-            url: "http://localhost:8080/user/",
-            data: {
+            url: baseUrl + "/user",
+            body: {
                 name: newUser.name,
                 email: newUser.email,
                 password: newUser.password,

@@ -13,6 +13,3 @@ create table user_profile
   next_reminder          date,
   user_status            integer not null
 );
-
-alter table user_profile
-  owner to donor;

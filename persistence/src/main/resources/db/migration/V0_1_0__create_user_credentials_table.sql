@@ -8,5 +8,3 @@ create table user_credentials
   password varchar(255) not null
 );
 
-alter table user_credentials
-  owner to donor;

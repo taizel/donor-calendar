@@ -1,4 +1,4 @@
-package org.donorcalendar.persistence;
+package org.donorcalendar.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
