@@ -1,15 +1,16 @@
 package org.donorcalendar.rest;
 
-import org.donorcalendar.model.User;
-import org.donorcalendar.model.UserProfile;
-import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.NotFoundException;
+import org.donorcalendar.model.User;
+import org.donorcalendar.model.UserCredentials;
+import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.ValidationException;
+import org.donorcalendar.rest.dto.NewUserDto;
+import org.donorcalendar.rest.dto.UpdateUserDto;
+import org.donorcalendar.rest.dto.UpdateUserPasswordDto;
+import org.donorcalendar.rest.dto.UserResponseDto;
 import org.donorcalendar.security.UserSecurityDetails;
 import org.donorcalendar.service.UserService;
-import org.donorcalendar.rest.dto.NewUserDto;
-import org.donorcalendar.rest.dto.UpdateUserPasswordDto;
-import org.donorcalendar.rest.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,25 +34,23 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto createNewUser(@RequestBody NewUserDto newUserDto) throws ValidationException {
+    public UserResponseDto createNewUser(@RequestBody NewUserDto newUserDto) throws ValidationException {
         User user = newUserDtoToUser(newUserDto);
-        return userToUserDto(userService.saveNewUser(user));
+        return UserResponseDto.buildUserDtoFromUserProfile(userService.saveNewUser(user));
     }
 
     @PutMapping
-    public UserDto updateUser(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UserDto userDto) throws ValidationException, NotFoundException {
-
+    public UserResponseDto updateUser(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserDto userDto) throws ValidationException, NotFoundException {
         Long userId = userDetails.getUserProfile().getUserId();
-        UserProfile userProfileToUpdate = userDtoToUser(userDto);
+        UserProfile userProfileToUpdate = userDto.buildUserProfile();
         userProfileToUpdate.setUserId(userId);
 
         userService.updateUserProfile(userProfileToUpdate);
-        return userToUserDto(userProfileToUpdate);
+        return UserResponseDto.buildUserDtoFromUserProfile(userProfileToUpdate);
     }
 
     @PutMapping(path = "/update-password")
     public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
-
         UserProfile userProfile = userDetails.getUserProfile();
         userService.updateUserPassword(userProfile.getUserId(), updateUserPasswordDtoDto.getNewPassword());
 
@@ -59,34 +58,13 @@ public class UserController {
     }
 
     @GetMapping
-    public UserDto getLoggedUser(@AuthenticationPrincipal UserSecurityDetails userDetails) {
-        return userToUserDto(userDetails.getUserProfile());
+    public UserResponseDto getLoggedUser(@AuthenticationPrincipal UserSecurityDetails userDetails) {
+        return UserResponseDto.buildUserDtoFromUserProfile(userDetails.getUserProfile());
     }
 
     private User newUserDtoToUser(NewUserDto newUserDto) {
-        UserProfile userProfile = userDtoToUser(newUserDto);
+        UserProfile userProfile = newUserDto.buildUserProfile();
         UserCredentials userCredentials = new UserCredentials(newUserDto.getPassword());
         return new User(userProfile, userCredentials);
-    }
-
-    private UserProfile userDtoToUser(UserDto userDto) {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setEmail(userDto.getEmail());
-        userProfile.setName(userDto.getName());
-        userProfile.setBloodType(userDto.getBloodType());
-        userProfile.setLastDonation(userDto.getLastDonation());
-        return userProfile;
-    }
-
-    private UserDto userToUserDto(UserProfile userProfile) {
-        UserDto userDto = new UserDto();
-        userDto.setEmail(userProfile.getEmail());
-        userDto.setName(userProfile.getName());
-        userDto.setBloodType(userProfile.getBloodType());
-        userDto.setLastDonation(userProfile.getLastDonation());
-        userDto.setUserStatus(userProfile.getUserStatus());
-        userDto.setDaysBetweenReminders(userProfile.getDaysBetweenReminders());
-        userDto.setNextReminder(userProfile.getNextReminder());
-        return userDto;
     }
 }

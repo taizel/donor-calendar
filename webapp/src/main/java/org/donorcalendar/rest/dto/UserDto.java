@@ -1,18 +1,17 @@
 package org.donorcalendar.rest.dto;
 
 import org.donorcalendar.model.BloodType;
-import org.donorcalendar.model.UserStatus;
+import org.donorcalendar.model.UserProfile;
 
 import java.time.LocalDate;
 
-public class UserDto {
+public abstract class UserDto {
     private String name;
     private String email;
     private LocalDate lastDonation;
     private BloodType bloodType;
     private Integer daysBetweenReminders;
     private LocalDate nextReminder;
-    private UserStatus userStatus;
 
     public String getName() {
         return name;
@@ -62,11 +61,14 @@ public class UserDto {
         this.nextReminder = nextReminder;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
-    }
-
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public UserProfile buildUserProfile() {
+        UserProfile userProfile = new UserProfile();
+        userProfile.setEmail(email);
+        userProfile.setName(name);
+        userProfile.setBloodType(bloodType);
+        userProfile.setLastDonation(lastDonation);
+        userProfile.setDaysBetweenReminders(daysBetweenReminders);
+        userProfile.setNextReminder(nextReminder);
+        return userProfile;
     }
 }
