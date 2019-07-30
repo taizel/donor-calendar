@@ -35,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 // Allowing unauthenticated access to method for registering a new donor
                 .mvcMatchers(HttpMethod.POST, "/user").permitAll()
+                .mvcMatchers(HttpMethod.GET, "/v3/api-docs", "/swagger-ui.html").permitAll()
                 // Requesting authentication on all requests except the allowed ones
                 .anyRequest().authenticated()
                 .and()

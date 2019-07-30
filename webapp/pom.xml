@@ -15,6 +15,7 @@
     <properties>
         <boot-classifier>exec</boot-classifier>
         <owasp.encoder.version>1.2.2</owasp.encoder.version>
+        <springdoc-openapi.version>1.1.1</springdoc-openapi.version>
     </properties>
 
     <build>
@@ -138,6 +139,18 @@
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Adds automatic generation of OpenAPI 3 documentation and Swagger UI for Spring Boot -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-core</artifactId>
+            <version>${springdoc-openapi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
     </dependencies>
 

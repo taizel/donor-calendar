@@ -3,6 +3,7 @@ package org.donorcalendar.rest;
 import org.donorcalendar.model.ForbiddenAccessException;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.security.UserSecurityDetails;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/donor-zone")
+@RequestMapping(value = "/donor-zone", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DonorZoneController {
 
     @GetMapping

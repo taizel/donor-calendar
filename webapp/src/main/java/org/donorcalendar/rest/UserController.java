@@ -13,6 +13,7 @@ import org.donorcalendar.security.UserSecurityDetails;
 import org.donorcalendar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/user")
+@RequestMapping(path = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     private final UserService userService;
@@ -33,13 +34,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserResponseDto createNewUser(@RequestBody NewUserDto newUserDto) throws ValidationException {
         User user = newUserDtoToUser(newUserDto);
         return UserResponseDto.buildUserDtoFromUserProfile(userService.saveNewUser(user));
     }
 
-    @PutMapping
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserResponseDto updateUser(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserDto userDto) throws ValidationException, NotFoundException {
         Long userId = userDetails.getUserProfile().getUserId();
         UserProfile userProfileToUpdate = userDto.buildUserProfile();
@@ -49,7 +50,7 @@ public class UserController {
         return UserResponseDto.buildUserDtoFromUserProfile(userProfileToUpdate);
     }
 
-    @PutMapping(path = "/update-password")
+    @PutMapping(path = "/update-password", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
         UserProfile userProfile = userDetails.getUserProfile();
         userService.updateUserPassword(userProfile.getUserId(), updateUserPasswordDtoDto.getNewPassword());
