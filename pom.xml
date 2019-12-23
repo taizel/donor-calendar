@@ -44,7 +44,7 @@
         <maven-surefire-failsafe-plugin.version>2.22.2</maven-surefire-failsafe-plugin.version>
         <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
         <spotbugs-maven-plugin.version>3.1.11</spotbugs-maven-plugin.version>
-        <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
+        <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
         <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
         <testcontainers.postgresql.version>1.11.3</testcontainers.postgresql.version>
         <dockerfile-maven-plugin.version>1.4.8</dockerfile-maven-plugin.version>
