@@ -42,7 +42,7 @@
 
         <spring-boot.version>2.1.5.RELEASE</spring-boot.version>
         <maven-surefire-failsafe-plugin.version>2.22.2</maven-surefire-failsafe-plugin.version>
-        <maven-jar-plugin.version>3.1.2</maven-jar-plugin.version>
+        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
         <spotbugs-maven-plugin.version>3.1.12.2</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.12.0</maven-pmd-plugin.version>
         <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
