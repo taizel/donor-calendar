@@ -15,7 +15,7 @@
     <properties>
         <boot-classifier>exec</boot-classifier>
         <owasp.encoder.version>1.2.2</owasp.encoder.version>
-        <springdoc-openapi.version>1.2.33</springdoc-openapi.version>
+        <springdoc-openapi.version>1.2.34</springdoc-openapi.version>
     </properties>
 
     <build>
