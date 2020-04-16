@@ -51,11 +51,11 @@ public class UserController {
     }
 
     @PutMapping(path = "/update-password", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity updateUserPassword(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
+    public ResponseEntity<HttpStatus> updateUserPassword(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserPasswordDto updateUserPasswordDtoDto) throws ValidationException, NotFoundException {
         UserProfile userProfile = userDetails.getUserProfile();
         userService.updateUserPassword(userProfile.getUserId(), updateUserPasswordDtoDto.getNewPassword());
 
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
