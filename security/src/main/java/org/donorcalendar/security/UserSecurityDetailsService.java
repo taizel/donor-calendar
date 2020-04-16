@@ -1,9 +1,9 @@
 package org.donorcalendar.security;
 
-import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserCredentials;
-import org.donorcalendar.persistence.UserProfileDao;
+import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.persistence.UserCredentialsDao;
+import org.donorcalendar.persistence.UserProfileDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,7 +31,7 @@ public class UserSecurityDetailsService implements UserDetailsService {
         if (optionalUserProfile.isPresent()) {
             UserProfile userProfile = optionalUserProfile.get();
             Optional<UserCredentials> userCredentials = userCredentialsDao.findByUserId(userProfile.getUserId());
-            if(userCredentials.isPresent()) {
+            if (userCredentials.isPresent()) {
                 return new UserSecurityDetails(userProfile, userCredentials.get().getPassword());
             }
             throw new BadCredentialsException("User password could not be recovered for authentication");

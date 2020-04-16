@@ -2,10 +2,10 @@ package org.donorcalendar.rest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.donorcalendar.rest.dto.ClientErrorInformationDto;
 import org.donorcalendar.model.ForbiddenAccessException;
 import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.ValidationException;
+import org.donorcalendar.rest.dto.ClientErrorInformationDto;
 import org.owasp.encoder.Encode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

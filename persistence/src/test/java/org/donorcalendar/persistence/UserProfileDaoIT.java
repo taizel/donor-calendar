@@ -16,10 +16,10 @@ import java.util.List;
 @Transactional
 public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
 
+    private static final LocalDate TODAY = LocalDate.now();
+
     @Autowired
     private UserProfileDao userProfileDao;
-
-    private static final LocalDate TODAY = LocalDate.now();
 
     @Test
     public void saveNewUser() {

@@ -1,9 +1,9 @@
 package org.donorcalendar.service;
 
+import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.User;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
-import org.donorcalendar.model.NotFoundException;
 import org.donorcalendar.model.ValidationException;
 import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.util.IdGenerator;
@@ -84,6 +84,6 @@ public class UserService {
     }
 
     private boolean isUserEmailAvailable(String userEmail) {
-        return !userProfileDao.findByEmail(userEmail).isPresent();
+        return userProfileDao.findByEmail(userEmail).isEmpty();
     }
 }

@@ -30,13 +30,11 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     private static final String JSON_CONTENT_TYPE = "application/json";
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
-
+    private final PasswordEncoder passwordEncoder = UserCredentialsService.getNewPasswordEncoder();
     @Autowired
     private FakeUserProfileDao userProfileDao;
     @Autowired
     private FakeUserCredentialsDao userCredentialsDao;
-    private final PasswordEncoder passwordEncoder = UserCredentialsService.getNewPasswordEncoder();
-
     private UserProfile testUserProfile;
 
     @Override
@@ -74,13 +72,13 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
                 .get(BASE_PATH)
         .then()
                 .assertThat()
-                    .body("name", equalTo(testUserProfile.getName()))
-                    .body("email", equalTo(testUserProfile.getEmail()))
-                    .body("bloodType", equalTo(testUserProfile.getBloodType().toString()))
-                    .body("lastDonation", equalTo(testUserProfile.getLastDonation().format(DATE_FORMATTER)))
-                    .body("daysBetweenReminders", equalTo(testUserProfile.getDaysBetweenReminders()))
-                    .body("nextReminder", equalTo(testUserProfile.getNextReminder().format(DATE_FORMATTER)))
-                    .body("userStatus", equalTo(testUserProfile.getUserStatus().toString()));
+                .body("name", equalTo(testUserProfile.getName()))
+                .body("email", equalTo(testUserProfile.getEmail()))
+                .body("bloodType", equalTo(testUserProfile.getBloodType().toString()))
+                .body("lastDonation", equalTo(testUserProfile.getLastDonation().format(DATE_FORMATTER)))
+                .body("daysBetweenReminders", equalTo(testUserProfile.getDaysBetweenReminders()))
+                .body("nextReminder", equalTo(testUserProfile.getNextReminder().format(DATE_FORMATTER)))
+                .body("userStatus", equalTo(testUserProfile.getUserStatus().toString()));
     }
 
     @Test
@@ -110,13 +108,13 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
                 .get(BASE_PATH)
         .then()
                 .assertThat()
-                    .body("name", equalTo(updateUserDto.getName()))
-                    .body("email", equalTo(updateUserDto.getEmail()))
-                    .body("bloodType", equalTo(updateUserDto.getBloodType().toString()))
-                    .body("lastDonation", equalTo(updateUserDto.getLastDonation().format(DATE_FORMATTER)))
-                    .body("daysBetweenReminders", equalTo(updateUserDto.getDaysBetweenReminders()))
-                    .body("nextReminder", equalTo(updateUserDto.getNextReminder().format(DATE_FORMATTER)))
-                    .body("userStatus", not(isEmptyString()));
+                .body("name", equalTo(updateUserDto.getName()))
+                .body("email", equalTo(updateUserDto.getEmail()))
+                .body("bloodType", equalTo(updateUserDto.getBloodType().toString()))
+                .body("lastDonation", equalTo(updateUserDto.getLastDonation().format(DATE_FORMATTER)))
+                .body("daysBetweenReminders", equalTo(updateUserDto.getDaysBetweenReminders()))
+                .body("nextReminder", equalTo(updateUserDto.getNextReminder().format(DATE_FORMATTER)))
+                .body("userStatus", not(emptyString()));
     }
 
     @Test
@@ -168,13 +166,13 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
                 .get(BASE_PATH)
         .then()
                 .assertThat()
-                    .body("name", equalTo(newUserDto.getName()))
-                    .body("email", equalTo(newUserDto.getEmail()))
-                    .body("bloodType", equalTo(newUserDto.getBloodType().toString()))
-                    .body("lastDonation", equalTo(newUserDto.getLastDonation().format(DATE_FORMATTER)))
-                    .body("daysBetweenReminders", equalTo(newUserDto.getDaysBetweenReminders()))
-                    .body("nextReminder", equalTo(newUserDto.getNextReminder().format(DATE_FORMATTER)))
-                    .body("userStatus", not(isEmptyString()));
+                .body("name", equalTo(newUserDto.getName()))
+                .body("email", equalTo(newUserDto.getEmail()))
+                .body("bloodType", equalTo(newUserDto.getBloodType().toString()))
+                .body("lastDonation", equalTo(newUserDto.getLastDonation().format(DATE_FORMATTER)))
+                .body("daysBetweenReminders", equalTo(newUserDto.getDaysBetweenReminders()))
+                .body("nextReminder", equalTo(newUserDto.getNextReminder().format(DATE_FORMATTER)))
+                .body("userStatus", not(emptyString()));
     }
 
     private UpdateUserDto userProfileToUpdateUserDto(UserProfile user) {

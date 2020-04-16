@@ -24,6 +24,12 @@ public abstract class AbstractRestAssuredIntegrationTest {
     @LocalServerPort
     protected int port;
 
+    @AfterClass
+    static public void staticTearDown() {
+        RestAssured.reset();
+        isRestAssuredNotConfigured = true;
+    }
+
     @Before
     public void completeSetUp() {
         setUp();
@@ -46,10 +52,4 @@ public abstract class AbstractRestAssuredIntegrationTest {
 
     @After
     public abstract void tearDown();
-
-    @AfterClass
-    static public void staticTearDown() {
-        RestAssured.reset();
-        isRestAssuredNotConfigured = true;
-    }
 }

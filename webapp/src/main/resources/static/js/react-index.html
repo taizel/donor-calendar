@@ -1,6 +1,7 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Create New Donor</title>
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
@@ -15,9 +16,11 @@
         constructor(props) {
             super(props);
             this.count = 0;
-            this.state = {name: "Test" + this.count, email: "test" + (this.count) + "@test.mail.com",
+            this.state = {
+                name: "Test" + this.count, email: "test" + (this.count) + "@test.mail.com",
                 lastDonation: "2018-12-05", bloodType: "B_NEGATIVE",
-                password: "test+pass"};
+                password: "test+pass"
+            };
 
             this.handleChangeName = this.handleChangeName.bind(this);
             this.handleChangeEmail = this.handleChangeEmail.bind(this);
@@ -49,6 +52,7 @@
         handleChangeBloodType(event) {
             this.setState({bloodType: event.target.value});
         }
+
         handleChangePassword(event) {
             this.setState({password: event.target.value});
         }
@@ -69,12 +73,12 @@
                     password: this.state.password
                 })
             })
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(jsonResponse) {
-                console.log(jsonResponse);
-            }).catch(function(error) {
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (jsonResponse) {
+                    console.log(jsonResponse);
+                }).catch(function (error) {
                 console.log(error);
             });
 

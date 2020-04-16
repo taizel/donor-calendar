@@ -1,8 +1,5 @@
 package org.donorcalendar.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
@@ -15,6 +12,9 @@ import org.mockito.Mockito;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class ScheduledTasksServiceTest {
 

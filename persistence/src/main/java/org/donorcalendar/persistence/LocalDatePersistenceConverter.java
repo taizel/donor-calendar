@@ -1,8 +1,8 @@
 package org.donorcalendar.persistence;
 
-import java.time.LocalDate;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.time.LocalDate;
 
 @Converter(autoApply = true)
 public class LocalDatePersistenceConverter implements AttributeConverter<LocalDate, java.sql.Date> {

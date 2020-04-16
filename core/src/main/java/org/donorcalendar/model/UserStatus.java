@@ -7,9 +7,9 @@ public enum UserStatus {
     NEED_TO_DONATE; // More than 120 days
 
     public static UserStatus fromNumberOfElapsedDaysSinceLastDonation(long numberOfDays) {
-        if(numberOfDays <= 56){
+        if (numberOfDays <= 56) {
             return DONOR;
-        }else if (numberOfDays <= 120){
+        } else if (numberOfDays <= 120) {
             return POTENTIAL_DONOR;
         } else {
             return NEED_TO_DONATE;

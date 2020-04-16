@@ -1,8 +1,8 @@
 package org.donorcalendar.service;
 
 import org.donorcalendar.model.User;
-import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserCredentials;
+import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.persistence.FakeUserCredentialsDao;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class UserCredentialsServiceTest {
         target.saveNewUserCredentials(user);
 
         UserCredentials userCredentials = userSecurityDao.findByUserId(user.getUserProfile().getUserId()).orElse(null);
-        assertTrue("Encrypted password does not look to be valid.",
+        assertTrue("The encrypted password does not look to be valid.",
                 passwordEncoder.matches(user.getUserCredentials().getPassword(), userCredentials.getPassword()));
     }
 
@@ -39,7 +39,7 @@ public class UserCredentialsServiceTest {
         target.updateUserPassword(userId, newPassword);
 
         UserCredentials updatedSecurityDetails = userSecurityDao.findByUserId(userId).orElse(null);
-        assertTrue("Encrypted password does not look to be valid.",
+        assertTrue("The encrypted password does not look to be valid.",
                 passwordEncoder.matches(newPassword, updatedSecurityDetails.getPassword()));
     }
 

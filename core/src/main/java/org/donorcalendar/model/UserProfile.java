@@ -57,16 +57,16 @@ public class UserProfile implements Serializable {
         return lastDonation;
     }
 
+    public void setLastDonation(LocalDate lastDonation) {
+        this.lastDonation = lastDonation;
+    }
+
     public Integer getDaysBetweenReminders() {
         return daysBetweenReminders;
     }
 
     public void setDaysBetweenReminders(Integer daysBetweenReminders) {
         this.daysBetweenReminders = daysBetweenReminders;
-    }
-
-    public void setLastDonation(LocalDate lastDonation) {
-        this.lastDonation = lastDonation;
     }
 
     public BloodType getBloodType() {

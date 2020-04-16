@@ -21,6 +21,10 @@ public class UserCredentialsService {
         passwordEncoder = getNewPasswordEncoder();
     }
 
+    public static PasswordEncoder getNewPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     void saveNewUserCredentials(User user) {
         UserCredentials userCredentials = new UserCredentials(user.getUserCredentials());
         userCredentials.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
@@ -29,9 +33,5 @@ public class UserCredentialsService {
 
     void updateUserPassword(Long userId, String newPassword) {
         userCredentialsDao.saveUserPassword(userId, passwordEncoder.encode(newPassword));
-    }
-
-    public static PasswordEncoder getNewPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

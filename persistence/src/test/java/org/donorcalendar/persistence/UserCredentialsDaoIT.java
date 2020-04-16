@@ -2,8 +2,8 @@ package org.donorcalendar.persistence;
 
 import org.donorcalendar.AbstractPersistenceIntegrationTest;
 import org.donorcalendar.model.BloodType;
-import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserCredentials;
+import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Before;
@@ -23,7 +23,7 @@ public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
     UserProfileDao userProfileDao;
 
     @Autowired
-	UserCredentialsDao target;
+    UserCredentialsDao target;
 
     @Before
     public void setUp() {
