@@ -35,6 +35,6 @@ On the root folder, one simple way to start the project is:
 
 To start the project with the spring-boot Maven plugin:
 - Start a PostgreSQL database (you can use the one defined on the docker-compose by running `docker-compose up -d db-donor-calendar`)
-- Update the _persistence.properties_ file in the persistence module to match the connection details of the database that you want to connect
-- On the root folder, build the project with Maven (`mvn clean package` at least)
-- On the webapp folder run `mvn spring-boot:run -Dspring.profiles.active=production`
+- Update the _persistence.properties_ file in the persistence module to match the connection details of the database that you want to connect to
+- On the root folder, build the project with Maven (`mvn clean package` to avoid integration tests)
+- On the webapp folder run `mvn spring-boot:run -Dspring-boot.run.profiles=production`

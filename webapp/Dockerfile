@@ -1,4 +1,4 @@
-FROM openjdk:11
+FROM openjdk:13
 
 ARG JAR_FILE
 ADD target/${JAR_FILE} /donor-calendar.jar
