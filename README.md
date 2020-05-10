@@ -38,3 +38,9 @@ To start the project with the spring-boot Maven plugin:
 - Update the _persistence.properties_ file in the persistence module to match the connection details of the database that you want to connect to
 - On the root folder, build the project with Maven (`mvn clean package` to avoid integration tests)
 - On the webapp folder run `mvn spring-boot:run -Dspring-boot.run.profiles=production`
+
+The Swagger UI page should then be available at:
+- http://servername:8080/swagger-ui.html
+
+The OpenAPI description will be available at the following url for json format:
+- http://servername:8080/v3/api-docs

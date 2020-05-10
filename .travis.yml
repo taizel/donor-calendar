@@ -5,7 +5,7 @@ sudo: required
 services:
   - docker
 
-jdk: oraclejdk13
+jdk: oraclejdk14
 
 addons:
   sonarcloud:
