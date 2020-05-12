@@ -34,7 +34,9 @@
     <url>https://github.com/taizel/donor-calendar/blob/master/README.md</url>
 
     <properties>
-        <maven.compiler.release>14</maven.compiler.release>
+        <maven.compiler.release>13</maven.compiler.release><!-- replaces source/target but ignored by some plugins -->
+        <maven.compiler.source>13</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
