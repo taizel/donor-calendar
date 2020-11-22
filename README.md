@@ -1,6 +1,6 @@
 # Donor Calendar
 
-[![CI Status](https://github.com/taizel/donor-calendar/workflows/Java%20CI/badge.svg?branch=master)](https://github.com/taizel/donor-calendar/actions)
+[![CI Status](https://github.com/taizel/donor-calendar/workflows/CI/badge.svg)](https://github.com/taizel/donor-calendar/actions?query=workflow%3ACI+branch%3main)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=donor-calendar&metric=alert_status)](https://sonarcloud.io/dashboard?id=donor-calendar)
 
 Spring based project of a web application to remind users to donate blood.
