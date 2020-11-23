@@ -2,6 +2,7 @@ name: CI
 on: [push, pull_request]
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -15,7 +16,7 @@ jobs:
           java-version: 13
       - name: Build with Maven
         run: mvn clean verify -B -Preport-aggregate
-      - name: SonarCloud Scan
+      - name: SonarCloud scan
         run: mvn sonar:sonar -Dsonar.projectKey=donor-calendar -Dsonar.organization=taizel-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
