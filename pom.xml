@@ -31,7 +31,7 @@
 
     <name>Donor Calendar</name>
     <description>Spring based project of a web application to remind users to donate blood.</description>
-    <url>https://github.com/taizel/donor-calendar/blob/master/README.md</url>
+    <url>https://github.com/taizel/donor-calendar/blob/main/README.md</url>
 
     <properties>
         <maven.compiler.release>13</maven.compiler.release><!-- replaces source/target but ignored by some plugins -->
