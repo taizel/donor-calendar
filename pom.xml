@@ -47,7 +47,7 @@
         <spotbugs-maven-plugin.version>4.1.4</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
         <jacoco-maven-plugin.version>0.8.6</jacoco-maven-plugin.version>
-        <testcontainers.postgresql.version>1.15.0</testcontainers.postgresql.version>
+        <testcontainers.postgresql.version>1.15.1</testcontainers.postgresql.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <!-- Sonar -->
         <maven-sonar-version>3.7.0.1746</maven-sonar-version>
