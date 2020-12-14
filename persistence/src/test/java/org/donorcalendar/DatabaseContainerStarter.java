@@ -9,7 +9,7 @@ public class DatabaseContainerStarter {
 
     protected static final Network databaseContainerNetwork = Network.newNetwork();
 
-    protected static final PostgreSQLContainer databaseContainer = new PostgreSQLContainer<>().
+    protected static final PostgreSQLContainer databaseContainer = new PostgreSQLContainer<>("postgres").
             withNetwork(databaseContainerNetwork).
             withNetworkAliases("db-donor-calendar").
             withTmpFs(Collections.singletonMap(System.getProperty("java.io.tmpdir"), "rw")).
