@@ -7,14 +7,16 @@ import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.donorcalendar.model.UserProfile.UserProfileBuilder;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ScheduledTasksServiceTest {
 
@@ -30,41 +32,50 @@ public class ScheduledTasksServiceTest {
 
     @Test
     public void testSendEmailToRememberDonors() {
-        UserProfile user = createTestUserSkeleton();
-        user.setNextReminder(LocalDate.now().minusDays(1));
-        user.setDaysBetweenReminders(4);
+        UserProfileBuilder userBuilder = createTestUserSkeleton();
+        userBuilder.nextReminder(LocalDate.now().minusDays(1));
+        userBuilder.daysBetweenReminders(4);
+        UserProfile user = userBuilder.build();
         when(userProfileDao.findUsersToRemind()).thenReturn(Collections.singletonList(user));
+        ArgumentCaptor<UserProfile> userProfileArgumentCaptor = ArgumentCaptor.forClass(UserProfile.class);
 
         target.sendEmailToRememberDonors();
 
-        assertEquals(LocalDate.now().plusDays(user.getDaysBetweenReminders()), user.getNextReminder());
+        verify(userProfileDao, times(1)).updateUser(userProfileArgumentCaptor.capture());
+        assertEquals(LocalDate.now().plusDays(user.getDaysBetweenReminders()), userProfileArgumentCaptor.getValue().getNextReminder());
     }
 
     @Test
     public void testUpdateUsersStatusTask() {
-        UserProfile userToUpdate = createTestUserSkeleton();
-        userToUpdate.setLastDonation(LocalDate.now().minusDays(57));
-        userToUpdate.setUserStatus(UserStatus.DONOR);
-        UserProfile userToDoNotUpdate = createTestUserSkeleton();
-        userToDoNotUpdate.setLastDonation(LocalDate.now());
-        userToDoNotUpdate.setUserStatus(UserStatus.DONOR);
-        UserProfile userThatNeverDonated = createTestUserSkeleton(); // if never donated status can't be updated
-        userThatNeverDonated.setUserStatus(UserStatus.NEED_TO_DONATE);
+        UserProfileBuilder userToUpdateBuilder = createTestUserSkeleton();
+        userToUpdateBuilder.lastDonation(LocalDate.now().minusDays(57));
+        userToUpdateBuilder.userStatus(UserStatus.DONOR);
+        UserProfile userToUpdate = userToUpdateBuilder.build();
+
+        UserProfileBuilder userToDoNotUpdateBuilder = createTestUserSkeleton();
+        userToDoNotUpdateBuilder.lastDonation(LocalDate.now());
+        userToDoNotUpdateBuilder.userStatus(UserStatus.DONOR);
+        UserProfile userToDoNotUpdate = userToDoNotUpdateBuilder.build();
+
+        UserProfile userThatNeverDonated = createTestUserSkeleton().build();
+
         when(userProfileDao.findAll()).thenReturn(Arrays.asList(userToUpdate, userToDoNotUpdate, userThatNeverDonated));
+        ArgumentCaptor<UserProfile> userProfileArgumentCaptor = ArgumentCaptor.forClass(UserProfile.class);
 
         target.updateUsersStatus();
 
-        assertEquals(UserStatus.POTENTIAL_DONOR, userToUpdate.getUserStatus());
-        assertEquals(UserStatus.DONOR, userToDoNotUpdate.getUserStatus());
-        assertEquals(UserStatus.NEED_TO_DONATE, userThatNeverDonated.getUserStatus());
+        verify(userProfileDao, times(1)).updateUser(userProfileArgumentCaptor.capture());
+        assertEquals(UserStatus.POTENTIAL_DONOR, userProfileArgumentCaptor.getValue().getUserStatus());
     }
 
-    private UserProfile createTestUserSkeleton() {
-        UserProfile user = new UserProfile();
-        user.setUserId(IdGenerator.generateNewId());
-        user.setName("John Doe " + user.getUserId());
-        user.setEmail(user.getUserId() + "johntest@test.com");
-        user.setBloodType(BloodType.A_NEGATIVE);
-        return user;
+    private UserProfileBuilder createTestUserSkeleton() {
+        long newUserId = IdGenerator.generateNewId();
+        return new UserProfileBuilder(
+                newUserId,
+                "John Doe " + newUserId,
+                newUserId + "johntest@test.com",
+                BloodType.A_NEGATIVE,
+                null
+        );
     }
 }

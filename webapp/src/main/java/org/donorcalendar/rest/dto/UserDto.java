@@ -61,14 +61,16 @@ public abstract class UserDto {
         this.nextReminder = nextReminder;
     }
 
-    public UserProfile buildUserProfile() {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setEmail(email);
-        userProfile.setName(name);
-        userProfile.setBloodType(bloodType);
-        userProfile.setLastDonation(lastDonation);
-        userProfile.setDaysBetweenReminders(daysBetweenReminders);
-        userProfile.setNextReminder(nextReminder);
-        return userProfile;
+    public UserProfile.UserProfileBuilder buildUserProfile() {
+        return new UserProfile.UserProfileBuilder
+                (
+                        0,
+                        name,
+                        email,
+                        bloodType,
+                        null
+                ).lastDonation(lastDonation)
+                .daysBetweenReminders(daysBetweenReminders)
+                .nextReminder(nextReminder);
     }
 }

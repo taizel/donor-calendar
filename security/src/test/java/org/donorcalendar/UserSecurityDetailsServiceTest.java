@@ -45,9 +45,13 @@ public class UserSecurityDetailsServiceTest {
     }
 
     private void createUserProfile() {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserId(TEST_ID);
-        userProfile.setEmail(TEST_EMAIL);
+        UserProfile userProfile = new UserProfile.UserProfileBuilder(
+                TEST_ID,
+                null,
+                TEST_EMAIL,
+                null,
+                null
+        ).build();
         userProfileDao.saveNewUser(userProfile);
     }
 }

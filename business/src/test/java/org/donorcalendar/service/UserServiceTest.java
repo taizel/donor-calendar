@@ -19,6 +19,9 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.donorcalendar.model.UserProfile.UserProfileBuilder;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class UserServiceTest {
 
     private static final String UNENCRYPTED_TEST_PASSWORD = "pass1";
@@ -31,7 +34,7 @@ public class UserServiceTest {
 
     @Test
     public void anyUserCreatesProfileAndSecurityDetails() throws ValidationException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
 
@@ -43,7 +46,7 @@ public class UserServiceTest {
 
     @Test
     public void newUserWithEmptyPassword() {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials("");
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
 
@@ -57,10 +60,10 @@ public class UserServiceTest {
 
     @Test
     public void newUserWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws ValidationException {
-        UserProfile userProfileForTest = createUserProfileForTest();
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
+        UserProfileBuilder userProfileForTest = createUserProfileForTest();
+        userProfileForTest.lastDonation(LocalDate.now().minusDays(56));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userCredentialsForTest);
+        User userForTest = new User(userProfileForTest.build(), userCredentialsForTest);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
@@ -69,10 +72,10 @@ public class UserServiceTest {
 
     @Test
     public void newUserWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws ValidationException {
-        UserProfile userProfileForTest = createUserProfileForTest();
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
+        UserProfileBuilder userProfileForTest = createUserProfileForTest();
+        userProfileForTest.lastDonation(LocalDate.now().minusDays(57));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userCredentialsForTest);
+        User userForTest = new User(userProfileForTest.build(), userCredentialsForTest);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
@@ -81,10 +84,10 @@ public class UserServiceTest {
 
     @Test
     public void newUserWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws ValidationException {
-        UserProfile userProfileForTest = createUserProfileForTest();
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
+        UserProfileBuilder userProfileForTest = createUserProfileForTest();
+        userProfileForTest.lastDonation(LocalDate.now().minusDays(121));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userCredentialsForTest);
+        User userForTest = new User(userProfileForTest.build(), userCredentialsForTest);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
@@ -93,10 +96,10 @@ public class UserServiceTest {
 
     @Test
     public void newUserWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws ValidationException {
-        UserProfile userProfileForTest = createUserProfileForTest();
-        userProfileForTest.setLastDonation(null);
+        UserProfileBuilder userProfileForTest = createUserProfileForTest();
+        userProfileForTest.lastDonation(null);
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
-        User userForTest = new User(userProfileForTest, userCredentialsForTest);
+        User userForTest = new User(userProfileForTest.build(), userCredentialsForTest);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
@@ -106,10 +109,10 @@ public class UserServiceTest {
     @Test
     public void newUserWithLastDonationInFutureFailValidationLastDonationDateInFuture() {
         try {
-            UserProfile userProfileForTest = createUserProfileForTest();
-            userProfileForTest.setLastDonation(LocalDate.now().plusDays(2));
+            UserProfileBuilder userProfileForTest = createUserProfileForTest();
+            userProfileForTest.lastDonation(LocalDate.now().plusDays(2));
             UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
-            User userForTest = new User(userProfileForTest, userCredentialsForTest);
+            User userForTest = new User(userProfileForTest.build(), userCredentialsForTest);
 
             target.saveNewUser(userForTest);
             Assert.fail();
@@ -119,18 +122,18 @@ public class UserServiceTest {
     }
 
     @Test
-    public void newUserFailValidationEmailAlreadyTaken() {
-        try {
-            UserProfile userProfileForTest1 = createUserProfileForTest();
-            UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
-            User userForTest1 = new User(userProfileForTest1, userCredentialsForTest);
-            target.saveNewUser(userForTest1);
+    public void newUserFailValidationEmailAlreadyTaken() throws ValidationException {
+        UserProfile userProfileForTest1 = createUserProfileForTest().build();
+        UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest1 = new User(userProfileForTest1, userCredentialsForTest);
+        target.saveNewUser(userForTest1);
 
+        try {
             //Trying to save a user with the same email should fail
             target.saveNewUser(userForTest1);
             Assert.fail();
         } catch (ValidationException e) {
-            Assert.assertThat(e.getMessage(), CoreMatchers.allOf(
+            assertThat(e.getMessage(), CoreMatchers.allOf(
                     CoreMatchers.containsString("The email "),
                     CoreMatchers.containsString("is already registered.")));
         }
@@ -139,12 +142,12 @@ public class UserServiceTest {
     @Test
     public void updateUserProfileFailUserNotFound() throws ValidationException {
         try {
-            UserProfile userProfileForTest = createUserProfileForTest();
+            UserProfile userProfileForTest = createUserProfileForTest().build();
 
             target.updateUserProfile(userProfileForTest);
             Assert.fail();
         } catch (NotFoundException e) {
-            Assert.assertThat(e.getMessage(), CoreMatchers.allOf(
+            assertThat(e.getMessage(), CoreMatchers.allOf(
                     CoreMatchers.containsString("User with id "),
                     CoreMatchers.containsString(" could not be found.")));
         }
@@ -152,11 +155,12 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfileWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(56));
+        userProfileForTest = new UserProfileBuilder(userProfileForTest).lastDonation(LocalDate.now().minusDays(56))
+                .build();
 
         target.updateUserProfile(userProfileForTest);
 
@@ -167,11 +171,12 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfileWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(57));
+        userProfileForTest = new UserProfileBuilder(userProfileForTest).lastDonation(LocalDate.now().minusDays(57))
+                .build();
 
         target.updateUserProfile(userProfileForTest);
 
@@ -182,11 +187,12 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfileWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        userProfileForTest.setLastDonation(LocalDate.now().minusDays(121));
+        userProfileForTest = new UserProfileBuilder(userProfileForTest).lastDonation(LocalDate.now().minusDays(121))
+                .build();
 
         target.updateUserProfile(userProfileForTest);
 
@@ -197,11 +203,11 @@ public class UserServiceTest {
 
     @Test
     public void updateUserProfileWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        userProfileForTest.setLastDonation(null);
+        userProfileForTest = new UserProfileBuilder(userProfileForTest).lastDonation(null).build();
 
         target.updateUserProfile(userProfileForTest);
 
@@ -213,11 +219,12 @@ public class UserServiceTest {
     @Test
     public void updateUserProfileLastDonationInFutureFailValidationLastDonationDateInFuture()
             throws NotFoundException, ValidationException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
-        userProfileForTest.setLastDonation(LocalDate.now().plusDays(1));
+        userProfileForTest = new UserProfileBuilder(userProfileForTest).lastDonation(LocalDate.now().plusDays(1))
+                .build();
 
         try {
             target.updateUserProfile(userProfileForTest);
@@ -229,7 +236,7 @@ public class UserServiceTest {
 
     @Test
     public void updateUserPassword() throws NotFoundException, ValidationException {
-        UserProfile userProfileForTest = createUserProfileForTest();
+        UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
@@ -251,15 +258,16 @@ public class UserServiceTest {
         }
     }
 
-    private UserProfile createUserProfileForTest() {
-        UserProfile userProfile = new UserProfile();
+    private UserProfileBuilder createUserProfileForTest() {
         long id = IdGenerator.generateNewId();
-        userProfile.setName("John Doe " + id);
-        userProfile.setEmail(id + "johntest@test.com");
-        userProfile.setLastDonation(LocalDate.now().minusDays(7));
-        userProfile.setBloodType(BloodType.AB_NEGATIVE);
-        userProfile.setDaysBetweenReminders(30);
-        userProfile.setNextReminder(LocalDate.now().plusDays(60));
-        return userProfile;
+        UserProfileBuilder userProfileBuilder = new UserProfileBuilder(0,
+                "John Doe " + id,
+                id + "johntest@test.com",
+                BloodType.AB_NEGATIVE,
+                null);
+        userProfileBuilder.lastDonation(LocalDate.now().minusDays(7));
+        userProfileBuilder.daysBetweenReminders(30);
+        userProfileBuilder.nextReminder(LocalDate.now().plusDays(60));
+        return userProfileBuilder;
     }
 }

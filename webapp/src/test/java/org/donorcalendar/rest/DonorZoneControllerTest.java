@@ -11,12 +11,11 @@ import static org.junit.Assert.fail;
 
 public class DonorZoneControllerTest {
 
-    private DonorZoneController target = new DonorZoneController();
+    private final DonorZoneController target = new DonorZoneController();
 
     @Test
     public void testGetShoppingFacilitiesAccessAllowed() {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserStatus(UserStatus.DONOR);
+        UserProfile userProfile = new UserProfile.UserProfileBuilder(1, null, null, null, UserStatus.DONOR).build();
         UserSecurityDetails userSecurityDetails = new UserSecurityDetails(userProfile, null);
 
         try {
@@ -28,8 +27,7 @@ public class DonorZoneControllerTest {
 
     @Test
     public void testGetShoppingFacilitiesForbiddenAccess() {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserStatus(UserStatus.NEED_TO_DONATE);
+        UserProfile userProfile = new UserProfile.UserProfileBuilder(1, null, null, null, UserStatus.NEED_TO_DONATE).build();
         UserSecurityDetails userSecurityDetails = new UserSecurityDetails(userProfile, null);
 
         try {

@@ -40,9 +40,9 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
 
         Assert.assertEquals(2, allPersistedUsers.size());
         for (UserProfile user : allPersistedUsers) {
-            if (userToPersist1.getUserId().equals(user.getUserId())) {
+            if (userToPersist1.getUserId() == user.getUserId()) {
                 assertUserProfileFieldsMatches(userToPersist1, user);
-            } else if (userToPersist2.getUserId().equals(user.getUserId())) {
+            } else if (userToPersist2.getUserId() == user.getUserId()) {
                 assertUserProfileFieldsMatches(userToPersist2, user);
             } else {
                 Assert.fail();
@@ -55,7 +55,7 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         userProfileDao.saveNewUser(userToPersist);
 
-        UserProfile persistedUser = userProfileDao.findById(userToPersist.getUserId()).orElse(new UserProfile());
+        UserProfile persistedUser = userProfileDao.findById(userToPersist.getUserId()).orElse(null);
 
         assertUserProfileFieldsMatches(userToPersist, persistedUser);
     }
@@ -65,7 +65,7 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         userProfileDao.saveNewUser(userToPersist);
 
-        UserProfile persistedUser = userProfileDao.findByEmail(userToPersist.getEmail()).orElse(new UserProfile());
+        UserProfile persistedUser = userProfileDao.findByEmail(userToPersist.getEmail()).orElse(null);
 
         assertUserProfileFieldsMatches(userToPersist, persistedUser);
     }
@@ -84,34 +84,35 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
 
     @Test
     public void updateUser() {
-        UserProfile userToPersist = generateDefaultTestUserProfile();
-        userToPersist.setBloodType(BloodType.O_POSITIVE);
-        userToPersist.setUserStatus(UserStatus.NEED_TO_DONATE);
-        UserProfile userToUpdate = userProfileDao.saveNewUser(userToPersist);
-        userToUpdate.setName("Updated " + userToUpdate.getName());
-        userToUpdate.setEmail("update" + userToUpdate.getEmail());
-        userToUpdate.setLastDonation(userToUpdate.getLastDonation().minusDays(1));
-        userToUpdate.setBloodType(BloodType.AB_NEGATIVE);
-        userToUpdate.setDaysBetweenReminders(userToUpdate.getDaysBetweenReminders() + 30);
-        userToUpdate.setNextReminder(userToUpdate.getNextReminder().plusDays(90));
-        userToUpdate.setUserStatus(UserStatus.DONOR);
+        UserProfile newUser = generateDefaultTestUserProfile();
+        newUser = userProfileDao.saveNewUser(newUser);
+        UserProfile userForUpdateRequest = new UserProfile.UserProfileBuilder(newUser)
+                .userId(newUser.getUserId())
+                .name("Updated " + newUser.getName())
+                .email("update" + newUser.getEmail())
+                .bloodType(BloodType.AB_NEGATIVE)
+                .userStatus(UserStatus.DONOR)
+                .lastDonation(newUser.getLastDonation().minusDays(1))
+                .nextReminder(newUser.getNextReminder().plusDays(90))
+                .daysBetweenReminders(newUser.getDaysBetweenReminders() + 30)
+                .build();
 
-        userProfileDao.updateUser(userToUpdate);
+        userProfileDao.updateUser(userForUpdateRequest);
 
-        UserProfile updatedUserProfile = userProfileDao.findById(userToUpdate.getUserId()).orElse(new UserProfile());
-        assertUserProfileFieldsMatches(userToUpdate, updatedUserProfile);
+        UserProfile updatedUserProfile = userProfileDao.findById(newUser.getUserId()).orElse(null);
+        assertUserProfileFieldsMatches(userForUpdateRequest, updatedUserProfile);
     }
 
     @Test
     public void findUsersToRemind() {
-        UserProfile userToRemind1 = generateDefaultTestUserProfile();
-        userToRemind1.setNextReminder(TODAY);
-        UserProfile userToRemind2 = generateDefaultTestUserProfile();
-        userToRemind2.setNextReminder(TODAY.minusDays(1));
-        UserProfile userToIgnore1 = generateDefaultTestUserProfile();
-        userToIgnore1.setNextReminder(TODAY.plusDays(1));
-        UserProfile userToIgnore2 = generateDefaultTestUserProfile();
-        userToIgnore1.setNextReminder(null);
+        UserProfile userToRemind1 = new UserProfile.UserProfileBuilder(generateDefaultTestUserProfile())
+                .nextReminder(TODAY).build();
+        UserProfile userToRemind2 = new UserProfile.UserProfileBuilder(generateDefaultTestUserProfile())
+                .nextReminder(TODAY.minusDays(1)).build();
+        UserProfile userToIgnore1 = new UserProfile.UserProfileBuilder(generateDefaultTestUserProfile())
+                .nextReminder(TODAY.plusDays(1)).build();
+        UserProfile userToIgnore2 = new UserProfile.UserProfileBuilder(generateDefaultTestUserProfile())
+                .nextReminder(null).build();
         userProfileDao.saveNewUser(userToRemind1);
         userProfileDao.saveNewUser(userToRemind2);
         userProfileDao.saveNewUser(userToIgnore1);
@@ -121,9 +122,9 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
 
         Assert.assertEquals(2, allPersistedUsers.size());
         for (UserProfile user : allPersistedUsers) {
-            if (userToRemind1.getUserId().equals(user.getUserId())) {
+            if (userToRemind1.getUserId() == user.getUserId()) {
                 assertUserProfileFieldsMatches(userToRemind1, user);
-            } else if (userToRemind2.getUserId().equals(user.getUserId())) {
+            } else if (userToRemind2.getUserId() == user.getUserId()) {
                 assertUserProfileFieldsMatches(userToRemind2, user);
             } else {
                 Assert.fail();
@@ -132,22 +133,25 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
     }
 
     private UserProfile generateDefaultTestUserProfile() {
-        UserProfile user = new UserProfile();
-        user.setUserId(IdGenerator.generateNewId());
-        user.setName("John Doe " + user.getUserId());
-        user.setEmail(user.getUserId() + "johntest@test.com");
-        user.setLastDonation(TODAY.minusDays(7));
-        user.setBloodType(BloodType.A_NEGATIVE);
-        user.setDaysBetweenReminders(90);
-        user.setNextReminder(TODAY.plusDays(23));
-        user.setUserStatus(UserStatus.fromNumberOfElapsedDaysSinceLastDonation(7));
-        return user;
+        long generateId = IdGenerator.generateNewId();
+        UserProfile.UserProfileBuilder builder = new UserProfile.UserProfileBuilder(
+                generateId,
+                "John Doe " + generateId,
+                generateId + "johntest@test.com",
+                BloodType.A_NEGATIVE,
+                UserStatus.fromNumberOfElapsedDaysSinceLastDonation(7)
+        );
+        builder.lastDonation(TODAY.minusDays(7));
+        builder.daysBetweenReminders(90);
+        builder.nextReminder(TODAY.plusDays(23));
+        return builder.build();
     }
 
     /*
      * Validate if all the fields matches.
      */
     private void assertUserProfileFieldsMatches(UserProfile expected, UserProfile actual) {
+        Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getUserId(), actual.getUserId());
         Assert.assertEquals(expected.getName(), actual.getName());
         Assert.assertEquals(expected.getEmail(), actual.getEmail());

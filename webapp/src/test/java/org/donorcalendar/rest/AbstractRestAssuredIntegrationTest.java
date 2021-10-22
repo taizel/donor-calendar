@@ -45,7 +45,7 @@ public abstract class AbstractRestAssuredIntegrationTest {
         RestAssured.port = port;
         RestAssured.config = RestAssuredConfig.config().objectMapperConfig(
                 new ObjectMapperConfig().jackson2ObjectMapperFactory(
-                        (classType, charset) -> JacksonConfig.getObjectMapper()
+                        (classType, charset) -> JacksonConfig.getNewCustomObjectMapper()
                 ));
         isRestAssuredNotConfigured = false;
     }
