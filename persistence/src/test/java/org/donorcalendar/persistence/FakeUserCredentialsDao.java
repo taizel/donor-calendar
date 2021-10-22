@@ -15,21 +15,21 @@ public class FakeUserCredentialsDao implements UserCredentialsDao {
 
     @Override
     public UserCredentials saveNewUserCredentials(Long userId, UserCredentials userCredentials) {
-        cache.put(userId, new UserCredentials(userCredentials));
-        return new UserCredentials(userCredentials);
+        cache.put(userId, new UserCredentials(userCredentials.getPassword()));
+        return userCredentials;
     }
 
     @Override
     public Optional<UserCredentials> findByUserId(Long userId) {
         if (cache.containsKey(userId)) {
-            return Optional.of(new UserCredentials(cache.get(userId)));
+            return Optional.of(cache.get(userId));
         }
         return Optional.empty();
     }
 
     @Override
     public void saveUserPassword(Long userId, String encodedNewPassword) {
-        cache.get(userId).setPassword(encodedNewPassword);
+        cache.put(userId, new UserCredentials(encodedNewPassword));
     }
 
     public void deleteAll() {

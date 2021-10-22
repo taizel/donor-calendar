@@ -42,9 +42,8 @@ public class UserController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserResponseDto updateUser(@AuthenticationPrincipal UserSecurityDetails userDetails, @RequestBody UpdateUserDto userDto) throws ValidationException, NotFoundException {
-        Long userId = userDetails.getUserProfile().getUserId();
-        UserProfile userProfileToUpdate = userDto.buildUserProfile();
-        userProfileToUpdate.setUserId(userId);
+        long userId = userDetails.getUserProfile().getUserId();
+        UserProfile userProfileToUpdate = userDto.buildUserProfile().userId(userId).build();
 
         userService.updateUserProfile(userProfileToUpdate);
         return UserResponseDto.buildUserDtoFromUserProfile(userProfileToUpdate);
@@ -64,7 +63,7 @@ public class UserController {
     }
 
     private User newUserDtoToUser(NewUserDto newUserDto) {
-        UserProfile userProfile = newUserDto.buildUserProfile();
+        UserProfile userProfile = newUserDto.buildUserProfile().build();
         UserCredentials userCredentials = new UserCredentials(newUserDto.getPassword());
         return new User(userProfile, userCredentials);
     }

@@ -33,7 +33,7 @@ public class UserProfileEntity {
     private Integer daysBetweenReminders;
     private LocalDate nextReminder;
 
-    UserProfileEntity() {
+    protected UserProfileEntity() {
     }
 
     UserProfileEntity(UserProfile userProfile) {
@@ -112,15 +112,17 @@ public class UserProfileEntity {
     }
 
     UserProfile getUserProfile() {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserId(userId);
-        userProfile.setName(name);
-        userProfile.setEmail(email);
-        userProfile.setBloodType(bloodType);
-        userProfile.setDaysBetweenReminders(daysBetweenReminders);
-        userProfile.setLastDonation(lastDonation);
-        userProfile.setNextReminder(nextReminder);
-        userProfile.setUserStatus(userStatus);
-        return userProfile;
+        UserProfile.UserProfileBuilder builder = new UserProfile.UserProfileBuilder(
+                userId,
+                name,
+                email,
+                bloodType,
+                userStatus
+        );
+        return builder.daysBetweenReminders(daysBetweenReminders)
+                .lastDonation(lastDonation)
+                .nextReminder(nextReminder)
+                .build();
+
     }
 }

@@ -44,8 +44,10 @@ public class UserCredentialsServiceTest {
     }
 
     private User createUserForTest() {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserId(IdGenerator.generateNewId());
+        UserProfile userProfile = new UserProfile.UserProfileBuilder(
+                IdGenerator.generateNewId(),
+                null, null, null, null
+        ).build();
         return new User(userProfile, new UserCredentials("password" + userProfile.getUserId()));
     }
 }

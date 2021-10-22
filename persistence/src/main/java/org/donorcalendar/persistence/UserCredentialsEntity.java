@@ -17,7 +17,7 @@ public class UserCredentialsEntity {
     @NotNull
     private String password;
 
-    UserCredentialsEntity() {
+    protected UserCredentialsEntity() {
     }
 
     UserCredentialsEntity(Long userId, UserCredentials userCredentials) {

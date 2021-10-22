@@ -26,8 +26,7 @@ public class UserCredentialsService {
     }
 
     void saveNewUserCredentials(User user) {
-        UserCredentials userCredentials = new UserCredentials(user.getUserCredentials());
-        userCredentials.setPassword(passwordEncoder.encode(userCredentials.getPassword()));
+        UserCredentials userCredentials = new UserCredentials(passwordEncoder.encode(user.getUserCredentials().getPassword()));
         userCredentialsDao.saveNewUserCredentials(user.getUserProfile().getUserId(), userCredentials);
     }
 

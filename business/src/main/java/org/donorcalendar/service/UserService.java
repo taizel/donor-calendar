@@ -26,14 +26,15 @@ public class UserService {
     }
 
     public UserProfile saveNewUser(User user) throws ValidationException {
-        UserProfile userProfile = new UserProfile(user.getUserProfile());
+        UserProfile userProfile = user.getUserProfile();
         if (isUserEmailAvailable(userProfile.getEmail())) {
             if (isEmptyOrNullPassword(user.getUserCredentials().getPassword())) {
                 throw new ValidationException("Password cannot be empty.");
             }
-            populateUserStatus(userProfile);
-            userProfile.setUserId(IdGenerator.generateNewId());
-            userProfile = userProfileDao.saveNewUser(userProfile);
+            UserProfile.UserProfileBuilder builder = new UserProfile.UserProfileBuilder(userProfile).
+                    userId(IdGenerator.generateNewId()).
+                    userStatus(calculateUserStatus(userProfile));
+            userProfile = userProfileDao.saveNewUser(builder.build());
             User newUser = new User(userProfile, user.getUserCredentials());
             userCredentialsService.saveNewUserCredentials(newUser);
             return userProfile;
@@ -47,24 +48,25 @@ public class UserService {
         return password == null || password.isEmpty();
     }
 
-    private void populateUserStatus(UserProfile userProfile) throws ValidationException {
+    private UserStatus calculateUserStatus(UserProfile userProfile) throws ValidationException {
         if (userProfile.getLastDonation() == null) {
-            userProfile.setUserStatus(UserStatus.NEED_TO_DONATE);
+            return UserStatus.NEED_TO_DONATE;
         } else {
             LocalDate lastDonation = userProfile.getLastDonation();
             if (lastDonation.isAfter(LocalDate.now())) {
                 throw new ValidationException("Last donation date can't be in the future.");
             } else {
                 long daysSinceLastDonation = ChronoUnit.DAYS.between(lastDonation, LocalDate.now());
-                userProfile.setUserStatus(UserStatus.fromNumberOfElapsedDaysSinceLastDonation(daysSinceLastDonation));
+                return UserStatus.fromNumberOfElapsedDaysSinceLastDonation(daysSinceLastDonation);
             }
         }
     }
 
     public void updateUserProfile(UserProfile userProfile) throws ValidationException, NotFoundException {
         validateIfUserExists(userProfile.getUserId());
-        UserProfile userToUpdate = new UserProfile(userProfile);
-        populateUserStatus(userToUpdate);
+        UserProfile userToUpdate = new UserProfile.UserProfileBuilder(userProfile).
+                userStatus(calculateUserStatus(userProfile)).
+                build();
         userProfileDao.updateUser(userToUpdate);
     }
 

@@ -20,9 +20,8 @@ public class FakeUserProfileDao implements UserProfileDao {
 
     @Override
     public UserProfile saveNewUser(UserProfile userProfile) {
-        UserProfile userProfileCopy = new UserProfile(userProfile);
-        cache.put(userProfileCopy.getUserId(), userProfileCopy);
-        return userProfileCopy;
+        cache.put(userProfile.getUserId(), userProfile);
+        return userProfile;
     }
 
     @Override
@@ -33,7 +32,7 @@ public class FakeUserProfileDao implements UserProfileDao {
     @Override
     public Optional<UserProfile> findById(Long id) {
         if (cache.containsKey(id)) {
-            return Optional.of(new UserProfile(cache.get(id)));
+            return Optional.of(cache.get(id));
         }
         return Optional.empty();
     }

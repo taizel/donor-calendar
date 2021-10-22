@@ -39,17 +39,18 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
     @Override
     public void setUp() {
-        testUserProfile = new UserProfile();
-        testUserProfile.setUserId(IdGenerator.generateNewId());
-        testUserProfile.setName("Bilbo");
-        testUserProfile.setEmail("bilbo@middlehearth.com");
-        testUserProfile.setBloodType(BloodType.A_NEGATIVE);
-        testUserProfile.setLastDonation(LocalDate.now().minusDays(14));
-        testUserProfile.setDaysBetweenReminders(14);
-        testUserProfile.setNextReminder(LocalDate.now());
-        testUserProfile.setUserStatus(UserStatus.DONOR);
+        UserProfile.UserProfileBuilder userProfileBuilder = new UserProfile.UserProfileBuilder(
+                IdGenerator.generateNewId(),
+                "Bilbo",
+                "bilbo@middlehearth.com",
+                BloodType.A_NEGATIVE,
+                UserStatus.DONOR
+        )
+                .lastDonation(LocalDate.now().minusDays(14))
+                .daysBetweenReminders(14)
+                .nextReminder(LocalDate.now());
 
-        testUserProfile = userProfileDao.saveNewUser(testUserProfile);
+        testUserProfile = userProfileDao.saveNewUser(userProfileBuilder.build());
 
         UserCredentials userCredentialsEntityBilbo = new UserCredentials(passwordEncoder.encode(TEST_PASSWORD));
 

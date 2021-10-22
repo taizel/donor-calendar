@@ -28,13 +28,14 @@ public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
     @Before
     public void setUp() {
         // Insert user profile to avoid FK violation
-        UserProfile userProfile = new UserProfile();
-        userProfile.setUserId(TEST_ID);
-        userProfile.setName("Test User");
-        userProfile.setEmail("test@test.com");
-        userProfile.setBloodType(BloodType.A_NEGATIVE);
-        userProfile.setUserStatus(UserStatus.NEED_TO_DONATE);
-        userProfileDao.saveNewUser(userProfile);
+        UserProfile.UserProfileBuilder builder = new UserProfile.UserProfileBuilder(
+                TEST_ID,
+                "Test User",
+                "test@test.com",
+                BloodType.A_NEGATIVE,
+                UserStatus.NEED_TO_DONATE
+        );
+        userProfileDao.saveNewUser(builder.build());
     }
 
     @Test

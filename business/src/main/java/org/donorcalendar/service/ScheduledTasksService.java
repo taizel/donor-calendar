@@ -28,8 +28,9 @@ public class ScheduledTasksService {
     public void sendEmailToRememberDonors() {
         for (UserProfile user : userProfileDao.findUsersToRemind()) {
             log.info("Sent reminder for user: {}", user.getEmail());
-            user.setNextReminder(LocalDate.now().plusDays(user.getDaysBetweenReminders()));
-            userProfileDao.updateUser(user);
+            UserProfile userToUpdate = new UserProfile.UserProfileBuilder(user).nextReminder(
+                    LocalDate.now().plusDays(user.getDaysBetweenReminders())).build();
+            userProfileDao.updateUser(userToUpdate);
         }
     }
 
@@ -45,10 +46,9 @@ public class ScheduledTasksService {
             UserStatus newStatus = UserStatus.fromNumberOfElapsedDaysSinceLastDonation(daysSinceLastDonation);
             if (currentStatus != newStatus) {
                 log.info("User status changed: {}", user.getEmail());
-                user.setUserStatus(newStatus);
-                userProfileDao.updateUser(user);
+                UserProfile updateUser = new UserProfile.UserProfileBuilder(user).userStatus(newStatus).build();
+                userProfileDao.updateUser(updateUser);
             }
-
         }
     }
 }

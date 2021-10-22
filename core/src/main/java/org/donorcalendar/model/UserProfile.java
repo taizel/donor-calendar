@@ -3,94 +3,133 @@ package org.donorcalendar.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class UserProfile implements Serializable {
+public final class UserProfile implements Serializable {
 
-    private Long userId;
+    private final long userId;
+    private final String name;
+    private final String email;
+    private final BloodType bloodType;
+    private final UserStatus userStatus;
+    //optional fields
+    private final LocalDate lastDonation;
+    private final Integer daysBetweenReminders;
+    private final LocalDate nextReminder;
 
-    private String name;
-    private String email;
-    private LocalDate lastDonation;
-    private BloodType bloodType;
-    private Integer daysBetweenReminders;
-    private LocalDate nextReminder;
-    private UserStatus userStatus;
-
-    public UserProfile() {
+    private UserProfile(UserProfileBuilder builder) {
+        this.userId = builder.userId;
+        this.name = builder.name;
+        this.email = builder.email;
+        this.lastDonation = builder.lastDonation;
+        this.bloodType = builder.bloodType;
+        this.daysBetweenReminders = builder.daysBetweenReminders;
+        this.nextReminder = builder.nextReminder;
+        this.userStatus = builder.userStatus;
     }
 
-    public UserProfile(UserProfile userProfile) {
-        this.userId = userProfile.userId;
-        this.name = userProfile.name;
-        this.email = userProfile.email;
-        this.lastDonation = userProfile.lastDonation;
-        this.bloodType = userProfile.bloodType;
-        this.daysBetweenReminders = userProfile.daysBetweenReminders;
-        this.nextReminder = userProfile.nextReminder;
-        this.userStatus = userProfile.userStatus;
-    }
-
-    public Long getUserId() {
+    public long getUserId() {
         return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDate getLastDonation() {
-        return lastDonation;
-    }
-
-    public void setLastDonation(LocalDate lastDonation) {
-        this.lastDonation = lastDonation;
-    }
-
-    public Integer getDaysBetweenReminders() {
-        return daysBetweenReminders;
-    }
-
-    public void setDaysBetweenReminders(Integer daysBetweenReminders) {
-        this.daysBetweenReminders = daysBetweenReminders;
     }
 
     public BloodType getBloodType() {
         return bloodType;
     }
 
-    public void setBloodType(BloodType bloodType) {
-        this.bloodType = bloodType;
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    public LocalDate getLastDonation() {
+        return lastDonation;
+    }
+
+    public Integer getDaysBetweenReminders() {
+        return daysBetweenReminders;
     }
 
     public LocalDate getNextReminder() {
         return nextReminder;
     }
 
-    public void setNextReminder(LocalDate nextReminder) {
-        this.nextReminder = nextReminder;
-    }
+    public static class UserProfileBuilder {
+        private Long userId;
+        private String name;
+        private String email;
+        private BloodType bloodType;
+        private UserStatus userStatus;
+        private LocalDate lastDonation;
+        private Integer daysBetweenReminders;
+        private LocalDate nextReminder;
 
-    public UserStatus getUserStatus() {
-        return userStatus;
-    }
+        public UserProfileBuilder(long userId, String name, String email, BloodType bloodType, UserStatus userStatus) {
+            this.userId = userId;
+            this.name = name;
+            this.email = email;
+            this.bloodType = bloodType;
+            this.userStatus = userStatus;
+        }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+        public UserProfileBuilder(UserProfile userProfile) {
+            this.userId = userProfile.userId;
+            this.name = userProfile.name;
+            this.email = userProfile.email;
+            this.lastDonation = userProfile.lastDonation;
+            this.bloodType = userProfile.bloodType;
+            this.daysBetweenReminders = userProfile.daysBetweenReminders;
+            this.nextReminder = userProfile.nextReminder;
+            this.userStatus = userProfile.userStatus;
+        }
+
+        public UserProfileBuilder userId(long userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public UserProfileBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public UserProfileBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserProfileBuilder bloodType(BloodType bloodType) {
+            this.bloodType = bloodType;
+            return this;
+        }
+
+        public UserProfileBuilder userStatus(UserStatus userStatus) {
+            this.userStatus = userStatus;
+            return this;
+        }
+
+        public UserProfileBuilder lastDonation(LocalDate lastDonation) {
+            this.lastDonation = lastDonation;
+            return this;
+        }
+
+        public UserProfileBuilder daysBetweenReminders(Integer daysBetweenReminders) {
+            this.daysBetweenReminders = daysBetweenReminders;
+            return this;
+        }
+
+        public UserProfileBuilder nextReminder(LocalDate nextReminder) {
+            this.nextReminder = nextReminder;
+            return this;
+        }
+
+        public UserProfile build() {
+            return new UserProfile(this);
+        }
     }
 
     @Override
@@ -99,11 +138,11 @@ public class UserProfile implements Serializable {
                 "userId=" + userId +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", lastDonation=" + lastDonation +
                 ", bloodType=" + bloodType +
+                ", userStatus=" + userStatus +
+                ", lastDonation=" + lastDonation +
                 ", daysBetweenReminders=" + daysBetweenReminders +
                 ", nextReminder=" + nextReminder +
-                ", userStatus=" + userStatus +
                 '}';
     }
 }
