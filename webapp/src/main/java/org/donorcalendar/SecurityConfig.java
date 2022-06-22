@@ -15,12 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class WebSecurityConfig {
+public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
     @Autowired
-    public WebSecurityConfig(UserProfileDao userProfileDao, UserCredentialsDao userCredentialsDao) {
+    public SecurityConfig(UserProfileDao userProfileDao, UserCredentialsDao userCredentialsDao) {
         userDetailsService = new UserSecurityDetailsService(userProfileDao, userCredentialsDao);
     }
 
