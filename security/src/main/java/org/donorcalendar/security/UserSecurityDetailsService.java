@@ -4,22 +4,18 @@ import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.persistence.UserCredentialsDao;
 import org.donorcalendar.persistence.UserProfileDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service("UserDetailsService")
 public class UserSecurityDetailsService implements UserDetailsService {
 
     private final UserProfileDao userProfileDao;
     private final UserCredentialsDao userCredentialsDao;
 
-    @Autowired
     public UserSecurityDetailsService(UserProfileDao userProfileDao, UserCredentialsDao userCredentialsDao) {
         this.userProfileDao = userProfileDao;
         this.userCredentialsDao = userCredentialsDao;
