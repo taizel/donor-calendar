@@ -19,7 +19,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 13
+          java-version: 17
       - name: Build with Maven
         run: mvn clean verify -B -Preport-aggregate
       - name: SonarCloud scan
