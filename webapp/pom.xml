@@ -35,6 +35,15 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <environmentVariables>
+                        <DB_HOST>localhost</DB_HOST>
+                        <DB_PORT>5432</DB_PORT>
+                        <DB_NAME>donor</DB_NAME>
+                        <DB_USERNAME>donor</DB_USERNAME>
+                        <DB_PASSWORD>donor-password</DB_PASSWORD>
+                    </environmentVariables>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>

@@ -19,8 +19,13 @@ import static org.hamcrest.Matchers.equalTo;
 public class SmokeTestsIT extends DatabaseContainerStarter {
 
     private static final GenericContainer donorCalendarWebApp = new GenericContainer("donor-calendar:latest").
-            withNetwork(databaseContainerNetwork).
+            withNetwork(databaseContainer.getNetwork()).
             withExposedPorts(8080).
+            withEnv("DB_HOST", DB_HOST).
+            withEnv("DB_PORT", "5432").
+            withEnv("DB_NAME", databaseContainer.getDatabaseName()).
+            withEnv("DB_USERNAME", databaseContainer.getUsername()).
+            withEnv("DB_PASSWORD", databaseContainer.getPassword()).
             waitingFor(Wait.forLogMessage(".*" + Application.APPLICATION_READY + "\\n", 1)).
             withTmpFs(Collections.singletonMap(System.getProperty("java.io.tmpdir"), "rw"));
 
@@ -32,7 +37,7 @@ public class SmokeTestsIT extends DatabaseContainerStarter {
 
         RestAssured.port = donorCalendarWebApp.getMappedPort(8080);
         // some CI environments may be reachable on a different host
-        RestAssured.baseURI = "http://" + donorCalendarWebApp.getContainerIpAddress();
+        RestAssured.baseURI = "http://" + donorCalendarWebApp.getHost();
     }
 
     @Test

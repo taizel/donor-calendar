@@ -3,7 +3,7 @@ version: "2.1"
 services:
   db-donor-calendar:
     container_name: db-donor-calendar
-    image: postgres:9.6.8
+    image: postgres:14
     ports:
       - "5432:5432"
     environment:
@@ -20,6 +20,12 @@ services:
     image: donor-calendar:latest
     ports:
       - "8080:8080"
+    environment:
+      DB_HOST: db-donor-calendar
+      DB_PORT: 5432
+      DB_NAME: donor
+      DB_USERNAME: donor
+      DB_PASSWORD: donor-password
     depends_on:
       db-donor-calendar:
         condition: service_healthy
