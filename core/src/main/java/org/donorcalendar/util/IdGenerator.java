@@ -2,7 +2,7 @@ package org.donorcalendar.util;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class IdGenerator {
+public final class IdGenerator {
 
     private static final AtomicLong lastIdGenerated = new AtomicLong(System.currentTimeMillis());
 
