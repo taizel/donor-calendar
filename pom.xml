@@ -42,7 +42,7 @@
 
         <spring-boot.version>2.7.4</spring-boot.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-surefire-failsafe-plugin.version>3.4.0</maven-surefire-failsafe-plugin.version>
+        <maven-surefire-failsafe-plugin.version>3.5.0</maven-surefire-failsafe-plugin.version>
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
         <spotbugs-maven-plugin.version>4.8.6.2</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.24.0</maven-pmd-plugin.version>
