@@ -50,7 +50,7 @@
         <testcontainers-postgresql.version>1.20.5</testcontainers-postgresql.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <!-- Sonar -->
-        <maven-sonar-version>5.0.0.4389</maven-sonar-version>
+        <maven-sonar-version>5.1.0.4751</maven-sonar-version>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.basedir}/../reporting/target/site/jacoco-aggregate-all/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
