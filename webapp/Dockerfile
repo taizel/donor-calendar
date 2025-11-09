@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM eclipse-temurin:17
 
 ARG JAR_FILE
 ADD target/${JAR_FILE} /donor-calendar.jar
