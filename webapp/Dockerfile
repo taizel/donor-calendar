@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk:17.0.17-jre
+FROM azul/zulu-openjdk:25.0.1-jre
 
 ARG JAR_FILE
 ADD target/${JAR_FILE} /donor-calendar.jar
