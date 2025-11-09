@@ -9,7 +9,7 @@
     {
       "matchManagers": ["maven"],
       "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "All non-major Maven dependencies",
+      "groupName": "all non-major Maven dependencies",
       "automerge": true,
       "automergeType": "squash"
     }
