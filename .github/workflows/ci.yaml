@@ -19,7 +19,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
+          distribution: 'zulu'
           java-version: 17
+          cache: 'maven' # Caches ~/.m2/repository
       - name: Build with Maven
         run: mvn clean verify -B -Preport-aggregate
       - name: SonarCloud scan
