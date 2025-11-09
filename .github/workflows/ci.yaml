@@ -17,9 +17,11 @@ jobs:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v5
         with:
+          distribution: 'zulu'
           java-version: 17
+          cache: 'maven' # Caches ~/.m2/repository
       - name: Build with Maven
         run: mvn clean verify -B -Preport-aggregate
       - name: SonarCloud scan
