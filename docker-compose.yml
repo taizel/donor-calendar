@@ -3,7 +3,7 @@ version: "2.1"
 services:
   db-donor-calendar:
     container_name: db-donor-calendar
-    image: postgres:14
+    image: postgres:18
     ports:
       - "5432:5432"
     environment:
