@@ -2,8 +2,8 @@ name: Renovate
 
 on:
   schedule:
-    - cron: '0 2 * * *'   # daily at 2:00 UTC
-  workflow_dispatch:       # manual trigger option
+    - cron: '0 2 * * *' # daily at 2:00 UTC
+  workflow_dispatch:    # manual trigger option
 
 jobs:
   renovate:
@@ -19,5 +19,3 @@ jobs:
         uses: renovatebot/github-action@fc0e62a8df512bfba579d7c87f37c043c4274874 # v44.0.1
         with:
           token: ${{ secrets.RENOVATE_TOKEN }}
-        env:
-          LOG_LEVEL: debug
