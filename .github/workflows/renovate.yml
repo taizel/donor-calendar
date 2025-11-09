@@ -18,6 +18,5 @@ jobs:
       - name: Run Renovate
         uses: renovatebot/github-action@fc0e62a8df512bfba579d7c87f37c043c4274874 # v44.0.1
         with:
-          token: ${{ secrets.RENOVATE_TOKEN }}
           renovate-version: 44
-          repositories: taizel/donor-calendar
+          token: ${{ secrets.RENOVATE_TOKEN }}
