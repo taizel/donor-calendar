@@ -23,9 +23,11 @@ jobs:
       - name: Build with Maven
         run: mvn clean verify -B -Preport-aggregate
       - name: SonarCloud scan
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v4.2.2
         with:
-          args: mvn sonar:sonar -Dsonar.projectKey=donor-calendar -Dsonar.organization=taizel-github
+          args: >
+            -Dsonar.projectKey=donor-calendar
+            -Dsonar.organization=taizel-github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
