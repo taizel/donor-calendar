@@ -16,7 +16,7 @@ Two pages to create new donors are available as static resources under /js (http
 Those are simple pages added for basic experiments and tests with Mithril and React.
 
 ## Dependencies extra project
-- [Java Development Kit 8](https://openjdk.java.net/projects/jdk8) 
+- [Java Development Kit 21 or newer](https://openjdk.org/projects/jdk/21/) 
 - [Maven](https://maven.apache.org)
 - [Docker](https://www.docker.com)
 - [Docker Compose](https://github.com/docker/compose) - Optional, but recommended for simple execution
