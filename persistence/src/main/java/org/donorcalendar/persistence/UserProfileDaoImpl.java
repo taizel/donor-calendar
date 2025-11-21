@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @Profile("production")
@@ -61,6 +60,6 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
     @Override
     public List<UserProfile> findUsersToRemind() {
-        return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserProfile).collect(Collectors.toList());
+        return userProfileRepository.findUsersToRemind().stream().map(UserProfileEntity::getUserProfile).toList();
     }
 }

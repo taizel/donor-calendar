@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class SmokeTestsIT extends DatabaseContainerStarter {
 
-    private static final GenericContainer donorCalendarWebApp = new GenericContainer("donor-calendar:latest").
+    private static final GenericContainer<?> donorCalendarWebApp = new GenericContainer("donor-calendar:latest").
             withNetwork(databaseContainer.getNetwork()).
             withExposedPorts(8080).
             withEnv("DB_HOST", DB_HOST).
