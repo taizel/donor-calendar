@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @Profile("test")
@@ -57,7 +56,7 @@ public class FakeUserProfileDao implements UserProfileDao {
         LocalDate currentLocalDate = LocalDate.now();
         return cache.values().stream()
                 .filter(user -> user.getNextReminder() != null && user.getNextReminder().isBefore(currentLocalDate))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void deleteAll() {

@@ -9,7 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,7 +25,7 @@ public abstract class AbstractRestAssuredIntegrationTest {
     protected int port;
 
     @AfterClass
-    static public void staticTearDown() {
+    public static void staticTearDown() {
         RestAssured.reset();
         isRestAssuredNotConfigured = true;
     }
