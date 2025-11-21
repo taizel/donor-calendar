@@ -1,9 +1,9 @@
 package org.donorcalendar.persistence;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import org.donorcalendar.model.BloodType;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
 import java.util.HashMap;
 
 @Converter(autoApply = true)

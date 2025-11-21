@@ -1,5 +1,7 @@
 package org.donorcalendar.persistence;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.donorcalendar.AbstractPersistenceIntegrationTest;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserStatus;
@@ -9,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.Map;
 
