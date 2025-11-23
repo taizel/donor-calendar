@@ -61,6 +61,9 @@
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <!-- Sonar -->
         <maven-sonar-version>5.3.0.6276</maven-sonar-version>
+        <sonar.coverage.exclusions>
+            **/UserProfile.java
+        </sonar.coverage.exclusions>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.basedir}/../reporting/target/site/jacoco-aggregate-all/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
