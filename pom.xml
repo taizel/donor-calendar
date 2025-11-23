@@ -42,7 +42,7 @@
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-surefire-failsafe-plugin.version>3.5.4</maven-surefire-failsafe-plugin.version>
         <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
-        <spotbugs-maven-plugin.version>4.9.8.1</spotbugs-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.9.8.2</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <!--
