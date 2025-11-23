@@ -5,8 +5,8 @@ import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.rest.dto.NewUserDto;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -16,7 +16,7 @@ import java.util.Collections;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-public class SmokeTestsIT extends DatabaseContainerStarter {
+class SmokeTestsIT extends DatabaseContainerStarter {
 
     private static final GenericContainer<?> donorCalendarWebApp = new GenericContainer("donor-calendar:latest").
             withNetwork(databaseContainer.getNetwork()).
@@ -31,8 +31,8 @@ public class SmokeTestsIT extends DatabaseContainerStarter {
 
     private static final String USER_PATH = "/user";
 
-    @BeforeClass
-    public static void setUp() {
+    @BeforeAll
+    static void setUp() {
         donorCalendarWebApp.start();
 
         RestAssured.port = donorCalendarWebApp.getMappedPort(8080);
@@ -41,7 +41,7 @@ public class SmokeTestsIT extends DatabaseContainerStarter {
     }
 
     @Test
-    public void canCreateNewUser() {
+    void canCreateNewUser() {
         NewUserDto newUserDto = new NewUserDto();
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");
@@ -71,7 +71,7 @@ public class SmokeTestsIT extends DatabaseContainerStarter {
     }
 
     @Test
-    public void forbiddenAccessErrorTest() {
+    void forbiddenAccessErrorTest() {
         NewUserDto newUserDto = new NewUserDto();
         newUserDto.setName("New");
         newUserDto.setEmail("forbidden@newuser.com");

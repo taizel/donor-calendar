@@ -6,15 +6,15 @@ import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.util.IdGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
+class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
 
     private static final String TEST_PASSWORD = "test_password";
     private static final long TEST_ID = IdGenerator.generateNewId();
@@ -25,8 +25,8 @@ public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
     @Autowired
     UserCredentialsDao target;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         // Insert user profile to avoid FK violation
         UserProfile.UserProfileBuilder builder = new UserProfile.UserProfileBuilder(
                 TEST_ID,
@@ -39,32 +39,32 @@ public class UserCredentialsDaoIT extends AbstractPersistenceIntegrationTest {
     }
 
     @Test
-    public void saveNewUserSecurityCredentials() {
+    void saveNewUserSecurityCredentials() {
         UserCredentials userCredentials = new UserCredentials(TEST_PASSWORD);
 
         UserCredentials persistedUserCredentials = target.saveNewUserCredentials(TEST_ID, userCredentials);
 
-        assertEquals(userCredentials.getPassword(), persistedUserCredentials.getPassword());
+        assertThat(persistedUserCredentials.getPassword()).isEqualTo(userCredentials.getPassword());
     }
 
     @Test
-    public void findByUserId() {
+    void findByUserId() {
         UserCredentials userCredentials = new UserCredentials(TEST_PASSWORD);
         target.saveNewUserCredentials(TEST_ID, userCredentials);
 
         UserCredentials persistedUserCredentials = target.findByUserId(TEST_ID).orElse(userCredentials);
 
-        assertEquals(userCredentials.getPassword(), persistedUserCredentials.getPassword());
+        assertThat(persistedUserCredentials.getPassword()).isEqualTo(userCredentials.getPassword());
     }
 
     @Test
-    public void updateUserPassword() {
+    void updateUserPassword() {
         UserCredentials userCredentials = new UserCredentials(TEST_PASSWORD);
         target.saveNewUserCredentials(TEST_ID, userCredentials);
         String newPassword = "password_update";
 
         target.saveUserPassword(TEST_ID, newPassword);
 
-        assertEquals(newPassword, target.findByUserId(TEST_ID).orElse(userCredentials).getPassword());
+        assertThat(target.findByUserId(TEST_ID).orElse(userCredentials).getPassword()).isEqualTo(newPassword);
     }
 }

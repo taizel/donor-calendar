@@ -5,16 +5,17 @@ import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.util.IdGenerator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Transactional
-public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
+class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
 
     private static final LocalDate TODAY = LocalDate.now();
 
@@ -22,68 +23,61 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
     private UserProfileDao userProfileDao;
 
     @Test
-    public void saveNewUser() {
+    void saveNewUser() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         UserProfile persistedUser = userProfileDao.saveNewUser(userToPersist);
 
-        assertUserProfileFieldsMatches(userToPersist, persistedUser);
+        assertThat(userToPersist).isEqualTo(persistedUser);
     }
 
     @Test
-    public void findAll() {
-        UserProfile userToPersist1 = generateDefaultTestUserProfile();
-        UserProfile userToPersist2 = generateDefaultTestUserProfile();
-        userProfileDao.saveNewUser(userToPersist1);
-        userProfileDao.saveNewUser(userToPersist2);
+    void findAll() {
+        UserProfile user1 = generateDefaultTestUserProfile();
+        UserProfile user2 = generateDefaultTestUserProfile();
+        userProfileDao.saveNewUser(user1);
+        userProfileDao.saveNewUser(user2);
 
         List<UserProfile> allPersistedUsers = userProfileDao.findAll();
 
-        Assert.assertEquals(2, allPersistedUsers.size());
-        for (UserProfile user : allPersistedUsers) {
-            if (userToPersist1.getUserId() == user.getUserId()) {
-                assertUserProfileFieldsMatches(userToPersist1, user);
-            } else if (userToPersist2.getUserId() == user.getUserId()) {
-                assertUserProfileFieldsMatches(userToPersist2, user);
-            } else {
-                Assert.fail();
-            }
-        }
+        assertThat(allPersistedUsers)
+                .hasSize(2)
+                .containsExactlyInAnyOrder(user1, user2);
     }
 
     @Test
-    public void findById() {
+    void findById() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         userProfileDao.saveNewUser(userToPersist);
 
         UserProfile persistedUser = userProfileDao.findById(userToPersist.getUserId()).orElse(null);
 
-        assertUserProfileFieldsMatches(userToPersist, persistedUser);
+        assertThat(userToPersist).isEqualTo(persistedUser);
     }
 
     @Test
-    public void findByEmail() {
+    void findByEmail() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
         userProfileDao.saveNewUser(userToPersist);
 
         UserProfile persistedUser = userProfileDao.findByEmail(userToPersist.getEmail()).orElse(null);
 
-        assertUserProfileFieldsMatches(userToPersist, persistedUser);
+        assertThat(userToPersist).isEqualTo(persistedUser);
     }
 
     @Test
-    public void exists() {
+    void exists() {
         UserProfile userToPersist = generateDefaultTestUserProfile();
 
         boolean beforeSave = userProfileDao.existsById(userToPersist.getUserId());
         userProfileDao.saveNewUser(userToPersist);
         boolean afterSave = userProfileDao.existsById(userToPersist.getUserId());
 
-        Assert.assertFalse(beforeSave);
-        Assert.assertTrue(afterSave);
+        assertThat(beforeSave).isFalse();
+        assertThat(afterSave).isTrue();
     }
 
     @Test
-    public void updateUser() {
+    void updateUser() {
         UserProfile newUser = generateDefaultTestUserProfile();
         newUser = userProfileDao.saveNewUser(newUser);
         UserProfile userForUpdateRequest = new UserProfile.UserProfileBuilder(newUser)
@@ -100,11 +94,11 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
         userProfileDao.updateUser(userForUpdateRequest);
 
         UserProfile updatedUserProfile = userProfileDao.findById(newUser.getUserId()).orElse(null);
-        assertUserProfileFieldsMatches(userForUpdateRequest, updatedUserProfile);
+        assertThat(userForUpdateRequest).isEqualTo(updatedUserProfile);
     }
 
     @Test
-    public void findUsersToRemind() {
+    void findUsersToRemind() {
         UserProfile userToRemind1 = new UserProfile.UserProfileBuilder(generateDefaultTestUserProfile())
                 .nextReminder(TODAY).build();
         UserProfile userToRemind2 = new UserProfile.UserProfileBuilder(generateDefaultTestUserProfile())
@@ -118,18 +112,11 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
         userProfileDao.saveNewUser(userToIgnore1);
         userProfileDao.saveNewUser(userToIgnore2);
 
-        List<UserProfile> allPersistedUsers = userProfileDao.findUsersToRemind();
+        List<UserProfile> result = userProfileDao.findUsersToRemind();
 
-        Assert.assertEquals(2, allPersistedUsers.size());
-        for (UserProfile user : allPersistedUsers) {
-            if (userToRemind1.getUserId() == user.getUserId()) {
-                assertUserProfileFieldsMatches(userToRemind1, user);
-            } else if (userToRemind2.getUserId() == user.getUserId()) {
-                assertUserProfileFieldsMatches(userToRemind2, user);
-            } else {
-                Assert.fail();
-            }
-        }
+        assertThat(result)
+                .hasSize(2)
+                .containsExactlyInAnyOrder(userToRemind1, userToRemind2);
     }
 
     private UserProfile generateDefaultTestUserProfile() {
@@ -145,20 +132,5 @@ public class UserProfileDaoIT extends AbstractPersistenceIntegrationTest {
         builder.daysBetweenReminders(90);
         builder.nextReminder(TODAY.plusDays(23));
         return builder.build();
-    }
-
-    /*
-     * Validate if all the fields matches.
-     */
-    private void assertUserProfileFieldsMatches(UserProfile expected, UserProfile actual) {
-        Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getUserId(), actual.getUserId());
-        Assert.assertEquals(expected.getName(), actual.getName());
-        Assert.assertEquals(expected.getEmail(), actual.getEmail());
-        Assert.assertEquals(expected.getLastDonation(), actual.getLastDonation());
-        Assert.assertEquals(expected.getBloodType(), actual.getBloodType());
-        Assert.assertEquals(expected.getDaysBetweenReminders(), actual.getDaysBetweenReminders());
-        Assert.assertEquals(expected.getNextReminder(), actual.getNextReminder());
-        Assert.assertEquals(expected.getUserStatus(), actual.getUserStatus());
     }
 }

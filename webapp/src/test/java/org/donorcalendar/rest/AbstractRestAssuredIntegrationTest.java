@@ -4,17 +4,17 @@ import io.restassured.RestAssured;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.config.RestAssuredConfig;
 import org.donorcalendar.JacksonConfig;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @TestPropertySource(properties = {"org.donorcalendar.scheduling.enable = false"}) // disable scheduled jobs
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -24,13 +24,13 @@ public abstract class AbstractRestAssuredIntegrationTest {
     @LocalServerPort
     protected int port;
 
-    @AfterClass
+    @AfterAll
     public static void staticTearDown() {
         RestAssured.reset();
         isRestAssuredNotConfigured = true;
     }
 
-    @Before
+    @BeforeEach
     public void completeSetUp() {
         setUp();
         // one time set-up to get around static restriction on @BeforeClass and use of instance @LocalServerPort
@@ -50,6 +50,6 @@ public abstract class AbstractRestAssuredIntegrationTest {
         isRestAssuredNotConfigured = false;
     }
 
-    @After
+    @AfterEach
     public abstract void tearDown();
 }

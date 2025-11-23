@@ -1,28 +1,20 @@
 package org.donorcalendar.service;
 
-import org.donorcalendar.model.BloodType;
-import org.donorcalendar.model.NotFoundException;
-import org.donorcalendar.model.User;
-import org.donorcalendar.model.UserCredentials;
-import org.donorcalendar.model.UserProfile;
-import org.donorcalendar.model.UserStatus;
-import org.donorcalendar.model.ValidationException;
+import org.donorcalendar.model.*;
 import org.donorcalendar.persistence.FakeUserCredentialsDao;
 import org.donorcalendar.persistence.FakeUserProfileDao;
 import org.donorcalendar.persistence.UserCredentialsDao;
 import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.util.IdGenerator;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.donorcalendar.model.UserProfile.UserProfileBuilder;
-import static org.hamcrest.MatcherAssert.assertThat;
 
-public class UserServiceTest {
+class UserServiceTest {
 
     private static final String UNENCRYPTED_TEST_PASSWORD = "pass1";
 
@@ -33,33 +25,30 @@ public class UserServiceTest {
     private final UserService target = new UserService(userProfileDao, userCredentialsService);
 
     @Test
-    public void anyUserCreatesProfileAndSecurityDetails() throws ValidationException {
+    void anyUserCreatesProfileAndSecurityDetails() throws Exception {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
-        Assert.assertTrue(userProfileDao.findById(savedUserProfile.getUserId()).isPresent());
-        Assert.assertNotNull(userCredentialsDao.findByUserId(savedUserProfile.getUserId()));
+        assertThat(userProfileDao.findById(savedUserProfile.getUserId())).isPresent();
+        assertThat(userCredentialsDao.findByUserId(savedUserProfile.getUserId())).isNotNull();
     }
 
     @Test
-    public void newUserWithEmptyPassword() {
+    void newUserWithEmptyPassword() {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials("");
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
 
-        try {
-            target.saveNewUser(userForTest);
-            Assert.fail();
-        } catch (ValidationException e) {
-            Assert.assertEquals("Password cannot be empty.", e.getMessage());
-        }
+        assertThatThrownBy(() -> target.saveNewUser(userForTest))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Password cannot be empty.");
     }
 
     @Test
-    public void newUserWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws ValidationException {
+    void newUserWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws Exception {
         UserProfileBuilder userProfileForTest = createUserProfileForTest();
         userProfileForTest.lastDonation(LocalDate.now().minusDays(56));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -67,11 +56,11 @@ public class UserServiceTest {
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
-        Assert.assertEquals(UserStatus.DONOR, savedUserProfile.getUserStatus());
+        assertThat(savedUserProfile.getUserStatus()).isEqualTo(UserStatus.DONOR);
     }
 
     @Test
-    public void newUserWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws ValidationException {
+    void newUserWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws Exception {
         UserProfileBuilder userProfileForTest = createUserProfileForTest();
         userProfileForTest.lastDonation(LocalDate.now().minusDays(57));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -79,11 +68,11 @@ public class UserServiceTest {
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
-        Assert.assertEquals(UserStatus.POTENTIAL_DONOR, savedUserProfile.getUserStatus());
+        assertThat(savedUserProfile.getUserStatus()).isEqualTo(UserStatus.POTENTIAL_DONOR);
     }
 
     @Test
-    public void newUserWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws ValidationException {
+    void newUserWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws Exception {
         UserProfileBuilder userProfileForTest = createUserProfileForTest();
         userProfileForTest.lastDonation(LocalDate.now().minusDays(121));
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -91,11 +80,11 @@ public class UserServiceTest {
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
-        Assert.assertEquals(UserStatus.NEED_TO_DONATE, savedUserProfile.getUserStatus());
+        assertThat(savedUserProfile.getUserStatus()).isEqualTo(UserStatus.NEED_TO_DONATE);
     }
 
     @Test
-    public void newUserWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws ValidationException {
+    void newUserWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws Exception {
         UserProfileBuilder userProfileForTest = createUserProfileForTest();
         userProfileForTest.lastDonation(null);
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
@@ -103,58 +92,47 @@ public class UserServiceTest {
 
         UserProfile savedUserProfile = target.saveNewUser(userForTest);
 
-        Assert.assertEquals(UserStatus.NEED_TO_DONATE, savedUserProfile.getUserStatus());
+        assertThat(savedUserProfile.getUserStatus()).isEqualTo(UserStatus.NEED_TO_DONATE);
     }
 
     @Test
-    public void newUserWithLastDonationInFutureFailValidationLastDonationDateInFuture() {
-        try {
-            UserProfileBuilder userProfileForTest = createUserProfileForTest();
-            userProfileForTest.lastDonation(LocalDate.now().plusDays(2));
-            UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
-            User userForTest = new User(userProfileForTest.build(), userCredentialsForTest);
+    void newUserWithLastDonationInFutureFailValidationLastDonationDateInFuture() {
+        UserProfileBuilder userProfileForTest = createUserProfileForTest();
+        userProfileForTest.lastDonation(LocalDate.now().plusDays(2));
+        UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
+        User userForTest = new User(userProfileForTest.build(), userCredentialsForTest);
 
-            target.saveNewUser(userForTest);
-            Assert.fail();
-        } catch (ValidationException e) {
-            Assert.assertEquals("Last donation date can't be in the future.", e.getMessage());
-        }
+        assertThatThrownBy(() -> target.saveNewUser(userForTest))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Last donation date can't be in the future.");
     }
 
     @Test
-    public void newUserFailValidationEmailAlreadyTaken() throws ValidationException {
+    void newUserFailValidationEmailAlreadyTaken() throws ValidationException {
         UserProfile userProfileForTest1 = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest1 = new User(userProfileForTest1, userCredentialsForTest);
         target.saveNewUser(userForTest1);
 
-        try {
-            //Trying to save a user with the same email should fail
-            target.saveNewUser(userForTest1);
-            Assert.fail();
-        } catch (ValidationException e) {
-            assertThat(e.getMessage(), CoreMatchers.allOf(
-                    CoreMatchers.containsString("The email "),
-                    CoreMatchers.containsString("is already registered.")));
-        }
+        // Trying to save a user with the same email should fail
+        assertThatThrownBy(() -> target.saveNewUser(userForTest1))
+                .isInstanceOf(ValidationException.class)
+                .hasMessageContaining("The email ")
+                .hasMessageContaining("is already registered.");
     }
 
     @Test
-    public void updateUserProfileFailUserNotFound() throws ValidationException {
-        try {
-            UserProfile userProfileForTest = createUserProfileForTest().build();
+    void updateUserProfileFailUserNotFound() {
+        UserProfile userProfileForTest = createUserProfileForTest().build();
 
-            target.updateUserProfile(userProfileForTest);
-            Assert.fail();
-        } catch (NotFoundException e) {
-            assertThat(e.getMessage(), CoreMatchers.allOf(
-                    CoreMatchers.containsString("User with id "),
-                    CoreMatchers.containsString(" could not be found.")));
-        }
+        assertThatThrownBy(() -> target.updateUserProfile(userProfileForTest))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("User with id ")
+                .hasMessageContaining(" could not be found.");
     }
 
     @Test
-    public void updateUserProfileWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws ValidationException, NotFoundException {
+    void updateUserProfileWithLastDonationUpToFiftySixDaysPastSuccessWithStatusAsDonor() throws Exception {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -165,12 +143,12 @@ public class UserServiceTest {
         target.updateUserProfile(userProfileForTest);
 
         Optional<UserProfile> updatedUserProfile = userProfileDao.findById(userProfileForTest.getUserId());
-        Assert.assertTrue(updatedUserProfile.isPresent());
-        Assert.assertEquals(UserStatus.DONOR, updatedUserProfile.get().getUserStatus());
+        assertThat(updatedUserProfile).isPresent();
+        assertThat(updatedUserProfile.get().getUserStatus()).isEqualTo(UserStatus.DONOR);
     }
 
     @Test
-    public void updateUserProfileWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws ValidationException, NotFoundException {
+    void updateUserProfileWithLastDonationMoreThanFiftySixAndUpToHundredTwentyDaysPastSuccessWithStatusAsPotentialDonor() throws Exception {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -181,12 +159,12 @@ public class UserServiceTest {
         target.updateUserProfile(userProfileForTest);
 
         Optional<UserProfile> updatedUserProfile = userProfileDao.findById(userProfileForTest.getUserId());
-        Assert.assertTrue(updatedUserProfile.isPresent());
-        Assert.assertEquals(UserStatus.POTENTIAL_DONOR, updatedUserProfile.get().getUserStatus());
+        assertThat(updatedUserProfile).isPresent();
+        assertThat(updatedUserProfile.get().getUserStatus()).isEqualTo(UserStatus.POTENTIAL_DONOR);
     }
 
     @Test
-    public void updateUserProfileWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
+    void updateUserProfileWithLastDonationMoreThanHundredTwentyDaysSuccessWithStatusAsNeedToDonate() throws Exception {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -197,12 +175,12 @@ public class UserServiceTest {
         target.updateUserProfile(userProfileForTest);
 
         Optional<UserProfile> updatedUserProfile = userProfileDao.findById(userProfileForTest.getUserId());
-        Assert.assertTrue(updatedUserProfile.isPresent());
-        Assert.assertEquals(UserStatus.NEED_TO_DONATE, updatedUserProfile.get().getUserStatus());
+        assertThat(updatedUserProfile).isPresent();
+        assertThat(updatedUserProfile.get().getUserStatus()).isEqualTo(UserStatus.NEED_TO_DONATE);
     }
 
     @Test
-    public void updateUserProfileWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws ValidationException, NotFoundException {
+    void updateUserProfileWithLastDonationNullSuccessWithStatusAsNeedToDonate() throws Exception {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -212,30 +190,28 @@ public class UserServiceTest {
         target.updateUserProfile(userProfileForTest);
 
         Optional<UserProfile> updatedUserProfile = userProfileDao.findById(userProfileForTest.getUserId());
-        Assert.assertTrue(updatedUserProfile.isPresent());
-        Assert.assertEquals(UserStatus.NEED_TO_DONATE, updatedUserProfile.get().getUserStatus());
+        assertThat(updatedUserProfile).isPresent();
+        assertThat(updatedUserProfile.get().getUserStatus()).isEqualTo(UserStatus.NEED_TO_DONATE);
     }
 
     @Test
-    public void updateUserProfileLastDonationInFutureFailValidationLastDonationDateInFuture()
-            throws NotFoundException, ValidationException {
+    void updateUserProfileLastDonationInFutureFailValidationLastDonationDateInFuture()
+            throws Exception {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
         userProfileForTest = target.saveNewUser(userForTest);
         userProfileForTest = new UserProfileBuilder(userProfileForTest).lastDonation(LocalDate.now().plusDays(1))
                 .build();
+        final var updateRequest = userProfileForTest;
 
-        try {
-            target.updateUserProfile(userProfileForTest);
-            Assert.fail();
-        } catch (ValidationException e) {
-            Assert.assertEquals("Last donation date can't be in the future.", e.getMessage());
-        }
+        assertThatThrownBy(() -> target.updateUserProfile(updateRequest))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Last donation date can't be in the future.");
     }
 
     @Test
-    public void updateUserPassword() throws NotFoundException, ValidationException {
+    void updateUserPassword() throws Exception {
         UserProfile userProfileForTest = createUserProfileForTest().build();
         UserCredentials userCredentialsForTest = new UserCredentials(UNENCRYPTED_TEST_PASSWORD);
         User userForTest = new User(userProfileForTest, userCredentialsForTest);
@@ -245,17 +221,14 @@ public class UserServiceTest {
         target.updateUserPassword(userProfileForTest.getUserId(), "differentPassword");
 
         UserCredentials securityDetailsAfterUpdate = userCredentialsDao.findByUserId(userProfileForTest.getUserId()).get();
-        Assert.assertNotEquals(securityDetailsBeforeUpdate.getPassword(), securityDetailsAfterUpdate.getPassword());
+        assertThat(securityDetailsAfterUpdate.getPassword()).isNotEqualTo(securityDetailsBeforeUpdate.getPassword());
     }
 
     @Test
-    public void updateUserPasswordWithoutPassword() throws NotFoundException {
-        try {
-            target.updateUserPassword(IdGenerator.generateNewId(), null);
-            Assert.fail();
-        } catch (ValidationException e) {
-            Assert.assertEquals("New password cannot be empty.", e.getMessage());
-        }
+    void updateUserPasswordWithoutPassword() {
+        assertThatThrownBy(() -> target.updateUserPassword(IdGenerator.generateNewId(), null))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("New password cannot be empty.");
     }
 
     private UserProfileBuilder createUserProfileForTest() {
