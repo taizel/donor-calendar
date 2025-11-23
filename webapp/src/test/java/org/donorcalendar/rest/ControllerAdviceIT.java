@@ -4,24 +4,28 @@ import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.rest.dto.NewUserDto;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
 import static io.restassured.RestAssured.given;
 
-public class ControllerAdviceIT extends AbstractRestAssuredIntegrationTest {
+class ControllerAdviceIT extends AbstractRestAssuredIntegrationTest {
 
     @Override
     protected void setUp() {
+        // Empty implementation, require to extend AbstractRestAssuredIntegrationTest
     }
 
+    @AfterEach
     @Override
     public void tearDown() {
+        // Empty implementation, require to extend AbstractRestAssuredIntegrationTest
     }
 
     @Test
-    public void validationErrorTest() {
+    void validationErrorTest() {
         NewUserDto newUserDto = new NewUserDto();
 
         given().
@@ -34,7 +38,7 @@ public class ControllerAdviceIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void forbiddenAccessErrorTest() {
+    void forbiddenAccessErrorTest() {
         NewUserDto newUserDto = new NewUserDto();
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");

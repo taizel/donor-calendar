@@ -13,7 +13,8 @@ import org.donorcalendar.rest.dto.UpdateUserDto;
 import org.donorcalendar.rest.dto.UpdateUserPasswordDto;
 import org.donorcalendar.service.UserCredentialsService;
 import org.donorcalendar.util.IdGenerator;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
+class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
     private static final String TEST_PASSWORD = "pass2";
     private static final String BASE_PATH = "/user";
@@ -57,6 +58,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         userCredentialsDao.saveNewUserCredentials(testUserProfile.getUserId(), userCredentialsEntityBilbo);
     }
 
+    @AfterEach
     @Override
     public void tearDown() {
         userProfileDao.deleteAll();
@@ -64,7 +66,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void canGetUser() {
+    void canGetUser() {
         given()
                 .auth().basic(testUserProfile.getEmail(), TEST_PASSWORD)
         .expect()
@@ -83,7 +85,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void canUpdateUser() {
+    void canUpdateUser() {
         UpdateUserDto updateUserDto = userProfileToUpdateUserDto(testUserProfile);
         updateUserDto.setName("Bilbo Update");
         updateUserDto.setEmail("email@update.com");
@@ -119,7 +121,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void canUpdateUserPassword() {
+    void canUpdateUserPassword() {
         UpdateUserPasswordDto userPasswordDto = new UpdateUserPasswordDto();
         String newPassword = "passwordUpdate";
         userPasswordDto.setNewPassword(newPassword);
@@ -141,7 +143,7 @@ public class UserControllerIT extends AbstractRestAssuredIntegrationTest {
     }
 
     @Test
-    public void canCreateNewUser() {
+    void canCreateNewUser() {
         NewUserDto newUserDto = new NewUserDto();
         newUserDto.setName("New");
         newUserDto.setEmail("new@newuser.com");

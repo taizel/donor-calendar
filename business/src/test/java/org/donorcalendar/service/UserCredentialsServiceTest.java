@@ -5,12 +5,12 @@ import org.donorcalendar.model.UserCredentials;
 import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.persistence.FakeUserCredentialsDao;
 import org.donorcalendar.util.IdGenerator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserCredentialsServiceTest {
+class UserCredentialsServiceTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -19,18 +19,17 @@ public class UserCredentialsServiceTest {
     private final UserCredentialsService target = new UserCredentialsService(userSecurityDao);
 
     @Test
-    public void saveNewUserCredentials() {
+    void saveNewUserCredentials() {
         User user = createUserForTest();
 
         target.saveNewUserCredentials(user);
 
         UserCredentials userCredentials = userSecurityDao.findByUserId(user.getUserProfile().getUserId()).orElse(null);
-        assertTrue("The encrypted password does not look to be valid.",
-                passwordEncoder.matches(user.getUserCredentials().getPassword(), userCredentials.getPassword()));
+        assertThat(passwordEncoder.matches(user.getUserCredentials().getPassword(), userCredentials.getPassword())).withFailMessage("The encrypted password does not look to be valid.").isTrue();
     }
 
     @Test
-    public void updateUserPassword() {
+    void updateUserPassword() {
         User user = createUserForTest();
         Long userId = user.getUserProfile().getUserId();
         String newPassword = "updatedPassword";
@@ -39,8 +38,7 @@ public class UserCredentialsServiceTest {
         target.updateUserPassword(userId, newPassword);
 
         UserCredentials updatedSecurityDetails = userSecurityDao.findByUserId(userId).orElse(null);
-        assertTrue("The encrypted password does not look to be valid.",
-                passwordEncoder.matches(newPassword, updatedSecurityDetails.getPassword()));
+        assertThat(passwordEncoder.matches(newPassword, updatedSecurityDetails.getPassword())).withFailMessage("The encrypted password does not look to be valid.").isTrue();
     }
 
     private User createUserForTest() {

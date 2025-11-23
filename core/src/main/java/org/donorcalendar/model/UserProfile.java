@@ -2,6 +2,7 @@ package org.donorcalendar.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public final class UserProfile implements Serializable {
 
@@ -130,6 +131,22 @@ public final class UserProfile implements Serializable {
         public UserProfile build() {
             return new UserProfile(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        UserProfile that = (UserProfile) o;
+        return userId == that.userId && Objects.equals(name, that.name) && Objects.equals(email, that.email) &&
+                bloodType == that.bloodType && userStatus == that.userStatus &&
+                Objects.equals(lastDonation, that.lastDonation) &&
+                Objects.equals(daysBetweenReminders, that.daysBetweenReminders) &&
+                Objects.equals(nextReminder, that.nextReminder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, name, email, bloodType, userStatus, lastDonation, daysBetweenReminders, nextReminder);
     }
 
     @Override

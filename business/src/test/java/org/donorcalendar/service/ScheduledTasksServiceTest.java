@@ -5,8 +5,8 @@ import org.donorcalendar.model.UserProfile;
 import org.donorcalendar.model.UserStatus;
 import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.util.IdGenerator;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -14,24 +14,24 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.donorcalendar.model.UserProfile.UserProfileBuilder;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class ScheduledTasksServiceTest {
+class ScheduledTasksServiceTest {
 
     private UserProfileDao userProfileDao;
 
     private ScheduledTasksService target;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         userProfileDao = Mockito.mock(UserProfileDao.class);
         target = new ScheduledTasksService(userProfileDao);
     }
 
     @Test
-    public void testSendEmailToRememberDonors() {
+    void sendEmailToRememberDonors() {
         UserProfileBuilder userBuilder = createTestUserSkeleton();
         userBuilder.nextReminder(LocalDate.now().minusDays(1));
         userBuilder.daysBetweenReminders(4);
@@ -42,11 +42,11 @@ public class ScheduledTasksServiceTest {
         target.sendEmailToRememberDonors();
 
         verify(userProfileDao, times(1)).updateUser(userProfileArgumentCaptor.capture());
-        assertEquals(LocalDate.now().plusDays(user.getDaysBetweenReminders()), userProfileArgumentCaptor.getValue().getNextReminder());
+        assertThat(userProfileArgumentCaptor.getValue().getNextReminder()).isEqualTo(LocalDate.now().plusDays(user.getDaysBetweenReminders()));
     }
 
     @Test
-    public void testUpdateUsersStatusTask() {
+    void updateUsersStatusTask() {
         UserProfileBuilder userToUpdateBuilder = createTestUserSkeleton();
         userToUpdateBuilder.lastDonation(LocalDate.now().minusDays(57));
         userToUpdateBuilder.userStatus(UserStatus.DONOR);
@@ -65,7 +65,7 @@ public class ScheduledTasksServiceTest {
         target.updateUsersStatus();
 
         verify(userProfileDao, times(1)).updateUser(userProfileArgumentCaptor.capture());
-        assertEquals(UserStatus.POTENTIAL_DONOR, userProfileArgumentCaptor.getValue().getUserStatus());
+        assertThat(userProfileArgumentCaptor.getValue().getUserStatus()).isEqualTo(UserStatus.POTENTIAL_DONOR);
     }
 
     private UserProfileBuilder createTestUserSkeleton() {
