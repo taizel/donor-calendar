@@ -25,7 +25,6 @@ Those are simple pages added for basic experiments and tests with Mithril and Re
 - [Spring Boot](https://spring.io/projects/spring-boot) - Main project framework
 - [Testcontainers](https://www.testcontainers.org) - To quickly start, configure and remove database Docker containers for testing
 - [Flyway](https://flywaydb.org/documentation/plugins/springboot) - For database versioning (relying on Spring Boot integration)
-- [REST Assured](http://rest-assured.io) - For end-to-end tests
 - [PostgreSQL JDBC](https://jdbc.postgresql.org/) - For connection with PostgreSQL database
 
 ## Running the application

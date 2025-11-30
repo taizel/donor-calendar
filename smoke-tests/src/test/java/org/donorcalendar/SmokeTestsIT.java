@@ -1,20 +1,21 @@
 package org.donorcalendar;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import org.apache.http.HttpStatus;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.rest.dto.NewUserDto;
+import org.donorcalendar.rest.dto.UserResponseDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestClient;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import java.time.LocalDate;
 import java.util.Collections;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SmokeTestsIT extends DatabaseContainerStarter {
 
@@ -30,14 +31,19 @@ class SmokeTestsIT extends DatabaseContainerStarter {
             withTmpFs(Collections.singletonMap(System.getProperty("java.io.tmpdir"), "rw"));
 
     private static final String USER_PATH = "/user";
+    // Not using WebTestClient as we are doing full blackbox test
+    private static RestClient client;
 
     @BeforeAll
     static void setUp() {
         donorCalendarWebApp.start();
 
-        RestAssured.port = donorCalendarWebApp.getMappedPort(8080);
-        // some CI environments may be reachable on a different host
-        RestAssured.baseURI = "http://" + donorCalendarWebApp.getHost();
+        String host = donorCalendarWebApp.getHost();
+        Integer port = donorCalendarWebApp.getMappedPort(8080);
+
+        client = RestClient.builder()
+                .baseUrl("http://" + host + ":" + port)
+                .build();
     }
 
     @Test
@@ -49,25 +55,27 @@ class SmokeTestsIT extends DatabaseContainerStarter {
         newUserDto.setLastDonation(LocalDate.now().minusMonths(2));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
 
-        given().
-                contentType(ContentType.JSON).
-                body(newUserDto).
-                expect().
-                statusCode(HttpStatus.SC_OK).
-                when().
-                post(USER_PATH);
+        // Create the new user
+        var createResponse = client.post()
+                .uri(USER_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(newUserDto)
+                .retrieve()
+                .toBodilessEntity();
 
-        given().
-                auth().basic(newUserDto.getEmail(), newUserDto.getPassword()).
-                expect().
-                statusCode(HttpStatus.SC_OK).
-                when().
-                get(USER_PATH).
-                then().
-                assertThat().
-                body("name", equalTo(newUserDto.getName())).
-                body("email", equalTo(newUserDto.getEmail())).
-                body("bloodType", equalTo(newUserDto.getBloodType().toString()));
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Retrieve created user with basic auth
+        var userResponse = client.get()
+                .uri(USER_PATH)
+                .headers(h -> h.setBasicAuth(newUserDto.getEmail(), newUserDto.getPassword()))
+                .retrieve()
+                .body(UserResponseDto.class);
+
+        assertThat(userResponse)
+                .extracting(UserResponseDto::getName, UserResponseDto::getEmail, UserResponseDto::getBloodType)
+                .containsExactly(newUserDto.getName(), newUserDto.getEmail(), newUserDto.getBloodType());
+
     }
 
     @Test
@@ -79,19 +87,25 @@ class SmokeTestsIT extends DatabaseContainerStarter {
         newUserDto.setLastDonation(LocalDate.now().minusMonths(5));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
 
-        given().
-                contentType(ContentType.JSON).
-                body(newUserDto).
-                expect().
-                statusCode(HttpStatus.SC_OK).
-                when().
-                post(USER_PATH);
+        // Create user
+        var createResponse = client.post()
+                .uri(USER_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(newUserDto)
+                .retrieve()
+                .toBodilessEntity();
 
-        given().
-                auth().basic(newUserDto.getEmail(), newUserDto.getPassword()).
-                expect().
-                statusCode(HttpStatus.SC_FORBIDDEN).
-                when().
-                get("/donor-zone");
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        // Now try forbidden access
+        var forbiddenResponse = client.get()
+                .uri("/donor-zone")
+                .headers(h -> h.setBasicAuth(newUserDto.getEmail(), newUserDto.getPassword()))
+                .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError, (req, res) -> {
+                }) // prevent throwing exception
+                .toBodilessEntity();
+
+        assertThat(forbiddenResponse.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }

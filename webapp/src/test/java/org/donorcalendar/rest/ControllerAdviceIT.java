@@ -1,40 +1,39 @@
 package org.donorcalendar.rest;
 
-import io.restassured.http.ContentType;
-import org.apache.http.HttpStatus;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.rest.dto.NewUserDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 import java.time.LocalDate;
 
-import static io.restassured.RestAssured.given;
-
-class ControllerAdviceIT extends AbstractRestAssuredIntegrationTest {
+class ControllerAdviceIT extends AbstractRestIntegrationTest {
 
     @Override
     protected void setUp() {
-        // Empty implementation, require to extend AbstractRestAssuredIntegrationTest
+        // No setup required
     }
 
     @AfterEach
     @Override
     public void tearDown() {
-        // Empty implementation, require to extend AbstractRestAssuredIntegrationTest
+        // No teardown required
     }
 
     @Test
     void validationErrorTest() {
         NewUserDto newUserDto = new NewUserDto();
 
-        given().
-                contentType(ContentType.JSON).
-                body(newUserDto).
-        expect().
-                statusCode(HttpStatus.SC_BAD_REQUEST).
-        when().
-                post("/user");
+        client.post()
+                .uri("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newUserDto)
+                .exchange()
+                .expectStatus().isBadRequest()
+                .expectBody()
+                .jsonPath("$.errorMessage")
+                .isEqualTo("Password cannot be empty.");
     }
 
     @Test
@@ -46,19 +45,19 @@ class ControllerAdviceIT extends AbstractRestAssuredIntegrationTest {
         newUserDto.setLastDonation(LocalDate.now().minusMonths(5));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
 
-        given().
-                contentType(ContentType.JSON).
-                body(newUserDto).
-        expect().
-                statusCode(HttpStatus.SC_OK).
-        when().
-                post("/user");
+        // --- Create user ---
+        client.post()
+                .uri("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newUserDto)
+                .exchange()
+                .expectStatus().isOk();
 
-        given().
-                auth().basic(newUserDto.getEmail(), newUserDto.getPassword()).
-        expect().
-                statusCode(HttpStatus.SC_FORBIDDEN).
-        when().
-                get("/donor-zone");
+        // --- Access donor-zone with basic auth (should be forbidden) ---
+        client.get()
+                .uri("/donor-zone")
+                .headers(h -> h.setBasicAuth(newUserDto.getEmail(), newUserDto.getPassword()))
+                .exchange()
+                .expectStatus().isForbidden(); // 403 FORBIDDEN
     }
 }

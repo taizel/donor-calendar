@@ -5,7 +5,7 @@ import org.donorcalendar.persistence.UserProfileDao;
 import org.donorcalendar.security.UserSecurityDetailsService;
 import org.donorcalendar.service.UserCredentialsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
