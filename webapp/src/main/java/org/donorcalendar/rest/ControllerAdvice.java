@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ControllerAdvice {
-    private final Log logger = LogFactory.getLog(this.getClass());
+    private static final Log logger = LogFactory.getLog(ControllerAdvice.class);
 
     private ClientErrorInformationDto buildClientErrorInformationDto(HttpServletRequest req, String message) {
         return new ClientErrorInformationDto(message,

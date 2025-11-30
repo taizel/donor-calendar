@@ -1,6 +1,5 @@
 package org.donorcalendar.rest;
 
-import org.apache.http.HttpStatus;
 import org.donorcalendar.JacksonConfig;
 import org.donorcalendar.model.BloodType;
 import org.donorcalendar.model.UserCredentials;
@@ -11,26 +10,28 @@ import org.donorcalendar.persistence.FakeUserProfileDao;
 import org.donorcalendar.rest.dto.NewUserDto;
 import org.donorcalendar.rest.dto.UpdateUserDto;
 import org.donorcalendar.rest.dto.UpdateUserPasswordDto;
+import org.donorcalendar.rest.dto.UserResponseDto;
 import org.donorcalendar.service.UserCredentialsService;
 import org.donorcalendar.util.IdGenerator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class UserControllerIT extends AbstractRestAssuredIntegrationTest {
+class UserControllerIT extends AbstractRestIntegrationTest {
 
     private static final String TEST_PASSWORD = "pass2";
     private static final String BASE_PATH = "/user";
-    private static final String JSON_CONTENT_TYPE = "application/json";
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
+    private static final DateTimeFormatter DATE_FORMATTER =
+            DateTimeFormatter.ofPattern(JacksonConfig.LOCAL_DATE_FORMAT);
+
     private final PasswordEncoder passwordEncoder = UserCredentialsService.getNewPasswordEncoder();
     @Autowired
     private FakeUserProfileDao userProfileDao;
@@ -67,21 +68,28 @@ class UserControllerIT extends AbstractRestAssuredIntegrationTest {
 
     @Test
     void canGetUser() {
-        given()
-                .auth().basic(testUserProfile.getEmail(), TEST_PASSWORD)
-        .expect()
-                .statusCode(HttpStatus.SC_OK)
-        .when()
-                .get(BASE_PATH)
-        .then()
-                .assertThat()
-                .body("name", equalTo(testUserProfile.getName()))
-                .body("email", equalTo(testUserProfile.getEmail()))
-                .body("bloodType", equalTo(testUserProfile.getBloodType().toString()))
-                .body("lastDonation", equalTo(testUserProfile.getLastDonation().format(DATE_FORMATTER)))
-                .body("daysBetweenReminders", equalTo(testUserProfile.getDaysBetweenReminders()))
-                .body("nextReminder", equalTo(testUserProfile.getNextReminder().format(DATE_FORMATTER)))
-                .body("userStatus", equalTo(testUserProfile.getUserStatus().toString()));
+        client.get()
+                .uri(BASE_PATH)
+                .headers(h -> h.setBasicAuth(testUserProfile.getEmail(), TEST_PASSWORD))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseDto.class)
+                .value(response -> {
+                    assertThat(response.getName())
+                            .isEqualTo(testUserProfile.getName());
+                    assertThat(response.getEmail())
+                            .isEqualTo(testUserProfile.getEmail());
+                    assertThat(response.getBloodType())
+                            .isEqualTo(testUserProfile.getBloodType());
+                    assertThat(response.getLastDonation().format(DATE_FORMATTER))
+                            .isEqualTo(testUserProfile.getLastDonation().format(DATE_FORMATTER));
+                    assertThat(response.getDaysBetweenReminders())
+                            .isEqualTo(testUserProfile.getDaysBetweenReminders());
+                    assertThat(response.getNextReminder().format(DATE_FORMATTER))
+                            .isEqualTo(testUserProfile.getNextReminder().format(DATE_FORMATTER));
+                    assertThat(response.getUserStatus())
+                            .hasToString(testUserProfile.getUserStatus().toString());
+                });
     }
 
     @Test
@@ -89,57 +97,62 @@ class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         UpdateUserDto updateUserDto = userProfileToUpdateUserDto(testUserProfile);
         updateUserDto.setName("Bilbo Update");
         updateUserDto.setEmail("email@update.com");
-        updateUserDto.setBloodType(BloodType.B_NEGATIVE); // Interesting to think if this should be allowed
+        updateUserDto.setBloodType(BloodType.B_NEGATIVE);
         updateUserDto.setLastDonation(updateUserDto.getLastDonation().minusDays(1));
         updateUserDto.setDaysBetweenReminders(updateUserDto.getDaysBetweenReminders() - 1);
         updateUserDto.setNextReminder(updateUserDto.getNextReminder().minusDays(1));
 
-        given().
-                contentType(JSON_CONTENT_TYPE).
-                body(updateUserDto).
-                auth().basic(testUserProfile.getEmail(), TEST_PASSWORD).
-        expect().
-                statusCode(HttpStatus.SC_OK).
-                when().
-                put(BASE_PATH);
+        // --- Perform update ---
+        client.put()
+                .uri(BASE_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(h -> h.setBasicAuth(testUserProfile.getEmail(), TEST_PASSWORD))
+                .bodyValue(updateUserDto)
+                .exchange()
+                .expectStatus().isOk();
 
-        given()
-                .auth().basic(updateUserDto.getEmail(), TEST_PASSWORD)
-        .expect()
-                .statusCode(HttpStatus.SC_OK)
-        .when()
-                .get(BASE_PATH)
-        .then()
-                .assertThat()
-                .body("name", equalTo(updateUserDto.getName()))
-                .body("email", equalTo(updateUserDto.getEmail()))
-                .body("bloodType", equalTo(updateUserDto.getBloodType().toString()))
-                .body("lastDonation", equalTo(updateUserDto.getLastDonation().format(DATE_FORMATTER)))
-                .body("daysBetweenReminders", equalTo(updateUserDto.getDaysBetweenReminders()))
-                .body("nextReminder", equalTo(updateUserDto.getNextReminder().format(DATE_FORMATTER)))
-                .body("userStatus", not(emptyString()));
+        // --- Retrieve updated user ---
+        client.get()
+                .uri(BASE_PATH)
+                .headers(h -> h.setBasicAuth(updateUserDto.getEmail(), TEST_PASSWORD))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseDto.class)
+                .value(updated -> {
+                    assertThat(updated.getName()).isEqualTo(updateUserDto.getName());
+                    assertThat(updated.getEmail()).isEqualTo(updateUserDto.getEmail());
+                    assertThat(updated.getBloodType()).isEqualTo(updateUserDto.getBloodType());
+                    assertThat(updated.getLastDonation().format(DATE_FORMATTER))
+                            .isEqualTo(updateUserDto.getLastDonation().format(DATE_FORMATTER));
+                    assertThat(updated.getDaysBetweenReminders())
+                            .isEqualTo(updateUserDto.getDaysBetweenReminders());
+                    assertThat(updated.getNextReminder().format(DATE_FORMATTER))
+                            .isEqualTo(updateUserDto.getNextReminder().format(DATE_FORMATTER));
+                    assertThat(updated.getUserStatus().toString()).isNotEmpty();
+                });
     }
 
     @Test
     void canUpdateUserPassword() {
-        UpdateUserPasswordDto userPasswordDto = new UpdateUserPasswordDto();
+        UpdateUserPasswordDto dto = new UpdateUserPasswordDto();
         String newPassword = "passwordUpdate";
-        userPasswordDto.setNewPassword(newPassword);
-        given()
-                .contentType(JSON_CONTENT_TYPE)
-                .body(userPasswordDto)
-                .auth().basic(testUserProfile.getEmail(), TEST_PASSWORD)
-        .expect()
-                .statusCode(HttpStatus.SC_NO_CONTENT)
-        .when()
-                .put(BASE_PATH + "/update-password");
+        dto.setNewPassword(newPassword);
 
-        given()
-                .auth().basic(testUserProfile.getEmail(), newPassword)
-        .expect()
-                .statusCode(HttpStatus.SC_OK)
-        .when()
-                .get(BASE_PATH);
+        // --- Update password ---
+        client.put()
+                .uri(BASE_PATH + "/update-password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .headers(h -> h.setBasicAuth(testUserProfile.getEmail(), TEST_PASSWORD))
+                .bodyValue(dto)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // --- Authenticate with new password ---
+        client.get()
+                .uri(BASE_PATH)
+                .headers(h -> h.setBasicAuth(testUserProfile.getEmail(), newPassword))
+                .exchange()
+                .expectStatus().isOk();
     }
 
     @Test
@@ -151,31 +164,37 @@ class UserControllerIT extends AbstractRestAssuredIntegrationTest {
         newUserDto.setLastDonation(LocalDate.now().minusMonths(1));
         newUserDto.setBloodType(BloodType.A_POSITIVE);
         newUserDto.setDaysBetweenReminders(90);
-        newUserDto.setNextReminder(newUserDto.getLastDonation().plusDays(newUserDto.getDaysBetweenReminders()));
+        newUserDto.setNextReminder(
+                newUserDto.getLastDonation().plusDays(newUserDto.getDaysBetweenReminders())
+        );
 
-        given()
-                .contentType(JSON_CONTENT_TYPE)
-                .body(newUserDto)
-        .expect()
-                .statusCode(HttpStatus.SC_OK)
-        .when()
-                .post(BASE_PATH);
+        // --- Create user ---
+        client.post()
+                .uri(BASE_PATH)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newUserDto)
+                .exchange()
+                .expectStatus().isOk();
 
-        given()
-                .auth().basic(newUserDto.getEmail(), newUserDto.getPassword())
-        .expect()
-                .statusCode(HttpStatus.SC_OK)
-        .when()
-                .get(BASE_PATH)
-        .then()
-                .assertThat()
-                .body("name", equalTo(newUserDto.getName()))
-                .body("email", equalTo(newUserDto.getEmail()))
-                .body("bloodType", equalTo(newUserDto.getBloodType().toString()))
-                .body("lastDonation", equalTo(newUserDto.getLastDonation().format(DATE_FORMATTER)))
-                .body("daysBetweenReminders", equalTo(newUserDto.getDaysBetweenReminders()))
-                .body("nextReminder", equalTo(newUserDto.getNextReminder().format(DATE_FORMATTER)))
-                .body("userStatus", not(emptyString()));
+        // --- Authenticate + retrieve ---
+        client.get()
+                .uri(BASE_PATH)
+                .headers(h -> h.setBasicAuth(newUserDto.getEmail(), newUserDto.getPassword()))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(UserResponseDto.class)
+                .value(created -> {
+                    assertThat(created.getName()).isEqualTo(newUserDto.getName());
+                    assertThat(created.getEmail()).isEqualTo(newUserDto.getEmail());
+                    assertThat(created.getBloodType()).isEqualTo(newUserDto.getBloodType());
+                    assertThat(created.getLastDonation().format(DATE_FORMATTER))
+                            .isEqualTo(newUserDto.getLastDonation().format(DATE_FORMATTER));
+                    assertThat(created.getDaysBetweenReminders())
+                            .isEqualTo(newUserDto.getDaysBetweenReminders());
+                    assertThat(created.getNextReminder().format(DATE_FORMATTER))
+                            .isEqualTo(newUserDto.getNextReminder().format(DATE_FORMATTER));
+                    assertThat(created.getUserStatus().toString()).isNotEmpty();
+                });
     }
 
     private UpdateUserDto userProfileToUpdateUserDto(UserProfile user) {
