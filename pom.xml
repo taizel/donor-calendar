@@ -60,7 +60,7 @@
         <testcontainers-postgresql.version>2.0.2</testcontainers-postgresql.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <!-- Sonar -->
-        <maven-sonar-version>5.4.0.6343</maven-sonar-version>
+        <maven-sonar-version>5.5.0.6356</maven-sonar-version>
         <sonar.coverage.exclusions>
             **/UserProfile.java
         </sonar.coverage.exclusions>
