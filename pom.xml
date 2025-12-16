@@ -57,7 +57,7 @@
         If Testcontainers eventually removes its JUnit 4 usage, this dependency may no longer appear,
         but there is currently no published timeline for that change.
         -->
-        <testcontainers-postgresql.version>2.0.2</testcontainers-postgresql.version>
+        <testcontainers-postgresql.version>2.0.3</testcontainers-postgresql.version>
         <dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
         <!-- Sonar -->
         <maven-sonar-version>5.5.0.6356</maven-sonar-version>
