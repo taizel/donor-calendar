@@ -39,7 +39,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <spring-boot.version>4.0.2</spring-boot.version>
-        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-surefire-failsafe-plugin.version>3.5.4</maven-surefire-failsafe-plugin.version>
         <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
         <spotbugs-maven-plugin.version>4.9.8.2</spotbugs-maven-plugin.version>
