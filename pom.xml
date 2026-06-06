@@ -44,7 +44,7 @@
         <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
         <spotbugs-maven-plugin.version>4.9.8.3</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
-        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <!--
         Testcontainers currently brings JUnit 4 as a transitive dependency.
         As of version 2.0.2, JUnit 4 is still included and cannot be excluded cleanly
