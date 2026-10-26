@@ -40,11 +40,11 @@
 
         <spring-boot.version>4.1.2</spring-boot.version>
         <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
-        <maven-surefire-failsafe-plugin.version>3.6.0</maven-surefire-failsafe-plugin.version>
+        <maven-surefire-failsafe-plugin.version>3.6.1</maven-surefire-failsafe-plugin.version>
         <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
         <spotbugs-maven-plugin.version>4.10.5.0</spotbugs-maven-plugin.version>
         <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
-        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
         <!--
         Testcontainers currently brings JUnit 4 as a transitive dependency.
         As of version 2.0.2, JUnit 4 is still included and cannot be excluded cleanly
