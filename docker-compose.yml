@@ -1,6 +1,6 @@
 services:
   db-donor-calendar:
-    image: postgres:18
+    image: postgres:19
     container_name: db-donor-calendar
     ports:
       - "5432:5432"
